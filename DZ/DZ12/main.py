@@ -12,20 +12,7 @@
 # указанного пользователем файла.
 
 
-# class eployee:
-#     def __init__(self):
-#         with open ('empluyee.txt', 'r', encoding='utf-8') as f:
-#             lines = f.readlines()
-#             self.id: int = len(lines)
-#             self.name = input('Введите имя сотрудника')
-#             self.surname = input('Введите фамилию сотрудника')
-#             self.age = input('Введите возраст сотрудника')
 
-#     def  print_employee(self):
-#         print(f'№ сотрудника {self.id}')
-#         print (f'Имя сотрудника {self.name}')
-#         print (f'Фамилия сотрудника{self.surname}')
-#         print(f'Возраст сотрудника {self.age}')
 
 class Employee:
     def __init__(self, employee_id, name, surname, age):
