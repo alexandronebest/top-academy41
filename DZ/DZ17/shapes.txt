@@ -1,16 +1,12 @@
-{"type_figure": "Square", "x": 0, "y": 0, "side_length": 5}
-{"type_figure": "Rectangle", "x": 1, "y": 1, "width": 4, "height": 2}
-{"type_figure": "Circle", "center_x": 5, "center_y": 5, "radius": 3}
-{"type_figure": "Ellipse", "x": 0, "y": 0, "width": 6, "height": 4}
-{"type_figure": "Square", "x": 0, "y": 0, "side_length": 5}
-{"type_figure": "Rectangle", "x": 1, "y": 1, "width": 4, "height": 2}
-{"type_figure": "Circle", "center_x": 5, "center_y": 5, "radius": 3}
-{"type_figure": "Ellipse", "x": 0, "y": 0, "width": 6, "height": 4}
-{"type_figure": "Square", "x": 0, "y": 0, "side_length": 5}
-{"type_figure": "Rectangle", "x": 1, "y": 1, "width": 4, "height": 2}
-{"type_figure": "Circle", "center_x": 5, "center_y": 5, "radius": 3}
-{"type_figure": "Ellipse", "x": 0, "y": 0, "width": 6, "height": 4}
-{"type_figure": "Square", "x": 0, "y": 0, "side_length": 5}
-{"type_figure": "Rectangle", "x": 1, "y": 1, "width": 4, "height": 2}
-{"type_figure": "Circle", "center_x": 5, "center_y": 5, "radius": 3}
-{"type_figure": "Ellipse", "x": 0, "y": 0, "width": 6, "height": 4}
+Фигура: Square, с координатами: (1, 2), сторона: 5
+Фигура: Rectangle, с координатами: (3, 4), ширина: 6, высота: 8
+Фигура: Circle, с координатами: (5, 5), радиус: 3
+Фигура: Ellipse, с координатами: (6, 7), ширина: 4, высота: 2
+Фигура: Square, с координатами: (1, 2), сторона: 5
+Фигура: Rectangle, с координатами: (3, 4), ширина: 6, высота: 8
+Фигура: Circle, с координатами: (5, 5), радиус: 3
+Фигура: Ellipse, с координатами: (6, 7), ширина: 4, высота: 2
+Фигура: Square, с координатами: (1, 2), сторона: 5
+Фигура: Rectangle, с координатами: (3, 4), ширина: 6, высота: 8
+Фигура: Circle, с координатами: (5, 5), радиус: 3
+Фигура: Ellipse, с координатами: (6, 7), ширина: 4, высота: 2

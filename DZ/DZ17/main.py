@@ -178,3 +178,5 @@ print(int(Figura3))
 Figura4 = Trapezoid('Трапеция', 10, 12, 6)
 print(Figura4)
 print(int(Figura4))
+
+
