@@ -108,3 +108,4 @@ loaded_shapes = Shape.load()
 
 for line in loaded_shapes:
     print(line)
+    
