@@ -1,0 +1,22 @@
+{
+    "Manufacturer": "bmw",
+    "model": "5",
+    "year": "1999",
+    "engine": "2.5",
+    "color": "black",
+    "price": "500000"
+}{
+    "Manufacturer": "bmw",
+    "model": "7",
+    "year": "1999",
+    "engine": "3.0",
+    "color": "black",
+    "price": "500000"
+}{
+    "Manufacturer": "audi",
+    "model": "a6",
+    "year": "2003",
+    "engine": "3.5",
+    "color": "red",
+    "price": "500000"
+}
