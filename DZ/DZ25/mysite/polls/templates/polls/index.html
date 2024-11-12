@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ul>
+        {% for q in latest_question_list %}
+            <li>
+                <a href="/polls/{{ q.id }}/">{{ q.question_text }}</a>
+            </li>
+        {% endfor %}
+        
+    </ul>
+    
+</body>
+</html>
+
+
+
