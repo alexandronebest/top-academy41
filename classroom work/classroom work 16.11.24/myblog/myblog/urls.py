@@ -19,5 +19,5 @@ from django.urls import include, path
 
 urlpatterns = [
       path('admin/', admin.site.urls),
-      path('blog/', include('blog.urls')),  # включиил urls из приложения blog, 'blog/' тоже не работает
+      path('', include('blog.urls')),  # включиил urls из приложения blog, 'blog/' тоже не работает
   ]
