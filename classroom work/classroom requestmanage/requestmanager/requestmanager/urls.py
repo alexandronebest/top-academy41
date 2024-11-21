@@ -1,5 +1,5 @@
 """
-URL configuration for mysite project.
+URL configuration for requestmanager project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -19,7 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auto/', include('auto.urls')),
-    path('', include('music.urls')),
-    
+    path('requests/', include('requests.urls')),
 ]
