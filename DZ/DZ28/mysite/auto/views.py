@@ -8,3 +8,11 @@ def auto_gl(request):
 def toyota(request):
        autos = Auto.objects.all()
        return render(request, 'auto/toyota.html', {'autos': autos})
+
+def honda(request):
+       autos = Auto.objects.all()
+       return render(request, 'auto/honda.html', {'autos': autos})
+
+def renault(request):
+       autos = Auto.objects.all()
+       return render(request, 'auto/renault.html', {'autos': autos})
