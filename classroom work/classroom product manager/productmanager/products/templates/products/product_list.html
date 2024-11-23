@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+   <html>
+   <head>
+       <title>Список товаров</title>
+   </head>
+   <body>
+       <h1>Список товаров</h1>
+       <a href="{% url 'add_product' %}">Добавить новый товар</a>
+       <ul>
+           {% for product in products %}
+               <li>{{ product.name }} - {{ product.price }} <a href="{% url 'edit_product' product.id %}">Редактировать</a> <a href="{% url 'delete_product' product.id %}">Удалить</a></li>
+           {% endfor %}
+       </ul>
+   </body>
+   </html>

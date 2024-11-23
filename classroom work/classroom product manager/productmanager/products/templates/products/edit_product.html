@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+   <html>
+   <head>
+       <title>Редактировать товар</title>
+   </head>
+   <body>
+    <h1>Редактировать продукт: {{ product.name }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить изменения</button>
+</form>
+<a href="{% url 'product_list' %}">Назад к списку продуктов</a>
+   </body>
+   </html>
