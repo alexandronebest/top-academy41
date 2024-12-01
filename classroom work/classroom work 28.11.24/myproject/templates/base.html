@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>{% block title %}My Project{% endblock %}</title>
+</head>
+<body>
+    {% include 'partials/header.html' %}
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+    {% include 'partials/footer.html' %}
+</body>
+</html>
