@@ -1,5 +1,5 @@
 """
-WSGI config for company_website project.
+WSGI config for mycompany project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'company_website.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mycompany.settings')
 
 application = get_wsgi_application()

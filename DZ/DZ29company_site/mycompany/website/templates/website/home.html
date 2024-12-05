@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>Home</title>
+</head>
+<body>
+    <header>
+        <h1>Название компании 'Undeground beat'</h1>
+        <img src="{% static 'logo.jpg' %}" alt="Логотип">
+        <p>У меня просто валялся логотип на компьютере, вставил для проверки</p>
+    </header>
+
+    <section>
+        <h2>О компании</h2>
+        <p>Информация о миссии, услугах и ключевых направлениях работы.</p>
+    </section>
+
+    <section>
+        <h2>Услуги</h2>
+        <ul>
+            {% for service in services %}
+                <li>{{ service.name }}: {{ service.description }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section>
+        <h2>Контакты</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Отправить</button>
+        </form>
+        <p>Контактная информация 8-963-955-11-56</p>
+    </section>
+</body>
+</html>
