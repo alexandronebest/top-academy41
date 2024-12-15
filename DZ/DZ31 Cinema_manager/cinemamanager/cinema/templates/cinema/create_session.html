@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Создание сеанса</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Создать сеанс</button>
+  </form>
+  <a href="{% url 'upcoming_sessions' %}">Назад к списку сеансов</a>
+{% endblock %}

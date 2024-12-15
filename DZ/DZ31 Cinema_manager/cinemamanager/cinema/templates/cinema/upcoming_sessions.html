@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Ближайшие сеансы</h1>
+  <ul class="list-group">
+    {% for session in sessions %}
+      <li class="list-group-item">{{ session.movie.title }} - {{ session.start_time }}</li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'create_session' %}" class="btn btn-secondary">Создать новый сеанс</a>
+{% endblock %}

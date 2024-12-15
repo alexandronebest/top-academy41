@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Система управления кинотеатром</h1>
+  <p class="mb-5 text-body-secondary">Для обучения, создаю систему управления кинотеатром
+  </p>
+  <div class="row flex-column gap-4 align-items-center">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Кино в нашем конотеатре</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">2024</h6>
+          <p class="card-text">Россия, Красноярск</p>
+          <a href="{% url 'movies' %}" class="card-link">Создать кино</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Залы в нашем кинотеатре</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">2024</h6>
+          <p class="card-text">Россия, Красноярск</p>
+          <a href="{% url 'hall' %}" class="card-link">Создать зал</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Сеансы</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">2024</h6>
+          <p class="card-text">Россия, Красноярск</p>
+          <a href="{% url 'upcoming_sessions' %}" class="card-link">Создать сеанс</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <a href="{% url 'upcoming_sessions' %}">Взглянуть на сеаны</a>
+    </div>
+  </div>
+{% endblock %}

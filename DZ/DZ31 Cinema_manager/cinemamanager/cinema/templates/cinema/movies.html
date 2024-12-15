@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Список фильмов</h1>
+  <ul class="list-group">
+    {% for movie in movies %}
+      <li class="list-group-item">{{ movie.title }}</li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'create_movie' %}" class="btn btn-secondary">Создать новый фильм</a>
+{% endblock %}

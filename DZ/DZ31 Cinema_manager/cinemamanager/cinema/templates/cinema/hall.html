@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Список залов</h1>
+  <ul class="list-group">
+    {% for hall in hall %}
+      <li class="list-group-item">{{ hall.name }}</li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'create_hall' %}" class="btn btn-secondary">Создать новый зал</a>
+{% endblock %}
