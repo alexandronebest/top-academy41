@@ -27,6 +27,10 @@ class Session(models.Model):
     def __str__(self):
         return f"{self.movie.title} в {self.hall.name} во {self.show_time}"
     
+    def booked_seats_count(self):
+        return Booking.objects.filter(session=self).aggregate(models.Sum('seats'))['seats__sum'] or 0
+    
+
 
 class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Пользователь, который бронирует билет

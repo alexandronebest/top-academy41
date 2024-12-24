@@ -16,7 +16,9 @@ def hall(request):
     return render(request, 'cinema/hall.html', context={'hall': hall_list})
 
 def upcoming_sessions(request):
-    sessions = Session.objects.all()
+    sessions = Session.objects.all().prefetch_related('booking_set')
+    for session in sessions:
+        session.booked_seats = session.booked_seats_count()
     return render(request, 'cinema/upcoming_sessions.html', {'sessions': sessions})
 
 def create_movie(request):
@@ -91,3 +93,4 @@ def create_booking(request, session_id):
         form = BookingForm(initial={'session': session})  # Инициализируем форму с текущим сеансом
 
     return render(request, 'cinema/create_booking.html', {'form': form, 'session': session})
+
