@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect
 from .models import Project, User, Task, TaskStatus
 from .forms import TaskForm, TaskCreateForm, ProjectForm
@@ -56,4 +55,3 @@ def task(request, task_id):
     else:
         form = TaskForm(instance=task_view)
     return render(request, 'tasks/task/details.html', context={'form': form, 'task': task_view})
-

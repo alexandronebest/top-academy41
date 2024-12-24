@@ -1,0 +1,9 @@
+{% block content %}
+<h1>Бронирование билета на "{{ session.movie.title }}"</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Бронировать</button>
+</form>
+<a href="{% url 'upcoming_sessions' %}">Назад к сеансам</a>
+{% endblock %}

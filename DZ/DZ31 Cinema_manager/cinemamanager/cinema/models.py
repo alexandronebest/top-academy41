@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Movie(models.Model):
     title = models.CharField(max_length=100)  # Название
@@ -25,3 +26,13 @@ class Session(models.Model):
 
     def __str__(self):
         return f"{self.movie.title} в {self.hall.name} во {self.show_time}"
+    
+
+class Booking(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Пользователь, который бронирует билет
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)  # Сеанс, на который бронируется билет
+    seats = models.PositiveIntegerField()  # Количество забронированных мест
+    booking_time = models.DateTimeField(auto_now_add=True)  # Время бронирования
+
+    def __str__(self):
+        return f"{self.user.username} забронировал {self.seats} мест на {self.session}"

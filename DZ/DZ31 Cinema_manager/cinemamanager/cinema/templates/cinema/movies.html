@@ -5,6 +5,10 @@
   <ul class="list-group">
     {% for movie in movies %}
       <li class="list-group-item">{{ movie.title }}</li>
+      <li class="list-group-item"><a>Продолжительность:{{ movie.duration }} минут</a></li>
+      <li><a href="{% url 'change_movie' movie.id %}" class="btn btn-primary">Изменить</a></li>
+      <li><a href="{% url 'delete_movie' movie.id %}" class="btn btn-danger">Удалить</a>
+        <li></li></li>
     {% endfor %}
   </ul>
   <a href="{% url 'create_movie' %}" class="btn btn-secondary">Создать новый фильм</a>

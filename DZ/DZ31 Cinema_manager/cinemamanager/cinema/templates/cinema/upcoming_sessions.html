@@ -4,8 +4,15 @@
   <h1>Ближайшие сеансы</h1>
   <ul class="list-group">
     {% for session in sessions %}
-      <li class="list-group-item">{{ session.movie.title }} - {{ session.start_time }}</li>
+      <li class="list-group-item">{{ session.movie.title }}</li>
+      <li class="list-group-item">{{ session.hall.name }}</li>
+      <li class="list-group-item">{{ session.total_seats|default:0 }} <a>Количество забронированных мест</a></li>
+      <li class="list-group-item"><a>Вместимость зала:</a>{{ session.hall.capacity }}</li>
+      <li><a href="{% url 'change_session' session.id %}" class="btn btn-primary">Изменить</a></li>
+      <li><a href="{% url 'create_booking' session.id %}" class="btn btn-primary">Забронировать сеанс</a></li>
+
     {% endfor %}
   </ul>
   <a href="{% url 'create_session' %}" class="btn btn-secondary">Создать новый сеанс</a>
 {% endblock %}
+
