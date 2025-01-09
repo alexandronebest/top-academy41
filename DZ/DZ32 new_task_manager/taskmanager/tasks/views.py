@@ -10,7 +10,7 @@ def index(request):
 @login_required
 def projects(request):
     projects_list = Project.objects.all()
-    return render(request, 'tasks/project/list.html', context={'projects': projects_list})
+    return render(request, 'project/list.html', context={'projects': projects_list})
 
 @login_required
 def performers(request):
