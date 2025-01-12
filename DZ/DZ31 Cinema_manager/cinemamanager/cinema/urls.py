@@ -12,5 +12,10 @@ urlpatterns = [
     path('change_movie/<int:movie_id>/', views.change_movie, name='change_movie'),
     path('change_session/<int:session_id>/', views.change_session, name='change_session'),
     path('delete_movie/<int:movie_id>/', views.delete_movie, name='delete_movie'),
-    path('sessions/<int:session_id>/book/', views.create_booking, name='create_booking'),  
+    path('sessions/<int:session_id>/book/', views.create_booking, name='create_booking'),
+    
+    path('register/', views.register, name='register'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+      
 ]

@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Session, Movie, Hall, Booking
 from .forms import MovieForm, HallForm, SessionForm, BookingForm
-
+from django.contrib.auth import login, authenticate, logout
+from django.contrib import messages
+from .forms import UserRegisterForm
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -21,6 +24,7 @@ def upcoming_sessions(request):
         session.booked_seats = session.booked_seats_count()
     return render(request, 'cinema/upcoming_sessions.html', {'sessions': sessions})
 
+@login_required
 def create_movie(request):
     if request.method == 'POST':
         form = MovieForm(request.POST)
@@ -93,4 +97,34 @@ def create_booking(request, session_id):
         form = BookingForm(initial={'session': session})  # Инициализируем форму с текущим сеансом
 
     return render(request, 'cinema/create_booking.html', {'form': form, 'session': session})
+
+#Добавим регистрацию:
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Аккаунт {username} успешно создан!')
+            return redirect('login')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'cinema/register.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('index')  # перенаправление на главную страницу после входа
+        else:
+            messages.error(request, 'Неправильное имя пользователя или пароль')
+    return render(request, 'cinema/login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('index')  # перенаправление на главную страницу после выхода
 
