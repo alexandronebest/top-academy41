@@ -67,16 +67,16 @@ class SignupForm(forms.ModelForm):
 
   class Meta:
     model = User
-    fields = ['firstname', 'lastname', 'username', 'email', 'password']
+    fields = ['first_name', 'last_name', 'username', 'email', 'password']
 
     widgets = {
-      'firstname': forms.TextInput(attrs={
+      'first_name': forms.TextInput(attrs={
         'class': 'form-control',
         'id': 'floatingTitle',
         'placeholder': 'Очень простая задача',
         'required': True
       }),
-      'lastname': forms.TextInput(attrs={
+      'last_name': forms.TextInput(attrs={
         'class': 'form-control',
         'id': 'floatingLastname',
         'aria-label': 'Фамилия',
