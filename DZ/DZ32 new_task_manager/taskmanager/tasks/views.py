@@ -1,30 +1,12 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Project, User, Task, TaskStatus
-from .forms import TaskForm, TaskCreateForm, ProjectForm, SignupForm
-
-def index(request):
-    return render(request, 'index.html')
-
-@login_required
-def projects(request):
-    projects_list = Project.objects.all()
-    return render(request, 'project/list.html', context={'projects': projects_list})
-
-@login_required
-def performers(request):
-    performers_list = User.objects.all()
-    return render(request, 'tasks/performers.html', context={'performers': performers_list})
-
-@login_required
-def tasks(request):
-    tasks_list = Task.objects.all()
-    return render(request, 'tasks/tasks.html', context={'tasks': tasks_list})
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from .models import Project, Task, TaskStatus
+from .forms import ProjectForm, TaskCreateForm, TaskForm, SignupForm
 
 @login_required
 def project(request, project_id):
-    project_view = Project.objects.get(pk=project_id)
+    project_view = get_object_or_404(Project, pk=project_id)  # Используем get_object_or_404 для обработки ошибок
     tasks_list = Task.objects.filter(project_id=project_id)
     return render(request, 'project/details.html', context={'project': project_view, 'tasks': tasks_list})
 
@@ -45,7 +27,7 @@ def create_task(request):
         form = TaskCreateForm(request.POST)
         if form.is_valid():
             task = form.save(commit=False)
-            task.status = TaskStatus.objects.get(name="Назначено")
+            task.status = TaskStatus.objects.get(name="Назначено")  # Убедитесь, что этот статус существует
             task.save()
             return redirect('tasks')
     else:
@@ -56,7 +38,7 @@ def create_task(request):
 
 @login_required
 def task(request, task_id):
-    task_view = Task.objects.get(pk=task_id)
+    task_view = get_object_or_404(Task, pk=task_id)  # Обрабатываем исключения
     if request.method == "POST":
         form = TaskForm(request.POST, instance=task_view)
         if form.is_valid():

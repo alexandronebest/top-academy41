@@ -127,4 +127,4 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('index')  # перенаправление на главную страницу после выхода
-
+ 

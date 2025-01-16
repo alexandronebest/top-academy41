@@ -8,8 +8,12 @@
       <li class="list-group-item"><a>Продолжительность:{{ movie.duration }} минут</a></li>
       <li><a href="{% url 'change_movie' movie.id %}" class="btn btn-primary">Изменить</a></li>
       <li><a href="{% url 'delete_movie' movie.id %}" class="btn btn-danger">Удалить</a>
-        <li></li></li>
+       </li>
     {% endfor %}
   </ul>
+  {% if user.is_authenticated %}
   <a href="{% url 'create_movie' %}" class="btn btn-secondary">Создать новый фильм</a>
+  {% else %}
+  <a href="{% url 'login' %}" class="btn btn-secondary">Войдите</a>
+  {% endif %}
 {% endblock %}
