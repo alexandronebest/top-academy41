@@ -1,5 +1,6 @@
+
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import Project, Task, User, TaskStatus
 
 admin.site.site_header = "Управление проектами"
@@ -18,8 +19,13 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'created_at')  # Поля для отображения в списке
 
 @admin.register(User)
-class UserAdmin(UserAdmin):
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
-    fieldsets = UserAdmin.fieldsets + (
-        ('Дополнительная информация', {'fields': ('first_name', 'last_name')}),
-        )
+class UserAdmin(BaseUserAdmin):  # Используем BaseUserAdmin как базовый класс
+    list_display = ('username', 'first_name', 'last_name', 'email', 'is_staff')  
+
+    # Определяем fieldsets без дублирования полей
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),  # Поля для аутентификации
+        ('Личная информация', {'fields': ('first_name', 'last_name', 'email')}),  # Личная информация
+        ('Права доступа', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),  # Права доступа
+        ('Даты', {'fields': ('last_login', 'date_joined')}),  # Даты
+    )
