@@ -1,37 +1,43 @@
 from django import forms
-from .models import Task, Project, User
+from .models import Task, Project, User, TaskStatus
 
 class TaskCreateForm(forms.ModelForm):
-  class Meta:
-    model = Task
-    fields = ['project', 'title', 'description', 'due_date']
-  
-    widgets = {
-      'project': forms.Select(attrs={
-        'class': 'form-select',
-        'id': 'floatingProjectSelect',
-        'aria-label': 'Выбор проекта для привязки задачи',
-        'required': True
-      }),
-      'title': forms.TextInput(attrs={
-        'class': 'form-control',
-        'id': 'floatingTitle',
-        'placeholder': 'Очень простая задача',
-        'required': True
-      }),
-      'description': forms.TextInput(attrs={
-        'class': 'form-control',
-        'id': 'floatingDescription',
-        'placeholder': 'Нужно сделать несколько пунктов...',
-        'required': True
-      }),
-      'due_date': forms.DateInput(attrs={
-        'class': 'form-control',
-        'id': 'floatingDueDate',
-        'type': 'date',
-        'required': True
-      }),
-    }
+    class Meta:
+        model = Task
+        fields = ['project', 'title', 'description', 'due_date', 'status']  # Добавляем 'status'
+
+        widgets = {
+            'project': forms.Select(attrs={
+                'class': 'form-select',
+                'id': 'floatingProjectSelect',
+                'aria-label': 'Выбор проекта для привязки задачи',
+                'required': True
+            }),
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'id': 'floatingTitle',
+                'placeholder': 'Очень простая задача',
+                'required': True
+            }),
+            'description': forms.TextInput(attrs={
+                'class': 'form-control',
+                'id': 'floatingDescription',
+                'placeholder': 'Нужно сделать несколько пунктов...',
+                'required': True
+            }),
+            'due_date': forms.DateInput(attrs={
+                'class': 'form-control',
+                'id': 'floatingDueDate',
+                'type': 'date',
+                'required': True
+            }),
+            'status': forms.Select(attrs={
+                'class': 'form-select',
+                'id': 'floatingStatusSelect',
+                'aria-label': 'Выбор статуса задачи',
+                'required': True
+            }),
+        }
 
 
 class TaskForm(forms.ModelForm):

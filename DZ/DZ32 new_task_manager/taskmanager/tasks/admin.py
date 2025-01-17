@@ -29,3 +29,10 @@ class UserAdmin(BaseUserAdmin):  # Используем BaseUserAdmin как б�
         ('Права доступа', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),  # Права доступа
         ('Даты', {'fields': ('last_login', 'date_joined')}),  # Даты
     )
+
+
+@admin.register(TaskStatus)
+class TaskStatusAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')  # Поля, которые будут отображаться в списке
+    search_fields = ('name',)  # Поля, по которым можно будет искать
+    list_filter = ('name',)  # Фильтры для списка

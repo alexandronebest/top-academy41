@@ -24,15 +24,25 @@ class User(AbstractUser):
            return self.username
 
 
-class TaskStatus(models.Model):
-       class Meta:
-           verbose_name = 'статус задачи'
-           verbose_name_plural = 'статусы задачи'
-       name = models.CharField(max_length=100, verbose_name='Название')
-       description = models.TextField(verbose_name='Описание')
+# class TaskStatus(models.Model):
+#        class Meta:
+#            verbose_name = 'статус задачи'
+#            verbose_name_plural = 'статусы задачи'
+#        name = models.CharField(max_length=100, verbose_name='Название')
+#        description = models.TextField(verbose_name='Описание')
 
-       def __str__(self):
-           return self.name  
+#        def __str__(self):
+#            return self.name  
+class TaskStatus(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Название')
+    description = models.TextField(verbose_name='Описание')
+
+    class Meta:
+        verbose_name = 'Статус задачи'
+        verbose_name_plural = 'Статусы задачи'
+
+    def __str__(self):
+        return self.name
 
 
 class Task(models.Model):
@@ -41,7 +51,9 @@ class Task(models.Model):
            verbose_name_plural = 'задачи'
        title = models.CharField(max_length=100, verbose_name='Название')
        description = models.TextField(verbose_name='Описание')
-       status = models.ForeignKey(TaskStatus, on_delete=models.PROTECT, verbose_name='Статус')
+       status = models.ForeignKey(TaskStatus, on_delete=models.SET_NULL, null=True, 
+    verbose_name='Статус задачи')
+    #    status = models.ForeignKey(TaskStatus, on_delete=models.PROTECT, verbose_name='Статус')
        created_at = models.DateTimeField(auto_now_add=True, verbose_name='Создана')
        due_date = models.DateField(verbose_name='Срок выполнения')
        project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='Проект')
