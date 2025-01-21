@@ -1,6 +1,10 @@
 from django.contrib import admin
 from .models import Movie, Hall, Session, Booking
 
+admin.site.site_header = "Управление кинотеатром"
+admin.site.site_title = "Админка Cinema Manager"
+admin.site.index_title = "Добро пожаловать в Cinema Manager"
+
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
