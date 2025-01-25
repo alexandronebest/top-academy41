@@ -1,0 +1,403 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #cac4c4;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Styles for header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #222;
+    color: #fff;
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.site-title h1 {
+    font-family: 'Tangerine', serif;/*подключил текст из гугла */
+    margin: 0 20px 0 10px; /* Добавлено поле для отделения от кнопки меню и строки поиска. */
+    font-size: 24px;
+    font-weight: bold;
+    color: green;
+}
+
+/* Search container */
+.search-container {
+    flex: 1; /* Позволяет строке поиска занимать доступное пространство */
+    max-width: 300px; /* Необязательно: устанавливает максимальную ширину для строки поиска. */
+    position: relative;
+    margin: 0 20px;
+}
+
+#search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#search-button {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#search-button:hover {
+    color: #000;
+}
+
+/* User info section */
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+#username {
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+#login-logout {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+#login-logout:hover {
+    background-color: #45a049;
+}
+
+/* Styles for player-section */
+.player-section {
+    padding: 20px;
+    background-color: #fff;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.player p {
+    text-align: center;
+    font-size: 16px;
+    color: #555;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #222;
+    color: green;
+    padding: 15px 20px;
+    height: 60px; /* высота */
+}
+
+/* Optional: Стили для ссылок и кнопок нижнего колонтитула */
+.footer-left, .footer-right {
+    display: flex;
+    align-items: center;
+}
+
+.social-icon {
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+}
+
+.contact-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.contact-button:hover {
+    background-color: #45a049;
+}
+
+/* Дополнительно: стили для социальных ссылок */
+.social-link {
+    margin-right: 8px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #222;
+    color: #fff;
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+ /*КСС КНОПКИ МЕНЮ*/
+ .hamburger{
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #0E7318;
+    background: #fff;
+    padding: 5px;
+    border-radius: 8px;
+  }
+  .btn__hamb{
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 4px;
+    background: #0E7318;
+    cursor: pointer;
+    div{
+      width: 100%;
+      height: 100%;
+    }
+    &:before, &:after{
+      content: "";
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      background: #0E7318;
+    }
+    &:before{
+      top: -8px;
+    }
+    &:after{
+      top: 8px;
+    }
+  }
+  /*КСС КНОПКИ МЕНЮ*/
+
+.site-title h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+#username {
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+#login-logout {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+#login-logout:hover {
+    background-color: #45a049;
+}
+
+/* Стили для player-section */
+.player-section {
+    padding: 20px;
+    background-color: #fff;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.player p {
+    text-align: center;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Стили для main */
+main {
+    padding: 15px;
+}
+
+.category {
+    margin-bottom: 30px;
+}
+
+.category h2 {
+    margin-bottom: 15px;
+    font-size: 22px;
+    border-bottom: 2px solid #4CAF50;
+    display: inline-block;
+    padding-bottom: 3px;
+}
+
+.songs-container {
+    position: relative;
+    overflow: hidden;
+}
+
+ .songs {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 15px;
+    padding: 8px 0;
+}
+
+.song-item {
+    flex: 0 0 auto;
+    width: 180px;
+    text-align: center;
+    background-color: #fff;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+} 
+
+
+
+.song-item:hover {
+    transform: translateY(-5px);
+}
+
+.song-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.song-title {
+    font-size: 16px;
+    margin: 8px 0 3px 0;
+    color: #333;
+}
+
+.song-author {
+    font-size: 12px;
+    color: #777;
+}
+
+.buy-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.buy-button:hover {
+    background-color: #388e3c;
+}
+
+/* Стили для scroll-button */
+.scroll-button {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    transition: background-color 0.3s ease;
+}
+
+.scroll-button.left {
+    left: 10px;
+}
+
+.scroll-button.right {
+    right: 10px;
+}
+
+.scroll-button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Стили для footer */
+footer {
+    font-family: 'Tangerine', serif;/*подключил текст из гугла */
+    font-size: 33px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #222;
+    color: green;
+    padding: 15px 20px;
+}
+
+.footer-left, .footer-right {
+    display: flex;
+    align-items: center;
+}
+
+.social-icon {
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+}
+
+.contact-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.contact-button:hover {
+    background-color: #45a049;
+}
+
+/* Стили для социальных ссылок */
+.social-link {
+    margin-right: 8px;
+} 
