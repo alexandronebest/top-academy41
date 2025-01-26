@@ -1,0 +1,101 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Секция с плеером -->
+<section class="player-section">
+    <div class="player">
+        <p>Здесь будет плеер</p>
+    </div>
+</section>
+
+<!-- Основное содержимое страницы -->
+<main>
+    <!-- Пример категории "Топ этого месяца" -->
+    <section class="category">
+        <h2>Топ месяца</h2>
+        <div class="songs-container">
+            <!-- Кнопка для прокрутки влево -->
+            <button class="scroll-button left" onclick="scrollSongs('left', 'top-songs')">&#10094;</button>
+            <!-- Контейнер для песен -->
+            <div class="songs" id="top-songs">
+                <!-- Пример добавления песни -->
+                <div class="song-item">
+                    <img src="{% static 'music_img.jpeg' %}" alt="Песня 1" class="song-image">
+                    <h3 class="song-title">Краски</h3>
+                    <p class="song-author">Автор Песни 1</p>
+                    <button class="buy-button">100 руб.</button>
+                </div>
+                <!-- Добавьте остальные песни -->
+            </div>
+            <!-- Кнопка для прокрутки вправо -->
+            <button class="scroll-button right" onclick="scrollSongs('right', 'top-songs')">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- Пример категории "Новинки" -->
+    <section class="category">
+        <h2>Новинки</h2>
+        <div class="songs-container">
+            <!-- Кнопка для прокрутки влево -->
+            <button class="scroll-button left" onclick="scrollSongs('left', 'new-songs')">&#10094;</button>
+            <!-- Контейнер для песен -->
+            <div class="songs" id="new-songs">
+                <!-- Добавьте песни -->
+                <div class="song-item">
+                    <img src="{% static 'music_img10.jpeg' %}" alt="Песня 2" class="song-image">
+                    <h3 class="song-title">Название Песни</h3>
+                    <p class="song-author">Автор Песни</p>
+                    <button class="buy-button">200 руб.</button>
+                </div>
+                <!-- Добавьте остальные песни -->
+            </div>
+            <!-- Кнопка для прокрутки вправо -->
+            <button class="scroll-button right" onclick="scrollSongs('right', 'new-songs')">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- Новый блок "Исполнители" -->
+    <section class="category">
+        <h2>Исполнители</h2>
+        <div class="songs-container">
+            <!-- Кнопка для прокрутки влево -->
+            <button class="scroll-button left" onclick="scrollSongs('left', 'artists')">&#10094;</button>
+            <!-- Контейнер для исполнителей -->
+            <div class="songs" id="artists">
+                <!-- Пример добавления исполнителя -->
+                <div class="song-item">
+                    <img src="{% static 'artist1.jpg' %}" alt="Исполнитель 1" class="song-image">
+                    <h3 class="song-title">Имя Исполнителя 1</h3>
+                    <p class="song-author">Жанр Исполнителя 1</p>
+                </div>
+                <!-- Добавьте остальные исполнители -->
+            </div>
+            <!-- Кнопка для прокрутки вправо -->
+            <button class="scroll-button right" onclick="scrollSongs('right', 'artists')">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- Новый блок "Жанры" -->
+    <section class="category">
+        <h2>Жанры</h2>
+        <div class="songs-container">
+            <!-- Кнопка для прокрутки влево -->
+            <button class="scroll-button left" onclick="scrollSongs('left', 'genres')">&#10094;</button>
+            <!-- Контейнер для жанров -->
+            <div class="songs" id="genres">
+                <!-- Пример добавления жанра -->
+                <div class="song-item">
+                    <h3 class="song-title">Название Жанра 1</h3>
+                    <p class="song-author">Описание Жанра 1</p>
+                </div>
+                <!-- Добавьте остальные жанры -->
+            </div>
+            <!-- Кнопка для прокрутки вправо -->
+            <button class="scroll-button right" onclick="scrollSongs('right', 'genres')">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- Повторите для других категорий -->
+</main>
+{% endblock %}

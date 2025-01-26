@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
+    <!-- Стиль макондо-->
+    <link rel="preconnect" href="https://fonts.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Macondo&family=Oswald:wght@200..700&family=Playwrite+IN:wght@100..400&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beat Store</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+    {% include 'store/header.html' %}
+    
+    
+    
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+    {% include 'store/footer.html' %}
+    
+    <script>
+        function scrollSongs(direction, containerId) {
+            const container = document.getElementById(containerId);
+            const scrollAmount = 300; // Настройте это значение по своему усмотрению
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>
