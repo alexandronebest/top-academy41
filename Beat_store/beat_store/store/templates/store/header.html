@@ -1,31 +1,39 @@
 <header>
-    <!-- Левая часть шапки: кнопка меню и название магазина -->
-    <div class="header-left">
-        <!-- Кнопка меню для мобильных устройств -->
-        <button class="hamburger" id="mobile-menu-btn">
-            <div class="btn__hamb">
-                <div></div>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <!-- Левая часть: название сайта -->
+            <a class="navbar-brand me-auto" href="#">Beat Store</a>
+
+            <!-- Центральная часть: поисковая строка -->
+            <form class="d-flex mx-auto" role="search">
+                <input class="form-control me-2" type="search" placeholder="Поиск музыки..." aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Поиск</button>
+            </form>
+
+            <!-- Правая часть: имя пользователя, кнопка входа и кнопка гамбургер -->
+            <div class="d-flex align-items-center ms-auto">
+                <span class="navbar-text me-3 text-white">Имя Пользователя</span>
+                <button id="login-logout" class="btn btn-success me-3">Вход</button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
+                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
             </div>
-        </button>
-        <!-- Название магазина -->
-        <div class="site-title">
-            <h1>Beat Store</h1>
+
+            <!-- Меню навигации -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">О нас</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Контакты</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-
-    <!-- Поисковая строка -->
-    <div class="search-container">
-        <!-- Поле ввода для поиска -->
-        <input type="text" id="search-input" placeholder="Поиск музыки...">
-        <!-- Кнопка для отправки поискового запроса -->
-        <button id="search-button" class="btn">🔍</button>
-    </div>
-
-    <!-- Информация о пользователе -->
-    <div class="user-info">
-        <!-- Имя пользователя -->
-        <span id="username">Имя Пользователя</span>
-        <!-- Кнопка для входа/выхода -->
-        <button id="login-logout" class="btn">Вход</button>
-    </div>
+    </nav>
 </header>

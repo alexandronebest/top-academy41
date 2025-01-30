@@ -1,227 +1,56 @@
+/* Общие стили для всех элементов */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Общие стили для body */
 body {
     margin: 0;
-    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    подключил стиль макондо*/
-    font-family: "Playwrite IN", serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #cac4c4;
     color: #333;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
+/* Стили для header */
+.navbar {
+    position: relative; /* Устанавливаем относительное позиционирование для навигационной панели */
+    padding: 0.5rem 1rem;
+    background-color: #333;
+    width: 100%;
 }
 
-/* Styles for header */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #222;
-    color: #fff;
-    padding: 10px 20px;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-
-.header-left {
-    display: flex;
-    align-items: center;
-}
-
-.site-title h1 {
-    font-family: 'Tangerine', serif;/*подключил текст из гугла */
-    margin: 0 20px 0 10px; /* Добавлено поле для отделения от кнопки меню и строки поиска. */
-    font-size: 24px;
+.navbar-brand {
+    font-size: 1.5rem;
     font-weight: bold;
     color: green;
+    margin-right: auto;
 }
 
-/* Search container */
-.search-container {
-    flex: 1; /* Позволяет строке поиска занимать доступное пространство */
-    max-width: 300px; /* Необязательно: устанавливает максимальную ширину для строки поиска. */
-    position: relative;
-    margin: 0 20px;
+.navbar-brand:hover {
+    color: #fff;
 }
 
-#search-input {
+/* Центральная часть: поисковая строка */
+form.d-flex {
+    max-width: 400px;
     width: 100%;
-    padding: 8px 12px;
+    margin: 0 auto;
+}
+
+form.d-flex .form-control,
+form.d-flex .btn {
     border: none;
     border-radius: 4px;
     font-size: 14px;
+    padding: 0.375rem 0.75rem;
 }
 
-#search-button {
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #555;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#search-button:hover {
-    color: #000;
-}
-
-/* User info section */
-.user-info {
-    display: flex;
-    align-items: center;
-}
-
-#username {
-    margin-right: 10px;
-    font-size: 14px;
-}
-
-#login-logout {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-}
-
-#login-logout:hover {
-    background-color: #45a049;
-}
-
-/* Styles for player-section */
-.player-section {
-    padding: 20px;
-    background-color: #fff;
-    margin: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.player p {
-    text-align: center;
-    font-size: 16px;
-    color: #555;
-}
-
-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #222;
-    color: green;
-    padding: 15px 20px;
-    height: 60px; /* высота */
-}
-
-/* Optional: Стили для ссылок и кнопок нижнего колонтитула */
-.footer-left, .footer-right {
-    display: flex;
-    align-items: center;
-}
-
-.social-icon {
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
-}
-
-.contact-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-}
-
-.contact-button:hover {
-    background-color: #45a049;
-}
-
-/* Дополнительно: стили для социальных ссылок */
-.social-link {
-    margin-right: 8px;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #222;
+/* Правая часть: имя пользователя и кнопка входа */
+.navbar-text {
+    margin-right: 1rem;
     color: #fff;
-    padding: 10px 20px;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
- /*КСС КНОПКИ МЕНЮ*/
- .hamburger{
-    position: relative;
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border: 1px solid #0E7318;
-    background: #fff;
-    padding: 5px;
-    border-radius: 8px;
-  }
-  .btn__hamb{
-    position: relative;
-    display: block;
-    width: 100%;
-    height: 4px;
-    background: #0E7318;
-    cursor: pointer;
-    div{
-      width: 100%;
-      height: 100%;
-    }
-    &:before, &:after{
-      content: "";
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      left: 0;
-      background: #0E7318;
-    }
-    &:before{
-      top: -8px;
-    }
-    &:after{
-      top: 8px;
-    }
-  }
-  /*КСС КНОПКИ МЕНЮ*/
-
-.site-title h1 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: bold;
-    font-size: 45;
-    
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-}
-
-#username {
-    margin-right: 10px;
     font-size: 14px;
 }
 
@@ -234,10 +63,83 @@ header {
     border-radius: 5px;
     font-size: 14px;
     transition: background-color 0.3s ease;
+    margin-right: 1rem;
 }
 
 #login-logout:hover {
     background-color: #45a049;
+}
+
+/* Кнопка гамбургера */
+.navbar-toggler {
+    border: none;
+    padding: 0.25rem 0.5rem;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.navbar-toggler:hover .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(76, 175, 80, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    /* Показываем кнопку гамбургера на мобильных устройствах */
+    .navbar-toggler {
+        display: block;
+    }
+
+    /* Скрываем имя пользователя и кнопку входа на мобильных устройствах */
+    .navbar-text,
+    #login-logout {
+        display: none;
+    }
+
+    /* Стили для меню навигации на мобильных устройствах */
+    .navbar-collapse {
+        display: none; /* Скрываем меню по умолчанию */
+        position: absolute; /* Абсолютное позиционирование для меню */
+        top: 100%; /* Позиционируем меню непосредственно под навигационной панелью */
+        left: 0; /* Позиционируем меню по левому краю */
+        right: 0; /* Задаем правый край, чтобы ширина была нормальной и зависела от содержимого */
+        margin-left: calc(50% - 100px); /* Смещение влево для центрирования */
+        width: 200px; /* Устанавливаем ширину меню */
+        background-color: #333;
+        border: 1px solid #fff;
+        border-top: none;
+        border-radius: 0 0 5px 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    /* Показываем меню при добавлении класса 'show' */
+    .navbar-nav {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Можно оставить как flex-start для выравнивания */
+        
+    }
+
+    .navbar-nav .nav-link,
+    .navbar-nav .btn {
+        color: #fff;
+        padding: 10px 20px;
+        width: 100%; /* Задаем ширину 100% */
+        text-align: left; /* Выравниваем текст по левому краю */
+    }
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .btn:hover {
+        background-color: #4CAF50;
+    }
+}
+
+/* Стили для основного контента */
+main {
+    padding: 15px;
+    
 }
 
 /* Стили для player-section */
@@ -246,7 +148,7 @@ header {
     background-color: #fff;
     margin: 10px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(246, 107, 107, 0.1);
 }
 
 .player p {
@@ -255,13 +157,10 @@ header {
     color: #555;
 }
 
-/* Стили для main */
-main {
-    padding: 15px;
-}
-
+/* Дополнительные стили для категорий и песен */
 .category {
     margin-bottom: 30px;
+    
 }
 
 .category h2 {
@@ -277,7 +176,7 @@ main {
     overflow: hidden;
 }
 
- .songs {
+.songs {
     display: flex;
     overflow-x: auto;
     scroll-behavior: smooth;
@@ -292,12 +191,9 @@ main {
     background-color: #fff;
     padding: 8px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
-    
-} 
-
-
+}
 
 .song-item:hover {
     transform: translateY(-5px);
@@ -316,8 +212,9 @@ main {
 }
 
 .song-author {
-    font-size: 12px;
-    color: #777;
+    font-size: 14px; /* Добавлена строка */
+    color: #888; /* Добавлена строка */
+    margin-bottom: 5px; /* Добавлена строка */
 }
 
 .buy-button {
@@ -365,7 +262,7 @@ main {
 
 /* Стили для footer */
 footer {
-    font-family: 'Tangerine', serif;/*подключил текст из гугла */
+    font-family: 'Tangerine', serif;
     font-size: 33px;
     display: flex;
     justify-content: space-between;
@@ -375,7 +272,8 @@ footer {
     padding: 15px 20px;
 }
 
-.footer-left, .footer-right {
+.footer-left, 
+.footer-right {
     display: flex;
     align-items: center;
 }
@@ -404,4 +302,6 @@ footer {
 /* Стили для социальных ссылок */
 .social-link {
     margin-right: 8px;
-} 
+}
+
+    
