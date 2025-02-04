@@ -1,283 +1,303 @@
 :root {
-    --primary-color: #4CAF50;
-    --dark-bg: #1a1a1a;
-    --light-bg: #f5f5f5;
-    --text-dark: #333;
-    --text-light: #fff;
-    --transition: all 0.3s ease;
-  }
-  
-  /* Global Styles */
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  body {
-    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--light-bg);
-    color: var(--text-dark);
-    line-height: 1.6;
-  }
-  
-  /* Improved Navbar */
+  --footer-bg: #1a1a1a;
+  --primary-color: #4CAF50;
+  --dark-bg: #1a1a1a;
+  --light-bg: #f5f5f5;
+  --text-dark: #333;
+  --text-light: #fff;
+  --transition: all 0.3s ease;
+}
+
+.footer {
+  background: var(--footer-bg);
+  color: white;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+/* Global Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Footer Brand */
+.footer-brand {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  transition: var(--transition);
+}
+
+.footer-brand:hover {
+  color: var(--text-light);
+  transform: scale(1.05);
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--light-bg);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+/* Improved Navbar */
+.navbar {
+  background-color: var(--dark-bg);
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-brand {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  transition: var(--transition);
+}
+
+.navbar-brand:hover {
+  color: var(--text-light);
+  transform: scale(1.05);
+}
+
+/* Search Form */
+.search-form {
+  max-width: 500px;
+  width: 100%;
+  margin: 0 2rem;
+}
+
+.search-input {
+  border-radius: 25px;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--primary-color);
+  transition: var(--transition);
+}
+
+.search-input:focus {
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+}
+
+/* Auth Section */
+.auth-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.username {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.auth-btn {
+  background-color: var(--primary-color);
+  padding: 0.5rem 1.25rem;
+  border-radius: 25px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.auth-btn:hover {
+  background-color: #388e3c;
+  transform: translateY(-2px);
+}
+
+/* Mobile Menu */
+@media (max-width: 992px) {
   .navbar {
-    background-color: var(--dark-bg);
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
-  
-  .navbar-brand {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    transition: var(--transition);
-  }
-  
-  .navbar-brand:hover {
-    color: var(--text-light);
-    transform: scale(1.05);
-  }
-  
-  /* Search Form */
-  .search-form {
-    max-width: 500px;
-    width: 100%;
-    margin: 0 2rem;
-  }
-  
-  .search-input {
-    border-radius: 25px;
-    padding: 0.75rem 1.5rem;
-    border: 2px solid var(--primary-color);
-    transition: var(--transition);
-  }
-  
-  .search-input:focus {
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
-  }
-  
-  /* Auth Section */
-  .auth-section {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  
-  .username {
-    color: var(--text-light);
-    font-weight: 500;
-  }
-  
-  .auth-btn {
-    background-color: var(--primary-color);
-    padding: 0.5rem 1.25rem;
-    border-radius: 25px;
-    font-weight: 500;
-    transition: var(--transition);
-  }
-  
-  .auth-btn:hover {
-    background-color: #388e3c;
-    transform: translateY(-2px);
-  }
-  
-  /* Mobile Menu */
-  @media (max-width: 992px) {
-    .navbar {
-      padding: 1rem;
-    }
-    
-    .navbar-collapse {
-      position: fixed;
-      top: 60px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      background: var(--dark-bg);
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-  
-    .navbar-nav {
-      padding: 1rem;
-    }
-  
-    .nav-link {
-      padding: 1rem;
-      border-radius: 8px;
-      margin: 0.5rem 0;
-    }
-  }
-  
-  /* Main Content */
-  main {
-    padding: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-  
-  /* Category Section */
-  .category {
-    margin: 3rem 0;
-  }
-  
-  .category-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-  }
-  
-  .category-title {
-    font-size: 1.75rem;
-    color: var(--text-dark);
-    position: relative;
-    padding-bottom: 0.5rem;
-  }
-  
-  .category-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 50px;
-    height: 3px;
-    background: var(--primary-color);
-  }
-  
-  /* Songs Container */
-  .songs-container {
-    position: relative;
-    padding: 1rem 0;
-  }
-  
-
-
-/* Установка одинакового размера для картинок */
-.song-image {
-    width: 180px;
-    height: 180px;
-    object-fit: cover;
-}
-
-/* Установка отступов между карточками */
-.songs-list {
-    display: flex;
-    gap: 2rem;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding: 1rem 0;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-  
-  .songs-list::-webkit-scrollbar {
-    display: none;
-  }
-  
-  /* Song Card */
-  /* Установка одинаковой ширины для карточек */
-.song-card {
-    flex: 0 0 220px;
-    background: var(--text-light);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: var(--transition);
-}
-
-/* Отзывчивость для маленьких экранов */
-@media (max-width: 600px) {
-    .song-card {
-        flex: 0 0 45%;
-    }
-}
-  
-  .song-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  }
-  
-
-  
-  .song-info {
     padding: 1rem;
   }
   
-  .song-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    text-align: center;
-}
-  
-.song-artist {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-    text-align: center;
-}
-  
-  /* Player Section */
-  .player-section {
+  .navbar-collapse {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--text-light);
-    padding: 1rem 2rem;
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Footer */
-  .footer {
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
     background: var(--dark-bg);
-    color: var(--text-light);
-    padding: 2rem;
-    margin-top: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   }
-  
-  .footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1400px;
-    margin: 0 auto;
+
+  .navbar-nav {
+    padding: 1rem;
   }
-  
-  .social-links {
-    display: flex;
-    gap: 1.5rem;
+
+  .nav-link {
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0.5rem 0;
   }
-  
-  .social-icon {
-    width: 30px;
-    height: 30px;
-    transition: var(--transition);
-  }
-  
-  .social-icon:hover {
-    transform: translateY(-3px);
-    opacity: 0.8;
-  }
-  
-  /* Utility Classes */
-  .scroll-button {
-    background: var(--text-light);
-    color: var(--primary-color);
-    width: 40px;
-    height: 40px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .scroll-button:hover {
-    background: var(--primary-color);
-    color: var(--text-light);
-  }
+}
+
+/* Main Content */
+main {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Category Section */
+.category {
+  margin: 3rem 0;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.category-title {
+  font-size: 1.75rem;
+  color: var(--text-dark);
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.category-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: var(--primary-color);
+}
+
+/* Songs Container */
+.songs-container {
+  position: relative;
+  padding: 1rem 0;
+}
+
+/* Скрытие скроллбара */
+.songs {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.songs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Song Card */
+.song-item {
+  flex: 0 0 220px;
+  background: var(--text-light);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: var(--transition);
+}
+
+.song-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.song-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.song-info {
+  padding: 1rem;
+}
+
+.song-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.song-author {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.buy-button {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 25px;
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.buy-button:hover {
+  background-color: #388e3c;
+  transform: translateY(-2px);
+}
+
+/* Scroll Buttons */
+.scroll-button {
+  background: var(--text-light);
+  color: var(--primary-color);
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition);
+  z-index: 1000;
+}
+
+.scroll-button:hover {
+  background: var(--primary-color);
+  color: var(--text-light);
+}
+
+/* Social Icons */
+.social-icon {
+  width: 30px;
+  height: 30px;
+  transition: var(--transition);
+}
+
+.social-icon:hover {
+  transform: translateY(-3px);
+  opacity: 0.8;
+}
+
+/* Кнопка "Контактная Информация" в футере */
+.contact-button {
+  background-color: var(--footer-bg); /* Установите нужный цвет фона */
+  color: var(--text-light); /* Установите цвет текста */
+  border: none; /* Уберите границу, если она есть */
+  padding: 0.75rem 1.5rem; /* Установите внутренние отступы */
+  border-radius: 25px; /* Скруглите углы кнопки */
+  font-size: 1rem; /* Установите размер шрифта */
+  font-weight: 500; /* Установите жирность шрифта */
+  transition: var(--transition); /* Добавьте плавный переход для эффектов */
+  cursor: pointer; /* Измените курсор на указатель при наведении */
+}
+
+.contact-button:hover {
+  background-color: #388e3c; /* Измените цвет фона при наведении */
+  transform: translateY(-2px); /* Добавьте небольшое смещение вверх для эффекта */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Добавьте тень для эффекта */
+}
+.player-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(245, 245, 245, 0.9); /* Полупрозрачный светло-серый фон */
+  padding: 1rem 2rem;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
