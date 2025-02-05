@@ -1,6 +1,6 @@
 :root {
   --footer-bg: #1a1a1a;
-  --primary-color: #4CAF50;
+  --primary-color: #4CAF50; /* Ваш основной цвет */
   --dark-bg: #1a1a1a;
   --light-bg: #f5f5f5;
   --text-dark: #333;
@@ -8,12 +8,6 @@
   --transition: all 0.3s ease;
 }
 
-.footer {
-  background: var(--footer-bg);
-  color: white;
-  padding: 2rem;
-  margin-top: 2rem;
-}
 /* Global Styles */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -139,11 +133,12 @@ main {
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  padding-bottom: 200px; /* Отступ для предотвращения перекрытия контента плеером */
 }
 
 /* Category Section */
 .category {
-  margin: 3rem 0;
+  margin: 0.5rem 0;
 }
 
 .category-header {
@@ -275,29 +270,44 @@ main {
 
 /* Кнопка "Контактная Информация" в футере */
 .contact-button {
-  background-color: var(--footer-bg); /* Установите нужный цвет фона */
-  color: var(--text-light); /* Установите цвет текста */
-  border: none; /* Уберите границу, если она есть */
-  padding: 0.75rem 1.5rem; /* Установите внутренние отступы */
-  border-radius: 25px; /* Скруглите углы кнопки */
-  font-size: 1rem; /* Установите размер шрифта */
-  font-weight: 500; /* Установите жирность шрифта */
-  transition: var(--transition); /* Добавьте плавный переход для эффектов */
-  cursor: pointer; /* Измените курсор на указатель при наведении */
+  background-color: var(--dark-bg);
+  color: var(--text-light);
+  border: none;
+  padding: 0.5rem 1rem; /* Уменьшенные внутренние отступы */
+  border-radius: 25px;
+  font-size: 0.9rem; /* Уменьшенный размер шрифта */
+  font-weight: 500;
+  transition: var(--transition);
+  cursor: pointer;
+  margin-bottom: 2rem; /* Отступ снизу для создания расстояния между кнопкой и плеером */
 }
 
 .contact-button:hover {
-  background-color: #388e3c; /* Измените цвет фона при наведении */
-  transform: translateY(-2px); /* Добавьте небольшое смещение вверх для эффекта */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Добавьте тень для эффекта */
+  background-color: var(--primary-color); /* Сохраняем тот же цвет при наведении */
+  transform: translateY(-2px); /* Небольшое смещение вверх для эффекта */
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4); /* Добавление тени для визуального эффекта */
 }
+
+/* Футер */
+.footer {
+  background: var(--footer-bg);
+  color: var(--text-light);
+  padding: 2rem;
+  margin-top: 2rem;
+  position: relative;
+  z-index: 900;
+}
+
+/* Секция с плеером */
 .player-section {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(245, 245, 245, 0.9); /* Полупрозрачный светло-серый фон */
+  background: var(--light-bg);
   padding: 1rem 2rem;
   box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  color: var(--dark-bg);
+  
 }
