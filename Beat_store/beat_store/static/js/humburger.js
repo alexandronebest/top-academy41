@@ -1,10 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const hamburger = document.querySelector('.navbar-toggler');
-    const navbarContent = document.getElementById('navbarNav');
+document.addEventListener('DOMContentLoaded', function () {
+    const navbarToggler = document.querySelector('.navbar-toggler');
+    const navbarCollapse = document.querySelector('.navbar-collapse');
 
-    if (hamburger && navbarContent) {
-        hamburger.addEventListener('click', () => {
-            navbarContent.classList.toggle('show');
-        });
-    }
+    navbarToggler.addEventListener('click', function () {
+        navbarCollapse.classList.toggle('show');
+    });
 });
