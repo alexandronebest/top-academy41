@@ -135,7 +135,7 @@ main {
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding-bottom: 200px; /* Отступ для предотвращения перекрытия контента плеером */
+  padding-bottom: 10px; /* Отступ для предотвращения перекрытия контента плеером */
 }
 
 /* Category Section */
