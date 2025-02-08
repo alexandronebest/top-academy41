@@ -5,16 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beat Store</title>
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Ваш собственный CSS -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-    <!-- стили текста гугл фонтс -->
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Macondo&family=Oswald:wght@200..700&family=Playwrite+IN:wght@100..400&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
     {% include 'store/header.html' %}
@@ -28,80 +30,9 @@
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
     <script src="{% static 'js/hamburger.js' %}"></script>
-    <!-- Перетаскивание скроллбара -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Функция для обработки перетаскивания
-            function enableDragScroll(container) {
-                let isDown = false;
-                let startX;
-                let scrollLeft;
-        
-                // Для мыши
-                container.addEventListener('mousedown', (e) => {
-                    isDown = true;
-                    container.classList.add('active');
-                    startX = e.pageX - container.offsetLeft;
-                    scrollLeft = container.scrollLeft;
-                });
-        
-                container.addEventListener('mouseleave', () => {
-                    isDown = false;
-                    container.classList.remove('active');
-                });
-        
-                container.addEventListener('mouseup', () => {
-                    isDown = false;
-                    container.classList.remove('active');
-                });
-        
-                container.addEventListener('mousemove', (e) => {
-                    if (!isDown) return;
-                    e.preventDefault();
-                    const x = e.pageX - container.offsetLeft;
-                    const walk = (x - startX) * 2; // Множитель скорости прокрутки
-                    container.scrollLeft = scrollLeft - walk;
-                });
-        
-                // Для сенсорных устройств
-                let touchStartX;
-                let isSwiping = false;
-        
-                container.addEventListener('touchstart', (e) => {
-                    isSwiping = true;
-                    touchStartX = e.touches[0].pageX;
-                    scrollLeft = container.scrollLeft;
-                });
-        
-                container.addEventListener('touchend', () => {
-                    isSwiping = false;
-                });
-        
-                container.addEventListener('touchmove', (e) => {
-                    if (!isSwiping) return;
-                    e.preventDefault();
-                    const touchX = e.touches[0].pageX;
-                    const walk = (touchX - touchStartX) * 2;
-                    container.scrollLeft = scrollLeft - walk;
-                });
-            }
-        
-            // Применяем ко всем контейнерам с песнями
-            document.querySelectorAll('.songs').forEach(enableDragScroll);
-        });
-    </script>
-
-    <script>
-        function scrollSongs(direction, containerId) {
-            const container = document.getElementById(containerId);
-            const scrollAmount = 300; // Количество пикселей для прокрутки
-            if (direction === 'left') {
-                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            } else {
-                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            }
-        }
-    </script>
+    <script src="{% static 'js/scroll.js' %}"></script>
 </body>
 </html>

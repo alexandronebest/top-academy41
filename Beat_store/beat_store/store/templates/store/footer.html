@@ -1,40 +1,36 @@
 {% load static %}
-<footer class="footer mt-5">
+<footer class="footer">
     <div class="footer-container">
         <!-- Иконки социальных сетей -->
         <div class="footer-left d-flex justify-content-center mb-3">
-            <a href="#" class="social-link me-3">
-                <img src="{% static 'images/Logo_vk.png' %}" alt="Соцсеть 1" class="social-icon">
+            <a href="#" class="social-link mx-2">
+                <img src="{% static 'images/logo_telegram.png' %}" alt="Telegram" class="social-icon">
             </a>
-            <a href="#" class="social-link me-3">
-                <img src="{% static 'images/logo_telegram.png' %}" alt="Соцсеть 2" class="social-icon">
+            <a href="#" class="social-link mx-2">
+                <img src="{% static 'images/logo_vk.png' %}" alt="VK" class="social-icon">
             </a>
-            <a href="#" class="social-link me-3">
-                <img src="{% static 'images/logo_mail.png' %}" alt="Соцсеть 3" class="social-icon">
+            <a href="#" class="social-link mx-2">
+                <img src="{% static 'images/logo_mail.png' %}" alt="Mail" class="social-icon">
             </a>
-            <a href="#" class="social-link">
-                <img src="{% static 'images/logo_inst.png' %}" alt="Соцсеть 4" class="social-icon">
+            <a href="#" class="social-link mx-2">
+                <img src="{% static 'images/logo_inst.png' %}" alt="Instagram" class="social-icon">
             </a>
         </div>
-
-        <!-- Название сайта -->
+        
+        <!-- Остальная часть футера -->
         <div class="footer-center text-center mb-3">
             <h3 class="footer-brand">Beat Store</h3>
         </div>
-
-        <!-- Кнопка "Контактная Информация" -->
+        
         <div class="footer-right d-flex justify-content-center mb-3">
-            <button class="contact-button btn btn-info">Контактная Информация</button>
+            <button class="contact-button btn" data-bs-toggle="modal" data-bs-target="#contactModal">Контактная Информация</button>
         </div>
-
-        <!-- Плеер -->
+        
         <div class="player-section">
-            <div class="player">
-                <audio controls>
-                    <source src="{% static 'audio/song.mp3' %}" type="audio/mpeg">
-                    Ваш браузер не поддерживает аудио элемент.
-                </audio>
-            </div>
+            <audio controls>
+                <source src="{% static 'audio/song.mp3' %}" type="audio/mpeg">
+                Ваш браузер не поддерживает аудио элемент.
+            </audio>
         </div>
     </div>
 </footer>
