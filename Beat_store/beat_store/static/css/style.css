@@ -1,3 +1,4 @@
+/* Глобальные стили */
 :root {
   --footer-bg: #1a1a1a;
   --primary-color: #4CAF50; /* Основной цвет */
@@ -8,12 +9,69 @@
   --transition: all 0.3s ease;
 }
 
-/* Global Styles */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-family: "Oswald", serif;
+}
+
+/* Медиа-запрос для мобильных устройств */
+@media (max-width: 767px) {
+  .navbar {
+    flex-wrap: wrap;
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar-brand {
+    margin-right: auto;
+  }
+
+  .search-form {
+    order: 1;
+    flex: 1 1 100%;
+    margin: 0.5rem 0;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+
+  
+  .auth-section {
+    display: flex;
+    align-items:self-end;
+    margin-right: 0.5rem; 
+}
+
+  .navbar-buttons {
+    order: 3;
+    display: flex;
+    align-items: center;
+  }
+
+
+
+  .navbar-toggler {
+    margin-right: 5px; 
+    border: none;
+    padding: 0.25rem 0.5rem;
+}
+
+  /* Меню */
+  .collapse.navbar-collapse {
+    flex: 1 1 100%;
+    margin-top: 1rem;
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+  }
+
+  .navbar-nav .nav-item {
+    margin-bottom: 0.5rem;
+  }
 }
 
 /* Footer */
@@ -32,6 +90,7 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+
 .footer-center-right {
   display: flex;
   flex-direction: column;
@@ -86,13 +145,10 @@
   opacity: 0.8;
 }
 
-
-
 /* Footer Right */
 .footer-right {
   display: flex;
   justify-content: center;
-  
 }
 
 /* Contact Button */
@@ -134,7 +190,7 @@
 .auth-section {
   display: flex;
   align-items: center;
-  margin-right: 1rem;
+  margin-right: 0;
 }
 
 .auth-btn {
@@ -157,18 +213,26 @@
 
 /* Кнопка бургер-меню */
 .navbar-toggler {
-  margin-right: 10px;
+  margin-right: 5px;
   border: none;
   padding: 0.25rem 0.5rem;
 }
 
-.navbar-traggler:focus {
+.navbar-toggler:focus {
   box-shadow: none;
 }
 
 .navbar-toggler-icon {
   width: 1.2em;
   height: 1.2em;
+}
+
+/* Кнопки бургер-меню и входа */
+.navbar-buttons {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 1rem;
 }
 
 /* Main Content */
@@ -231,8 +295,7 @@ main {
   padding: 5px;
 }
 
-
-
+/* Social Icons */
 .social-icon:hover {
   transform: translateY(-3px);
   opacity: 0.8;
@@ -284,3 +347,5 @@ main {
   margin: 0 auto;
   display: block;
 }
+
+
