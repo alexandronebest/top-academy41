@@ -1,6 +1,6 @@
 <header>
     <nav class="navbar navbar-dark bg-dark">
-        <div class="container-fluid">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
             <!-- Логотип -->
             <a class="navbar-brand footer-brand ms-3" href="{% url 'index' %}">Beat Store</a>
             
@@ -10,17 +10,18 @@
                 <button class="btn btn-outline-success" type="submit">Поиск</button>
             </form>
             
-            <!-- Кнопка входа (вынесена за пределы collapse) -->
-            <div class="auth-section d-flex align-items-center me-3">
-                <button id="login-logout" class="auth-btn btn btn-success">Вход</button>
+            <!-- Кнопки входа и бургер-меню -->
+            <div class="navbar-buttons d-flex align-items-center">
+                <!-- Кнопка входа -->
+                <button id="login-logout" class="auth-btn btn btn-success me-3">Вход</button>
+                
+                <!-- Кнопка бургер-меню -->
+                <button class="navbar-toggler" type="button" 
+                        data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
             </div>
-            
-            <!-- Кнопка бургер-меню -->
-            <button class="navbar-toggler" type="button" 
-                    data-bs-toggle="collapse" data-bs-target="#navbarContent"
-                    aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             
             <!-- Меню -->
             <div class="collapse navbar-collapse" id="navbarContent">
