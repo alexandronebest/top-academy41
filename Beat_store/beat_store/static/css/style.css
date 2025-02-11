@@ -15,52 +15,11 @@
   padding: 0;
 }
 
-/* Медиа-запрос для мобильных устройств */
-@media (max-width: 767px) {
-  .navbar {
-    flex-wrap: wrap;
-    padding: 0.5rem 1rem;
-  }
-
-  .navbar-brand {
-    margin-right: auto;
-  }
-
-  .search-form {
-    order: 1;
-    flex: 1 1 100%;
-    margin: 0.5rem 0;
-  }
-
-  .search-input {
-    width: 100%;
-  }
-
-  .navbar-buttons {
-    order: 2;
-    display: flex;
-    align-items: center;
-  }
-
-  .navbar-toggler {
-    margin-right: 5px; 
-    border: none;
-    padding: 0.25rem 0.5rem;
-  }
-
-  /* Меню */
-  .collapse.navbar-collapse {
-    flex: 1 1 100%;
-    margin-top: 1rem;
-  }
-
-  .navbar-nav {
-    flex-direction: column;
-  }
-
-  .navbar-nav .nav-item {
-    margin-bottom: 0.5rem;
-  }
+/* Основные стили для страницы */
+body {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  background-color: var(--light-bg);
+  color: var(--text-dark);
 }
 
 /* Footer */
@@ -70,9 +29,7 @@
   position: relative;
   z-index: 900; /* Ниже, чем у плеера, чтобы не перекрывался */
   overflow: hidden;
-  
 }
-
 
 .footer-container {
   display: flex;
@@ -107,9 +64,7 @@
   transition: var(--transition);
   cursor: pointer;
   margin-bottom: 0px; /* Отступ снизу для отделения от иконок */
-  /* Добавил ситили брендам */
   font-family: "Playwrite IN", serif;
-
 }
 
 .footer-brand:hover {
@@ -154,7 +109,7 @@
   border-radius: 25px;
   font-size: 1rem;
   font-weight: 500;
-  transition: var(--primary-color);
+  transition: background-color 0.3s ease;
   cursor: pointer;
   margin-top: 0px; /* Отступ сверху для отделения от других элементов */
   margin-bottom: 20px;
@@ -164,7 +119,6 @@
   background-color: #388e3c;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-  margin-top: 0;
 }
 
 /* Navbar */
@@ -195,7 +149,7 @@
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-light);
-  transition: var(--transition);
+  transition: background-color 0.3s ease;
   cursor: pointer;
 }
 
@@ -210,23 +164,37 @@
   margin-right: 5px;
   border: none;
   padding: 0.25rem 0.5rem;
+  z-index: 1050; /* Высокий z-index для отображения поверх других элементов */
 }
 
-.navbar-toggler:focus {
-  box-shadow: none;
+/* Offcanvas меню */
+.offcanvas {
+  background-color: var(--dark-bg);
+  color: var(--text-light);
 }
 
-.navbar-toggler-icon {
-  width: 1.2em;
-  height: 1.2em;
+.offcanvas-header {
+  border-bottom: 1px solid var(--text-light);
 }
 
-/* Кнопки бургер-меню и входа */
-.navbar-buttons {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  margin-right: 1rem;
+.offcanvas-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.offcanvas-body {
+  padding: 1rem;
+}
+
+.offcanvas .nav-link {
+  color: var(--text-light);
+  font-size: 1.2rem;
+  padding: 0.5rem 1rem;
+}
+
+.offcanvas .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
 }
 
 /* Main Content */
@@ -241,18 +209,20 @@ main {
 .search-form {
   margin: 0 1rem;
   position: relative;
+  
 }
 
 .search-input {
   border-radius: 25px;
   padding: 0.5rem 1rem;
   border: 2px solid var(--primary-color);
-  transition: var(--transition);
+  transition: border-color 0.3s ease;
   width: 100%;
 }
 
 .search-input:focus {
   box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+  border-color: var(--primary-color);
 }
 
 /* Category Section */
@@ -262,17 +232,29 @@ main {
 
 /* Songs Container */
 .songs-container {
+  position: relative;
   user-select: none;
-  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 }
 
+.songs {
+  display: flex;
+  overflow: auto;
+  scrollbar-width: none; 
+  -ms-overflow-style: none;  
+}
+
+.songs::-webkit-scrollbar {
+  display: none; 
+}
+
+/* Song Item */
 .song-item {
   flex: 0 0 180px;
   background: var(--text-light);
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: var(--transition);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -288,12 +270,8 @@ main {
 .song-image {
   border-radius: 10%;
   padding: 5px;
-}
-
-/* Social Icons */
-.social-icon:hover {
-  transform: translateY(-3px);
-  opacity: 0.8;
+  max-width: 100%;
+  height: auto;
 }
 
 /* Scroll Buttons */
@@ -306,8 +284,19 @@ main {
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  transition: var(--transition);
+  transition: background-color 0.3s ease, color 0.3s ease;
   z-index: 1000;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.scroll-button.left {
+  left: 0;
+}
+
+.scroll-button.right {
+  right: 0;
 }
 
 .scroll-button:hover {
@@ -315,30 +304,40 @@ main {
   color: var(--text-light);
 }
 
-.songs {
-  scrollbar-width: none; 
-  -ms-overflow-style: none;  
+/* Buy Button */
+.buy-button {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px; /* Отступ сверху */
+  margin-bottom: 10px; /* Отступ снизу */
+  transition: background-color 0.3s ease;
 }
 
-.songs::-webkit-scrollbar {
-  display: none; 
+.buy-button:hover {
+  background-color: #388e3c;
 }
 
-/* Плеер */
-.player-section {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: var(--dark-bg);
-  padding: 0rem;
-  z-index: 1000; /* Высокий z-index для отображения над остальным контентом */
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Тень сверху для визуального разделения */
+/* Если кнопка находится внутри карточки товара */
+.product-card .buy-button {
+  margin-top: 10px; /* Уменьшенный отступ сверху внутри карточки */
+  margin-bottom: 10px; /* Уменьшенный отступ снизу внутри карточки */
 }
 
-.player-section audio {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  display: block;
+/* Текст с автоматическим уменьшением размера */
+.song-title, .song-author {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1rem; /* Базовый размер шрифта */
+}
+
+@media (max-width: 767px) {
+  .song-title, .song-author {
+    font-size: 0.8rem; /* Уменьшенный размер шрифта на мобильных устройствах */
+  }
 }
