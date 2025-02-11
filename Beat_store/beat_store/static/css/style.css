@@ -13,8 +13,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  /* font-family: "Oswald", serif; */
-  font-family: "Playwrite IN", serif;
 }
 
 /* Медиа-запрос для мобильных устройств */
@@ -72,7 +70,9 @@
   position: relative;
   z-index: 900; /* Ниже, чем у плеера, чтобы не перекрывался */
   overflow: hidden;
+  
 }
+
 
 .footer-container {
   display: flex;
@@ -95,7 +95,7 @@
 
 .footer-right {
   display: flex;
-  justify-content: center;
+  justify-content: center; 
   margin-top: 0.5rem; /* Уменьшенный отступ сверху */
 }
 
@@ -107,6 +107,9 @@
   transition: var(--transition);
   cursor: pointer;
   margin-bottom: 0px; /* Отступ снизу для отделения от иконок */
+  /* Добавил ситили брендам */
+  font-family: "Playwrite IN", serif;
+
 }
 
 .footer-brand:hover {
@@ -260,6 +263,7 @@ main {
 /* Songs Container */
 .songs-container {
   user-select: none;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 }
 
 .song-item {
