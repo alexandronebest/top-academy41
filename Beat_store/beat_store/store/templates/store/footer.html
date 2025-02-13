@@ -25,12 +25,13 @@
         <div class="footer-right d-flex justify-content-center mb-3">
             <button class="contact-button btn" data-bs-toggle="modal" data-bs-target="#contactModal">Контактная Информация</button>
         </div>
-        
-        <div class="player-section">
-            <audio controls>
-                <source src="{% static 'audio/song.mp3' %}" type="audio/mpeg">
-                Ваш браузер не поддерживает аудио элемент.
-            </audio>
-        </div>
     </div>
 </footer>
+
+<!-- Плеер -->
+<div class="player-section">
+    <audio controls>
+        <source src="{% static 'audio/song.mp3' %}" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио элемент.
+    </audio>
+</div>
