@@ -16,8 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from store.views import profile  # Импортируем только необходимые функции
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('store.urls')),
+    path('', include('store.urls')),  # Включаем URL-конфигурацию из приложения store
 ]

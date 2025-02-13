@@ -1,0 +1,49 @@
+/* Основные стили для страницы профиля */
+.profile-photo {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.profile-photo img {
+    border: 5px solid var(--primary-color);
+    border-radius: 50%;  /* Сделаем изображение круглым */
+    object-fit: cover;   /* Сохраняет пропорции изображения */
+}
+
+.music-section {
+    padding: 1rem;
+    background-color: var(--light-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.music-section h3 {
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.list-group-item {
+    background-color: var(--light-bg);
+    border: 1px solid var(--text-dark);
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+}
+
+.list-group-item .btn {
+    margin-left: 0.5rem;
+}
+
+/* Стили для модальных окон */
+.modal-content {
+    background-color: var(--light-bg);
+    border: 1px solid var(--text-dark);
+    border-radius: 10px;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--text-dark);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--text-dark);
+}

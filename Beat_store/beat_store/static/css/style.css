@@ -6,7 +6,7 @@
   --light-bg: #f5f5f5;
   --text-dark: #333;
   --text-light: #fff;
-  --close-button-color: #000000; /* Новый цвет для крестика закрытия */
+  --close-button-color: #070000; /* Новый цвет для крестика закрытия */
   --transition: all 0.3s ease;
 }
 
