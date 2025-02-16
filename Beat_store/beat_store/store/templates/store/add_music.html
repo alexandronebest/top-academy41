@@ -1,0 +1,25 @@
+<!-- store/templates/store/add_music.html -->
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Добавить Музыку{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/add_music.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2>Добавить Музыку</h2>
+<form class="add-music-form" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="author" class="form-label">Имя Автора</label>
+        <input type="text" class="form-control" id="author" name="author" value="{{ song.author }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="songTitle" class="form-label">Название Песни</label>
+        <input type="text" class="form-control" id="songTitle" name="songTitle" value="{{ song.title }}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Добавить</button>
+</form>
+{% endblock %}

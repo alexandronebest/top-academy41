@@ -1,3 +1,4 @@
+<!-- store/templates/store/base.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="ru">
@@ -12,16 +13,17 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playwrite+IN:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playwrite+IN:wght@400&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     
     <!-- Page-specific CSS -->
     {% block extra_css %}
     {% endblock %}
+    
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
     {% include 'store/header.html' %}

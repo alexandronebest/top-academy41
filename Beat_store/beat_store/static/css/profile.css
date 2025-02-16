@@ -1,4 +1,15 @@
+/* store/static/css/profile.css */
+
 /* Основные стили для страницы профиля */
+body {
+    background-color: var(--light-bg);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.container {
+    margin-top: 2rem;
+}
+
 .profile-photo {
     text-align: center;
     margin-bottom: 2rem;
@@ -10,9 +21,26 @@
     object-fit: cover;   /* Сохраняет пропорции изображения */
 }
 
+.profile-photo h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.profile-photo p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.profile-photo .btn {
+    font-size: 0.9rem;
+}
+
+/* Стили для секции "Моя Музыка" */
 .music-section {
     padding: 1rem;
-    background-color: var(--light-bg);
+    background-color: var(--white-bg);
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -22,9 +50,14 @@
     color: var(--text-dark);
 }
 
+.music-section .btn {
+    margin-top: 0.5rem;
+}
+
+/* Стили для списка музыки */
 .list-group-item {
-    background-color: var(--light-bg);
-    border: 1px solid var(--text-dark);
+    background-color: var(--white-bg);
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     margin-bottom: 0.5rem;
 }
@@ -33,17 +66,40 @@
     margin-left: 0.5rem;
 }
 
+/* Стили для секции "Популярная Музыка" */
+.other-music-section {
+    padding: 1rem;
+    background-color: var(--white-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.other-music-section h4 {
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
 /* Стили для модальных окон */
 .modal-content {
-    background-color: var(--light-bg);
-    border: 1px solid var(--text-dark);
+    background-color: var(--white-bg);
+    border: 1px solid var(--border-color);
     border-radius: 10px;
 }
 
 .modal-header {
-    border-bottom: 1px solid var(--text-dark);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .modal-footer {
-    border-top: 1px solid var(--text-dark);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Переменные CSS */
+:root {
+    --primary-color: #0d6efd;
+    --text-dark: #212529;
+    --text-muted: #6c757d;
+    --white-bg: #ffffff;
+    --light-bg: #f8f9fa;
+    --border-color: #dee2e6;
 }

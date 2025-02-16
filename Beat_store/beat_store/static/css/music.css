@@ -1,0 +1,56 @@
+/* Стили для списка музыки */
+.music-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.music-section h3 {
+    margin-bottom: 20px;
+}
+
+.list-group-item {
+    margin-bottom: 10px;
+}
+
+.list-group-item .btn {
+    margin-left: 5px;
+}
+
+/* Стили для кнопки "Добавить Музыку" */
+.btn-add-music {
+    margin-top: 20px;
+}
+
+/* Стили для формы добавления музыки */
+.add-music-form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-music-form label {
+    font-weight: bold;
+}
+
+.add-music-form .form-control {
+    margin-bottom: 15px;
+}
+
+/* Стили для формы редактирования музыки */
+.edit-music-form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.edit-music-form label {
+    font-weight: bold;
+}
+
+.edit-music-form .form-control {
+    margin-bottom: 15px;
+}
