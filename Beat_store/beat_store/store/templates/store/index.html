@@ -1,6 +1,12 @@
 {% extends 'store/base.html' %}
 {% load static %}
 
+{% block title %}Главная страница{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
 {% block content %}
     <!-- Основное содержимое страницы -->
     <section class="category">
@@ -61,7 +67,7 @@
 
     <!-- Новый блок "Исполнители" -->
     <section class="category mt-5">
-        <h2>Исполнители</h2>
+        <h2>Авторы</h2>
         <div class="songs-container position-relative">
             <!-- Кнопка для прокрутки влево -->
             <button class="scroll-button left btn btn-outline-secondary position-absolute top-50 start-0 translate-middle" onclick="scrollSongs('left', 'artists')">&#10094;</button>

@@ -34,13 +34,13 @@
         <div class="offcanvas-body">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Главная</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Главная</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Моя страница</a>
+                    <a class="nav-link" href="{% url 'profile' %}">Моя страница</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Музыка</a>
+                    <a class="nav-link" href="{% url 'music_list' %}">Музыка</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Авторы</a>
