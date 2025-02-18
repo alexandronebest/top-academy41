@@ -163,7 +163,8 @@ main {
   display: flex;
   overflow: auto;
   scrollbar-width: none; 
-  -ms-overflow-style: none;  
+  -ms-overflow-style: none;
+  padding-bottom: 20px;
 }
 
 .songs::-webkit-scrollbar {
@@ -183,6 +184,7 @@ main {
   flex-direction: column;
   justify-content: space-between;
   margin: 0.5rem;
+  
 }
 
 .song-item:hover {

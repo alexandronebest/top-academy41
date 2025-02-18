@@ -9,17 +9,14 @@
 {% endblock %}
 
 {% block content %}
-<h2>Редактировать Музыку</h2>
-<form class="edit-music-form" method="post">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label for="author" class="form-label">Имя Автора</label>
-        <input type="text" class="form-control" id="author" name="author" value="{{ song.author }}" required>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h1 class="mb-4">Редактировать Песню</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Сохранить Изменения</button>
+        </form>
     </div>
-    <div class="mb-3">
-        <label for="songTitle" class="form-label">Название Песни</label>
-        <input type="text" class="form-control" id="songTitle" name="songTitle" value="{{ song.title }}" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Сохранить</button>
-</form>
+</div>
 {% endblock %}

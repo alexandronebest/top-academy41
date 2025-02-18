@@ -1,10 +1,14 @@
+# store/views.py
 from django.shortcuts import render, redirect
-from .models import Song
+from .models import Song, Genre
 from django.contrib import messages
+from .forms import SongForm
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return render(request, 'store/index.html')  # Главная страница
 
+@login_required
 def profile(request):
     return render(request, 'store/profile.html')  # Страница профиля
 
@@ -12,33 +16,38 @@ def music_list_view(request):
     songs = Song.objects.all()
     return render(request, 'store/music_list.html', {'songs': songs})
 
+@login_required
 def add_music_view(request):
     if request.method == 'POST':
-        author = request.POST.get('author')
-        title = request.POST.get('songTitle')
-        if author and title:
-            Song.objects.create(author=author, title=title)
+        form = SongForm(request.POST, request.FILES)
+        if form.is_valid():
+            song = form.save(commit=False)
+            song.author = request.user
+            song.save()
             messages.success(request, 'Песня успешно добавлена!')
             return redirect('music_list')
         else:
-            messages.error(request, 'Заполните все поля.')
-    return render(request, 'store/add_music.html')
+            messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+    else:
+        form = SongForm()
+    return render(request, 'store/add_music.html', {'form': form})
 
+@login_required
 def edit_music_view(request, song_id):
     song = Song.objects.get(id=song_id)
     if request.method == 'POST':
-        author = request.POST.get('author')
-        title = request.POST.get('songTitle')  # Исправлено с request.post на request.POST
-        if author and title:
-            song.author = author
-            song.title = title
-            song.save()
+        form = SongForm(request.POST, request.FILES, instance=song)
+        if form.is_valid():
+            song = form.save()
             messages.success(request, 'Песня успешно отредактирована!')
+            return redirect('music_list')
         else:
-            messages.error(request, 'Заполните все поля.')
-        return redirect('music_list')
-    return render(request, 'store/edit_music.html', {'song': song})
+            messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+    else:
+        form = SongForm(instance=song)
+    return render(request, 'store/edit_music.html', {'form': form, 'song': song})
 
+@login_required
 def update_status(request):
     if request.method == 'POST':
         status = request.POST.get('status')
@@ -49,3 +58,19 @@ def update_status(request):
         else:
             messages.error(request, 'Статус не может быть пустым.')
     return redirect('profile')
+
+@login_required
+def upload_song(request):
+    if request.method == 'POST':
+        form = SongForm(request.POST, request.FILES)
+        if form.is_valid():
+            song = form.save(commit=False)
+            song.author = request.user
+            song.save()
+            messages.success(request, 'Песня успешно загружена!')
+            return redirect('music_list')
+        else:
+            messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+    else:
+        form = SongForm()
+    return render(request, 'store/upload_song.html', {'form': form})
