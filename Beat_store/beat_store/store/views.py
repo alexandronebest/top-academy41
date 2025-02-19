@@ -1,4 +1,3 @@
-# store/views.py
 from django.shortcuts import render, redirect
 from .models import Song, Genre
 from django.contrib import messages
@@ -10,8 +9,18 @@ def index(request):
 
 @login_required
 def profile(request):
-    return render(request, 'store/profile.html')  # Страница профиля
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        if hasattr(request.user, 'profile'):
+            request.user.profile.status = status
+            request.user.profile.save()
+            messages.success(request, 'Статус успешно обновлен!')
+        else:
+            messages.error(request, 'Профиль не найден.')
+        return redirect('profile')
+    return render(request, 'store/profile.html')
 
+@login_required
 def music_list_view(request):
     songs = Song.objects.all()
     return render(request, 'store/music_list.html', {'songs': songs})
@@ -74,3 +83,22 @@ def upload_song(request):
     else:
         form = SongForm()
     return render(request, 'store/upload_song.html', {'form': form})
+
+def search_view(request):
+    query = request.GET.get('query', '')
+    if query:
+        # Простой поиск по названию песни
+        results = Song.objects.filter(title__icontains=query)
+    else:
+        results = Song.objects.none()
+    return render(request, 'store/search_results.html', {'results': results, 'query': query})
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # Перенаправляем на страницу входа после успешной регистрации
+    else:
+        form = UserCreationForm()
+    return render(request, 'store/register.html', {'form': form})

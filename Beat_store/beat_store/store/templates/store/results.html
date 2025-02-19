@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Результаты поиска</title>
+</head>
+<body>
+    <h2>Результаты поиска для "{{ query }}"</h2>
+    {% if results %}
+        <ul>
+            {% for song in results %}
+                <li>{{ song.title }} - {{ song.artist }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Ничего не найдено.</p>
+    {% endif %}
+    <a href="{% url 'index' %}">Назад к главной</a>
+</body>
+</html>

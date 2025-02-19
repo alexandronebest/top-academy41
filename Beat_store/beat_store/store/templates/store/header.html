@@ -5,15 +5,20 @@
             <a class="navbar-brand footer-brand ms-3" href="{% url 'index' %}">Beat Store</a>
             
             <!-- Поисковая строка -->
-            <form class="d-flex search-form" role="search">
-                <input class="form-control me-2 search-input" type="search" placeholder="Поиск музыки..." aria-label="Search">
+            <form class="d-flex search-form" role="search" method="get" action="{% url 'search' %}">
+                <input class="form-control me-2 search-input" type="search" placeholder="Поиск музыки..." aria-label="Search" name="query">
                 <button class="btn btn-outline-success" type="submit">Поиск</button>
             </form>
             
             <!-- Кнопки входа и бургер-меню -->
             <div class="navbar-buttons d-flex align-items-center">
-                <!-- Кнопка входа -->
-                <button id="login-logout" class="auth-btn btn btn-success me-3">Вход</button>
+                <!-- Если пользователь вошел в систему, отображаем имя пользователя -->
+                {% if user.is_authenticated %}
+                    <span class="navbar-text me-3">{{ user.username }}</span>
+                {% else %}
+                    <!-- Если пользователь не вошел, отображаем кнопку входа -->
+                    <a href="{% url 'login' %}" class="btn btn-success me-3">Вход</a>
+                {% endif %}
                 
                 <!-- Кнопка бургер-меню -->
                 <button class="navbar-toggler" type="button" 
@@ -25,33 +30,42 @@
         </div>
     </nav>
     
-    <!-- Offcanvas меню для мобильных устройств -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="mobileMenuLabel">Меню</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Главная</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'profile' %}">Моя страница</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'music_list' %}">Музыка</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Авторы</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Документы</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Выход</a>
-                </li>
-            </ul>
-        </div>
+<!-- Offcanvas меню для мобильных устройств -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="mobileMenuLabel">Меню</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-</header>
+    <div class="offcanvas-body">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Главная</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'profile' %}">Моя страница</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'music_list' %}">Музыка</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Авторы</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Документы</a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <!-- Форма для выхода в мобильном меню -->
+                    <form method="post" action="{% url 'logout' %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Выход</button>
+                    </form>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}" class="btn btn-success">Вход</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
