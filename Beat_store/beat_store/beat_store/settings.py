@@ -127,3 +127,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'  # URL для страницы входа
 LOGIN_REDIRECT_URL = 'index'  # URL, на который перенаправляется пользователь после успешного входа
 LOGOUT_REDIRECT_URL = 'index'  # URL, на который перенаправляется пользователь после выхода
+AUTH_USER_MODEL = 'store.User'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

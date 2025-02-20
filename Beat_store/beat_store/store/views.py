@@ -1,33 +1,45 @@
-from django.shortcuts import render, redirect
-from .models import Song, Genre
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import SongForm
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+from .forms import SongForm, CustomUserCreationForm, ProfileForm
+from .models import Song, Genre, Profile
+from django.http import HttpResponse
 
 def index(request):
-    return render(request, 'store/index.html')  # Главная страница
+    """
+    Главная страница сайта.
+    """
+    return render(request, 'store/index.html')
 
 @login_required
 def profile(request):
-    if request.method == 'POST':
-        status = request.POST.get('status')
-        if hasattr(request.user, 'profile'):
-            request.user.profile.status = status
-            request.user.profile.save()
-            messages.success(request, 'Статус успешно обновлен!')
-        else:
-            messages.error(request, 'Профиль не найден.')
-        return redirect('profile')
-    return render(request, 'store/profile.html')
+    """
+    Страница профиля пользователя.
+    Отображает информацию о пользователе и его песни.
+    """
+    profile = get_object_or_404(Profile, user=request.user)
+    songs = Song.objects.filter(author=request.user)
+    return render(request, 'store/profile.html', {
+        'profile': profile,
+        'songs': songs
+    })
 
 @login_required
 def music_list_view(request):
-    songs = Song.objects.all()
+    """
+    Страница со списком всех песен.
+    Использует select_related для оптимизации запросов к базе данных.
+    """
+    songs = Song.objects.select_related('author', 'genre').all()
     return render(request, 'store/music_list.html', {'songs': songs})
 
 @login_required
 def add_music_view(request):
+    """
+    Представление для добавления новой песни.
+    Обрабатывает как GET, так и POST запросы.
+    """
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES)
         if form.is_valid():
@@ -37,69 +49,102 @@ def add_music_view(request):
             messages.success(request, 'Песня успешно добавлена!')
             return redirect('music_list')
         else:
-            messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+            messages.error(request, 'Исправьте ошибки в форме')
     else:
         form = SongForm()
+    
     return render(request, 'store/add_music.html', {'form': form})
 
 @login_required
 def edit_music_view(request, song_id):
-    song = Song.objects.get(id=song_id)
+    """
+    Представление для редактирования существующей песни.
+    Проверяет, что автор песни совпадает с текущим пользователем.
+    """
+    song = get_object_or_404(Song, id=song_id)
+    
+    if song.author != request.user:
+        messages.error(request, 'Вы не можете редактировать эту песню')
+        return redirect('music_list')
+    
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES, instance=song)
         if form.is_valid():
-            song = form.save()
-            messages.success(request, 'Песня успешно отредактирована!')
+            form.save()
+            messages.success(request, 'Песня успешно обновлена!')
             return redirect('music_list')
-        else:
-            messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
     else:
         form = SongForm(instance=song)
-    return render(request, 'store/edit_music.html', {'form': form, 'song': song})
+    
+    return render(request, 'store/edit_music.html', {
+        'form': form,
+        'song': song
+    })
 
 @login_required
-def update_status(request):
+def search_view(request):
+    """
+    Представление для поиска песен по названию.
+    """
+    query = request.GET.get('query', '').strip()
+    results = Song.objects.none()
+    
+    if query:
+        results = Song.objects.filter(title__icontains=query)
+    
+    return render(request, 'store/search_results.html', {
+        'results': results,
+        'query': query
+    })
+
+def register(request):
+    """
+    Представление для регистрации нового пользователя.
+    """
     if request.method == 'POST':
-        status = request.POST.get('status')
-        if status:
-            request.user.profile.status = status
-            request.user.profile.save()
-            messages.success(request, 'Статус успешно обновлен!')
-        else:
-            messages.error(request, 'Статус не может быть пустым.')
-    return redirect('profile')
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Регистрация успешна!')
+            return redirect('index')
+    else:
+        form = CustomUserCreationForm()
+    
+    return render(request, 'store/register.html', {'form': form})
 
 @login_required
 def upload_song(request):
+    """
+    Представление для загрузки новой песни.
+    """
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES)
         if form.is_valid():
-            song = form.save(commit=False)
-            song.author = request.user
-            song.save()
+            form.save(commit=False)
+            # Здесь можно добавить дополнительную логику, если необходимо
+            form.save()
             messages.success(request, 'Песня успешно загружена!')
             return redirect('music_list')
         else:
-            messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+            messages.error(request, 'Исправьте ошибки в форме')
     else:
         form = SongForm()
+    
     return render(request, 'store/upload_song.html', {'form': form})
 
-def search_view(request):
-    query = request.GET.get('query', '')
-    if query:
-        # Простой поиск по названию песни
-        results = Song.objects.filter(title__icontains=query)
-    else:
-        results = Song.objects.none()
-    return render(request, 'store/search_results.html', {'results': results, 'query': query})
-
-def register(request):
+@login_required
+def upload_photo(request):
+    profile = request.user.profile  # Предполагается, что у вас есть связанный профиль
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('login')  # Перенаправляем на страницу входа после успешной регистрации
+            messages.success(request, 'Фото успешно загружено!')
+            return redirect('profile')  # Перенаправление на страницу профиля
+        else:
+            messages.error(request, 'Исправьте ошибки в форме')
     else:
-        form = UserCreationForm()
-    return render(request, 'store/register.html', {'form': form})
+        form = ProfileForm(instance=profile)
+    
+    return render(request, 'store/upload_photo.html', {'form': form})

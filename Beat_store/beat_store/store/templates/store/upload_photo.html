@@ -1,0 +1,15 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Загрузка фото{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Загрузка фото профиля</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Загрузить</button>
+    </form>
+</div>
+{% endblock %}

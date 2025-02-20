@@ -18,9 +18,6 @@ urlpatterns = [
     # Редактирование музыки
     path('edit-music/<int:song_id>/', views.edit_music_view, name='edit-music'),
 
-    # Обновление статуса
-    path('update-status/', views.update_status, name='update-status'),
-
     # Загрузка песни
     path('upload-song/', views.upload_song, name='upload-song'),
 
@@ -41,4 +38,9 @@ urlpatterns = [
 
     # Регистрация
     path('register/', views.register, name='register'),
+
+
+    # Загрузка фото
+    path('upload-photo/', views.upload_photo, name='upload_photo'),
+
 ]
