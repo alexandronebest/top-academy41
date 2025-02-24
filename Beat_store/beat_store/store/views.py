@@ -25,21 +25,17 @@ def profile(request):
         'songs': songs
     })
 
+
+
 @login_required
 def music_list_view(request):
-    """
-    Страница со списком всех песен.
-    Использует select_related для оптимизации запросов к базе данных.
-    """
+    """Страница со списком всех песен."""
     songs = Song.objects.select_related('author', 'genre').all()
     return render(request, 'store/music_list.html', {'songs': songs})
 
 @login_required
 def add_music_view(request):
-    """
-    Представление для добавления новой песни.
-    Обрабатывает как GET, так и POST запросы.
-    """
+    """Представление для добавления новой песни."""
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES)
         if form.is_valid():
@@ -54,6 +50,7 @@ def add_music_view(request):
         form = SongForm()
     
     return render(request, 'store/add_music.html', {'form': form})
+
 
 @login_required
 def edit_music_view(request, song_id):
@@ -146,5 +143,24 @@ def upload_photo(request):
             messages.error(request, 'Исправьте ошибки в форме')
     else:
         form = ProfileForm(instance=profile)
+
+
+
+@login_required
+def delete_music_view(request, song_id):
+    """
+    Представление для удаления существующей песни.
+    Проверяет, что автор песни совпадает с текущим пользователем.
+    """
+    song = get_object_or_404(Song, id=song_id)
     
-    return render(request, 'store/upload_photo.html', {'form': form})
+    if song.author != request.user:
+        messages.error(request, 'Вы не можете удалить эту песню')
+        return redirect('music_list')
+    
+    if request.method == 'POST':
+        song.delete()
+        messages.success(request, 'Песня успешно удалена!')
+        return redirect('music_list')
+    
+    return render(request, 'store/delete_music.html', {'song': song})

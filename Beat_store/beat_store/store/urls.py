@@ -13,10 +13,10 @@ urlpatterns = [
     path('music/', views.music_list_view, name='music_list'),
 
     # Добавление музыки
-    path('add-music/', views.add_music_view, name='add-music'),
+    path('add-music/', views.add_music_view, name='add_music'),
 
     # Редактирование музыки
-    path('edit-music/<int:song_id>/', views.edit_music_view, name='edit-music'),
+    path('edit-music/<int:song_id>/', views.edit_music_view, name='edit_music'),
 
     # Загрузка песни
     path('upload-song/', views.upload_song, name='upload-song'),
@@ -42,5 +42,8 @@ urlpatterns = [
 
     # Загрузка фото
     path('upload-photo/', views.upload_photo, name='upload_photo'),
+    #удаление песни
+path('delete-music/<int:song_id>/', views.delete_music_view, name='delete_music'),
+
 
 ]
