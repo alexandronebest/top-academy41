@@ -72,6 +72,7 @@
             <!-- Кнопка для прокрутки влево -->
             <button class="scroll-button left btn btn-outline-secondary position-absolute top-50 start-0 translate-middle" onclick="scrollSongs('left', 'artists')">&#10094;</button>
             
+
             <!-- Контейнер для исполнителей -->
             <div class="songs d-flex overflow-auto" id="artists">
                 <!-- Пример добавления исполнителя -->
@@ -89,6 +90,8 @@
         </div>
     </section>
 
+
+    
     <!-- Новый блок "Жанры" -->
     <section class="category mt-5">
         <h2>Жанры</h2>
@@ -97,13 +100,23 @@
             <button class="scroll-button left btn btn-outline-secondary position-absolute top-50 start-0 translate-middle" onclick="scrollSongs('left', 'genres')">&#10094;</button>
             
             <!-- Контейнер для жанров -->
-            <div class="songs d-flex overflow-auto" id="genres">
+            <!-- <div class="songs d-flex overflow-auto" id="genres"> -->
                 <!-- Пример добавления жанра -->
-                <div class="song-item me-3">
+                <!-- <div class="song-item me-3">
                     <div class="song-info text-center">
                         <h3 class="song-title">Панк</h3>
                     </div>
-                </div>
+                </div> -->
+                <div class="songs d-flex overflow-auto" id="genres">
+                    {% for genre in genres %}
+                        <div class="song-item me-3">
+                            <div class="song-info text-center">
+                                <h3 class="song-title">{{ genre.name }}</h3>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p>Нет доступных жанров.</p>
+                    {% endfor %}
                 <!-- Добавьте остальные жанры -->
             </div>
             

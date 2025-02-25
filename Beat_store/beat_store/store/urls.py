@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     # Главная страница
     path('', views.index, name='index'),
+    
 
     # Профиль пользователя
     path('profile/', views.profile, name='profile'),

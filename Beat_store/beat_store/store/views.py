@@ -10,7 +10,9 @@ def index(request):
     """
     Главная страница сайта.
     """
-    return render(request, 'store/index.html')
+    genres = Genre.objects.all()
+    
+    return render(request, 'store/index.html', {'genres': genres})
 
 @login_required
 def profile(request):
@@ -164,3 +166,5 @@ def delete_music_view(request, song_id):
         return redirect('music_list')
     
     return render(request, 'store/delete_music.html', {'song': song})
+
+
