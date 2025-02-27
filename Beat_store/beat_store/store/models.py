@@ -4,13 +4,12 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 class User(AbstractUser):
-    # Добавляем дополнительное поле для электронной почты
     email = models.EmailField(unique=True, verbose_name='Электронная почта')
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-        swappable = 'AUTH_USER_MODEL'  # Убедитесь, что это указано, если вы используете кастомную модель пользователя
+        swappable = 'AUTH_USER_MODEL'
 
     def __str__(self):
         return self.username
@@ -33,6 +32,7 @@ class Genre(models.Model):
 class Song(models.Model):
     title = models.CharField(max_length=100, verbose_name="Название")
     path = models.FileField(upload_to='songs/', verbose_name="Файл")
+    cover = models.ImageField(upload_to='covers/', null=True, blank=True, verbose_name="Обложка")
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

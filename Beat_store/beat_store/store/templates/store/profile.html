@@ -10,10 +10,11 @@
         <div class="col-md-4">
             <div class="card mb-4">
                 <div class="card-body text-center">
-                    <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="Фото пользователя" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" 
+                         alt="Фото пользователя" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
                     
                     <!-- Форма для загрузки фото -->
-                    <form method="post" enctype="multipart/form-data" action="{% url 'upload_photo' %}">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'store:upload_photo' %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <input type="file" name="photo" class="form-control" accept="image/*" required>
@@ -36,7 +37,6 @@
                     
                     <form method="post">
                         {% csrf_token %}
-                        
                         <div class="mb-3">
                             {{ form.status.label_tag }}
                             {{ form.status }}
@@ -46,7 +46,6 @@
                                 </div>
                             {% endif %}
                         </div>
-                        
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-save me-2"></i>Сохранить изменения
                         </button>
@@ -63,14 +62,13 @@
                     {% if songs %}
                         <ul class="list-group">
                             {% for song in songs %}
-                                <li class="list-group-item">{{ song.title }} - {{ song.artist }}</li>
+                                <li class="list-group-item">{{ song.title }} - {{ song.author.username }}</li>
                             {% endfor %}
                         </ul>
                     {% else %}
                         <p>У вас ещё нет добавленных песен.</p>
                     {% endif %}
-                    
-                    <a href="http://127.0.0.1:8000/add-music/" class="btn btn-success mt-3">Добавить новую песню</a>
+                    <a href="{% url 'store:add_music' %}" class="btn btn-success mt-3">Добавить новую песню</a>
                 </div>
             </div>
 
@@ -83,7 +81,7 @@
                     {% if liked_songs %}
                         <ul class="list-group">
                             {% for song in liked_songs %}
-                                <li class="list-group-item">{{ song.title }} - {{ song.artist }}</li>
+                                <li class="list-group-item">{{ song.title }} - {{ song.author.username }}</li>
                             {% endfor %}
                         </ul>
                     {% else %}

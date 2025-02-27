@@ -14,6 +14,7 @@ class SongForm(forms.ModelForm):
             'genre': forms.Select(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
             'path': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            
         }
 
     def __init__(self, *args, **kwargs):
