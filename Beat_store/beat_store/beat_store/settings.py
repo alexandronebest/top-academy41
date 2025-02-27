@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,7 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'store.apps.StoreConfig',  # Обновлено для правильного подключения приложения
+    'store.apps.StoreConfig',  # Ваше приложение
 ]
 
 MIDDLEWARE = [
@@ -49,8 +48,8 @@ ROOT_URLCONF = 'beat_store.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Директория для общих шаблонов
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR / 'store' / 'templates'],  # Указываем путь к папке с шаблонами
+        'APP_DIRS': True,  # Включаем поиск шаблонов внутри приложений
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -74,30 +73,22 @@ DATABASES = {
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # Internationalization
-LANGUAGE_CODE = 'ru-ru'  # Изменено на русский для вашего проекта
+LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']  # Директория для статических файлов
-STATIC_ROOT = BASE_DIR / 'staticfiles'    # Директория для collectstatic
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files (uploaded by users)
 MEDIA_URL = '/media/'
@@ -110,9 +101,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'store.User'  # Кастомная модель пользователя
 
 # URLs for authentication with full paths
-LOGIN_URL = '/accounts/login/'           # Полный путь к странице входа
-LOGIN_REDIRECT_URL = '/'                 # Перенаправление после входа на главную
-LOGOUT_REDIRECT_URL = '/'                # Перенаправление после выхода на главную
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
-# Email settings (для отладки, если потребуется сброс пароля)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Вывод писем в консоль
+# Email settings (для отладки)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

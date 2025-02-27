@@ -13,14 +13,16 @@
                     <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" 
                          alt="Фото пользователя" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
                     
-                    <!-- Форма для загрузки фото -->
-                    <form method="post" enctype="multipart/form-data" action="{% url 'store:upload_photo' %}">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <input type="file" name="photo" class="form-control" accept="image/*" required>
-                        </div>
-                        <button type="submit" class="btn btn-secondary">Изменить фото</button>
-                    </form>
+                    <!-- Форма для загрузки фото (только для владельца профиля) -->
+                    {% if request.user == profile.user %}
+                        <form method="post" enctype="multipart/form-data" action="{% url 'store:upload_photo' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <input type="file" name="photo" class="form-control" accept="image/*" required>
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Изменить фото</button>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -30,26 +32,32 @@
             <!-- Информация о пользователе -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="mb-0">Профиль пользователя {{ profile.user.username }}</h3>
+                    <h3 class="mb-0">{{ profile.user.username }}</h3>
                 </div>
                 <div class="card-body">
                     {% include 'store/_messages.html' %}
                     
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            {{ form.status.label_tag }}
-                            {{ form.status }}
-                            {% if form.status.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.status.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save me-2"></i>Сохранить изменения
-                        </button>
-                    </form>
+                    <!-- Редактирование статуса (только для владельца профиля) -->
+                    {% if request.user == profile.user %}
+                        <form method="post" action="{% url 'store:profile' profile.user.username %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Статус</label>
+                                <input type="text" name="status" id="status" class="form-control" 
+                                       value="{{ profile.status|default:'' }}" maxlength="100">
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-2"></i>Сохранить изменения
+                            </button>
+                        </form>
+                    {% else %}
+                        <!-- Отображение статуса для других пользователей -->
+                        {% if profile.status %}
+                            <p><strong>Статус:</strong> {{ profile.status }}</p>
+                        {% else %}
+                            <p><em>Статус не указан</em></p>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
 
@@ -66,9 +74,12 @@
                             {% endfor %}
                         </ul>
                     {% else %}
-                        <p>У вас ещё нет добавленных песен.</p>
+                        <p>У этого пользователя ещё нет добавленных песен.</p>
                     {% endif %}
-                    <a href="{% url 'store:add_music' %}" class="btn btn-success mt-3">Добавить новую песню</a>
+                    <!-- Кнопка добавления песни (только для владельца профиля) -->
+                    {% if request.user == profile.user %}
+                        <a href="{% url 'store:add_music' %}" class="btn btn-success mt-3">Добавить новую песню</a>
+                    {% endif %}
                 </div>
             </div>
 
@@ -85,7 +96,7 @@
                             {% endfor %}
                         </ul>
                     {% else %}
-                        <p>У вас ещё нет понравившихся песен.</p>
+                        <p>У этого пользователя ещё нет понравившихся песен.</p>
                     {% endif %}
                 </div>
             </div>

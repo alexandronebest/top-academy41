@@ -2,68 +2,60 @@
 <header>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid d-flex align-items-center justify-content-between">
-            <!-- Логотип слева -->
-            <a class="navbar-brand footer-brand ms-3" href="{% url 'store:index' %}">Beat Store</a>
+            <a class="navbar-brand ms-3" href="{% url 'store:index' %}">Beat Store</a>
             
-            <!-- Поисковая строка в центре -->
             <form class="d-flex search-form" role="search" method="get" action="{% url 'store:search' %}">
-                <input class="form-control me-2 search-input" type="search" placeholder="Поиск музыки..." aria-label="Search" name="query">
+                <input class="form-control me-2 search-input" type="search" placeholder="Поиск музыки..." 
+                       aria-label="Search" name="query" value="{{ query|default:'' }}">
                 <button class="btn btn-outline-success" type="submit">Поиск</button>
             </form>
             
-            <!-- Кнопки входа и бургер-меню справа -->
             <div class="navbar-buttons d-flex align-items-center">
                 {% if user.is_authenticated %}
                     <span class="navbar-text me-3">{{ user.username }}</span>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-success me-3">Вход</a>
+                    <a href="{% url 'store:login' %}" class="btn btn-success me-3">Вход</a>
                 {% endif %}
-                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" 
+                        data-bs-target="#mobileMenu" aria-controls="mobileMenu" 
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Мобильное меню -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="mobileMenuLabel">Меню</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'store:index' %}">Главная</a>
+                    <a class="nav-link" href="{% url 'store:index' %}">Главная</a>
                 </li>
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'store:profile' user.username %}">Моя страница</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Моя страница</a>
-                    </li>
-                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'store:profile' user.username|default:'login' %}">
+                        Моя страница
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'store:music_list' %}">Музыка</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'store:authors_list' %}">Авторы</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Документы</a>
-                </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <form method="post" action="{% url 'logout' %}" class="d-inline">
+                        <form method="post" action="{% url 'store:logout' %}" class="d-inline">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Выход</button>
+                            <button type="submit" class="btn btn-danger w-100">Выход</button>
                         </form>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Вход</a>
+                        <a class="nav-link" href="{% url 'store:login' %}">Вход</a>
                     </li>
                 {% endif %}
             </ul>
