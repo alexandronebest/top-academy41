@@ -6,8 +6,10 @@
   --light-bg: #f5f5f5;
   --text-dark: #333;
   --text-light: #fff;
-  --close-button-color: #070000; /* Новый цвет для крестика закрытия */
+  --close-button-color: #070000;
   --transition: all 0.3s ease;
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
 *, *::before, *::after {
@@ -16,14 +18,28 @@
   padding: 0;
 }
 
-/* Основные стили для страницы */
 body {
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif; /* Более современный и читаемый шрифт */
   background-color: var(--light-bg);
   color: var(--text-dark);
+  line-height: 1.6; /* Улучшает читаемость */
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+/* Текстовые стили для читаемости */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playwrite IN', serif; /* Декоративный шрифт для заголовков */
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+p, a, span, li {
+  font-size: 1rem;
+  color: var(--text-dark);
+  font-weight: 400;
 }
 
 /* Основной контент */
@@ -32,14 +48,14 @@ main {
   padding: 1.5rem 1rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding-bottom: 100px; /* Отступ для предотвращения перекрытия контента плеером */
+  padding-bottom: 100px;
 }
 
 /* Navbar */
 .navbar {
   background-color: var(--dark-bg);
   padding: 0.5rem 1rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -48,11 +64,9 @@ main {
   align-items: center;
 }
 
-/* Кнопка входа */
 .auth-section {
   display: flex;
   align-items: center;
-  margin-right: 0;
 }
 
 .auth-btn {
@@ -63,41 +77,32 @@ main {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-light);
-  transition: background-color 0.3s ease;
-  cursor: pointer;
+  transition: var(--transition);
 }
 
 .auth-btn:hover {
   background-color: #388e3c;
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+  box-shadow: var(--shadow-md);
 }
 
-/* Кнопка бургер-меню */
 .navbar-toggler {
   margin-right: 5px;
   border: none;
   padding: 0.25rem 0.5rem;
-  z-index: 1050; /* Высокий z-index для отображения поверх других элементов */
 }
 
-/* Offcanvas меню */
 .offcanvas {
   background-color: var(--dark-bg);
   color: var(--text-light);
 }
 
 .offcanvas-header {
-  border-bottom: 1px solid var(--text-light);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .offcanvas-title {
   font-size: 1.5rem;
-  font-weight: 500;
-}
-
-.offcanvas-body {
-  padding: 1rem;
 }
 
 .offcanvas .nav-link {
@@ -111,7 +116,6 @@ main {
   border-radius: 5px;
 }
 
-/* Кнопка закрытия */
 .btn-close {
   background: var(--close-button-color) url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
   opacity: 0.5;
@@ -120,13 +124,6 @@ main {
 
 .btn-close:hover {
   opacity: 1;
-}
-
-/* Main Content */
-main {
-  padding: 1.5rem 1rem;
-  max-width: 1400px;
-  margin: 0 auto;
 }
 
 /* Search Form */
@@ -139,8 +136,8 @@ main {
   border-radius: 25px;
   padding: 0.5rem 1rem;
   border: 2px solid var(--primary-color);
-  transition: border-color 0.3s ease;
-  width: 100%;
+  font-family: 'Montserrat', sans-serif;
+  transition: var(--transition);
 }
 
 .search-input:focus {
@@ -153,7 +150,6 @@ main {
   margin: 1.5rem 0;
 }
 
-/* Songs Container */
 .songs-container {
   position: relative;
   user-select: none;
@@ -162,34 +158,31 @@ main {
 .songs {
   display: flex;
   overflow: auto;
-  scrollbar-width: none; 
+  scrollbar-width: none;
   -ms-overflow-style: none;
   padding-bottom: 20px;
 }
 
 .songs::-webkit-scrollbar {
-  display: none; 
+  display: none;
 }
 
-/* Song Item */
 .song-item {
   flex: 0 0 180px;
   background: var(--text-light);
   border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
   cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin: 0.5rem;
-  
 }
 
 .song-item:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 .song-image {
@@ -199,29 +192,37 @@ main {
   height: auto;
 }
 
-/* Scroll Buttons */
+.song-info {
+  padding: 0.5rem;
+}
+
+.song-title {
+  font-family: 'Playwrite IN', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-author {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .scroll-button {
   background: var(--text-light);
   color: var(--primary-color);
   width: 40px;
   height: 40px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   border: none;
   border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  z-index: 1000;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.scroll-button.left {
-  left: 0;
-}
-
-.scroll-button.right {
-  right: 0;
+  transition: var(--transition);
 }
 
 .scroll-button:hover {
@@ -229,41 +230,21 @@ main {
   color: var(--text-light);
 }
 
-/* Buy Button */
 .buy-button {
   background-color: var(--primary-color);
   color: var(--text-light);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 5px;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
   cursor: pointer;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  transition: background-color 0.3s ease;
+  margin: 10px 0;
+  transition: var(--transition);
 }
 
 .buy-button:hover {
   background-color: #388e3c;
-}
-
-.product-card .buy-button {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-/* Текст с автоматическим уменьшением размера */
-.song-title, .song-author {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 1rem;
-}
-
-@media (max-width: 767px) {
-  .song-title, .song-author {
-    font-size: 0.8rem;
-  }
 }
 
 /* Footer */
@@ -271,8 +252,7 @@ main {
   background-color: var(--footer-bg);
   padding: 1rem;
   position: relative;
-  z-index: 900; /* Ниже, чем у плеера, чтобы не перекрывался */
-  overflow: hidden;
+  z-index: 900;
 }
 
 .footer-container {
@@ -283,39 +263,13 @@ main {
   margin: 0 auto;
 }
 
-.footer-left {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
-
-.social-link {
-  margin: 0 0.5rem;
-}
-
-.social-icon {
-  width: 30px;
-  height: 30px;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.social-icon:hover {
-  transform: scale(1.2);
-  opacity: 0.8;
-}
-
-.footer-center {
-  text-align: center;
-  margin-bottom: 0.5rem;
-}
-
 .footer-brand {
+  font-family: 'Playwrite IN', serif;
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--primary-color);
   transition: var(--transition);
   cursor: pointer;
-  font-family: "Playwrite IN", serif;
 }
 
 .footer-brand:hover {
@@ -323,29 +277,33 @@ main {
   transform: scale(1.05);
 }
 
-.footer-right {
-  display: flex;
-  justify-content: center;
-  margin-top: 0.5rem;
-}
-
-.contact-button {
+.contact-button, .beat-store-btn {
   background-color: var(--dark-bg);
   color: var(--text-light);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 25px;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
   font-weight: 500;
-  transition: background-color 0.3s ease;
+  transition: var(--transition);
   cursor: pointer;
-  margin-bottom: 40px;
 }
 
-.contact-button:hover {
+.contact-button:hover, .beat-store-btn:hover {
   background-color: #388e3c;
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+  box-shadow: var(--shadow-md);
+}
+
+.social-icon {
+  width: 30px;
+  height: 30px;
+  transition: var(--transition);
+}
+
+.social-icon:hover {
+  transform: scale(1.2);
 }
 
 /* Плеер */
@@ -357,32 +315,11 @@ main {
   background-color: var(--light-bg);
   padding: 0.5rem 1rem;
   z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .player-section audio {
   width: 100%;
   max-width: 600px;
-  background-color: var(--text-light);
   border-radius: 25px;
   padding: 0.5rem;
-}
-
-@media (max-width: 768px) {
-  .player-section audio {
-    max-width: 100%;
-  }
-}
-
-/* Кнопка закрытия */
-.btn-close {
-  background: var(--close-button-color) url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
-  opacity: 0.5;
-  transition: opacity 0.3s ease;
-}
-
-.btn-close:hover {
-  opacity: 1;
 }

@@ -8,7 +8,6 @@ from .models import User, Song, Genre, Profile
 from .forms import SongForm, CustomUserCreationForm, ProfileForm
 
 def index(request):
-    """Главная страница с топ песнями, новинками, жанрами и авторами."""
     top_songs = Song.objects.order_by('-created_at')[:10]
     new_songs = Song.objects.order_by('-created_at')[:10]
     genres = Genre.objects.all()
@@ -24,7 +23,6 @@ def index(request):
 
 @login_required
 def profile(request, username=None):
-    """Страница профиля пользователя с его песнями."""
     user = get_object_or_404(User, username=username) if username else request.user
     profile = get_object_or_404(Profile, user=user)
     songs = Song.objects.filter(author=user).select_related('genre')
@@ -39,9 +37,28 @@ def profile(request, username=None):
 
 @login_required
 def music_list_view(request):
-    """Список всех песен с оптимизированной загрузкой."""
+    """Список всех песен с фильтрацией по жанрам и авторам."""
+    genres = Genre.objects.all()
+    authors = Profile.objects.select_related('user').all()
     songs = Song.objects.select_related('author', 'genre').all()
-    return render(request, 'store/music_list.html', {'songs': songs})
+
+    # Фильтрация
+    genre_id = request.GET.get('genre')
+    if genre_id:
+        songs = songs.filter(genre__id=genre_id)
+    author_id = request.GET.get('author')
+    if author_id:
+        songs = songs.filter(author__id=author_id)
+    title = request.GET.get('query')  # Изменено с 'query' для совместимости с поиском
+    if title:
+        songs = songs.filter(title__icontains=title)
+
+    context = {
+        'songs': songs,
+        'genres': genres,
+        'authors': authors,
+    }
+    return render(request, 'store/music_list.html', context)
 
 @login_required
 def add_music_view(request):
@@ -72,7 +89,7 @@ def edit_music_view(request, song_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Песня успешно обновлена!')
-            return redirect('store:music_list')
+            return redirect('store/music_list')
     else:
         form = SongForm(instance=song)
     return render(request, 'store/edit_music.html', {'form': form, 'song': song})
@@ -92,7 +109,7 @@ def delete_music_view(request, song_id):
     return render(request, 'store/delete_music.html', {'song': song})
 
 def search_view(request):
-    """Поиск песен по названию."""
+    """Поиск песен по названию (оставлен для совместимости, но не используется)."""
     query = request.GET.get('query', '').strip()
     results = Song.objects.filter(title__icontains=query) if query else Song.objects.none()
     return render(request, 'store/search_results.html', {
@@ -101,7 +118,6 @@ def search_view(request):
     })
 
 class RegisterView(CreateView):
-    """Регистрация нового пользователя."""
     form_class = CustomUserCreationForm
     template_name = 'store/register.html'
     success_url = reverse_lazy('store:index')
@@ -114,7 +130,6 @@ class RegisterView(CreateView):
 
 @login_required
 def upload_photo(request):
-    """Загрузка фото профиля."""
     profile = request.user.profile
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
@@ -128,6 +143,5 @@ def upload_photo(request):
 
 @login_required
 def authors_list_view(request):
-    """Список всех авторов."""
     authors = Profile.objects.select_related('user').all()
     return render(request, 'store/profiles.html', {'profiles': authors})

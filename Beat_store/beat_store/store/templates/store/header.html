@@ -4,9 +4,9 @@
         <div class="container-fluid d-flex align-items-center justify-content-between">
             <a class="navbar-brand ms-3" href="{% url 'store:index' %}">Beat Store</a>
             
-            <form class="d-flex search-form" role="search" method="get" action="{% url 'store:search' %}">
+            <form class="d-flex search-form" role="search" method="get" action="{% url 'store:music_list' %}">
                 <input class="form-control me-2 search-input" type="search" placeholder="Поиск музыки..." 
-                       aria-label="Search" name="query" value="{{ query|default:'' }}">
+                       aria-label="Search" name="query" value="{{ request.GET.query|default:'' }}">
                 <button class="btn btn-outline-success" type="submit">Поиск</button>
             </form>
             

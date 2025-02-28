@@ -1,105 +1,87 @@
-/* store/static/css/profile.css */
-
-/* Основные стили для страницы профиля */
-body {
-    background-color: var(--light-bg);
-    font-family: 'Montserrat', sans-serif;
-}
-
 .container {
     margin-top: 2rem;
-}
-
-.profile-photo {
+    max-width: 1400px;
+  }
+  
+  .profile-photo {
     text-align: center;
     margin-bottom: 2rem;
-}
-
-.profile-photo img {
+  }
+  
+  .profile-photo img {
     border: 5px solid var(--primary-color);
-    border-radius: 50%;  /* Сделаем изображение круглым */
-    object-fit: cover;   /* Сохраняет пропорции изображения */
-}
-
-.profile-photo h2 {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .profile-photo h2 {
+    font-family: 'Playwrite IN', serif;
     font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    font-weight: 700;
     color: var(--text-dark);
-}
-
-.profile-photo p {
+  }
+  
+  .profile-photo p {
+    font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-}
-
-.profile-photo .btn {
-    font-size: 0.9rem;
-}
-
-/* Стили для секции "Моя Музыка" */
-.music-section {
+    color: #777;
+  }
+  
+  .profile-photo .btn {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-family: 'Montserrat', sans-serif;
+    transition: var(--transition);
+  }
+  
+  .profile-photo .btn:hover {
+    background-color: #388e3c;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .music-section {
     padding: 1rem;
-    background-color: var(--white-bg);
+    background: var(--text-light);
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.music-section h3 {
-    margin-bottom: 1rem;
-    color: var(--text-dark);
-}
-
-.music-section .btn {
-    margin-top: 0.5rem;
-}
-
-/* Стили для списка музыки */
-.list-group-item {
-    background-color: var(--white-bg);
-    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .music-section h3 {
+    font-family: 'Playwrite IN', serif;
+    font-size: 1.5rem;
+  }
+  
+  .list-group-item {
+    background: var(--text-light);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     margin-bottom: 0.5rem;
-}
-
-.list-group-item .btn {
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .list-group-item .btn {
     margin-left: 0.5rem;
-}
-
-/* Стили для секции "Популярная Музыка" */
-.other-music-section {
+    border-radius: 5px;
+  }
+  
+  .other-music-section {
     padding: 1rem;
-    background-color: var(--white-bg);
+    background: var(--text-light);
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.other-music-section h4 {
-    margin-bottom: 1rem;
-    color: var(--text-dark);
-}
-
-/* Стили для модальных окон */
-.modal-content {
-    background-color: var(--white-bg);
-    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .other-music-section h4 {
+    font-family: 'Playwrite IN', serif;
+    font-size: 1.25rem;
+  }
+  
+  .modal-content {
+    background: var(--text-light);
     border-radius: 10px;
-}
-
-.modal-header {
-    border-bottom: 1px solid var(--border-color);
-}
-
-.modal-footer {
-    border-top: 1px solid var(--border-color);
-}
-
-/* Переменные CSS */
-:root {
-    --primary-color: #0d6efd;
-    --text-dark: #212529;
-    --text-muted: #6c757d;
-    --white-bg: #ffffff;
-    --light-bg: #f8f9fa;
-    --border-color: #dee2e6;
-}
+    box-shadow: var(--shadow-md);
+  }

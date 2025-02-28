@@ -5,6 +5,29 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .song-item {
+            flex: 0 0 auto;
+            width: 200px;
+        }
+        @media (max-width: 768px) {
+            .song-item {
+                width: 150px;
+            }
+        }
+        @media (max-width: 576px) {
+            .song-item {
+                width: 120px;
+            }
+        }
+        .song-author-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .song-author-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -23,7 +46,9 @@
                         {% endif %}
                         <div class="song-info text-center">
                             <h3 class="song-title">{{ song.title }}</h3>
-                            <p class="song-author">{{ song.author.username }}</p>
+                            <p class="song-author">
+                                <a href="{% url 'store:profile' song.author.username %}" class="song-author-link">{{ song.author.username }}</a>
+                            </p>
                             <button class="buy-button btn btn-success">{{ song.price }} руб.</button>
                         </div>
                     </div>
@@ -50,7 +75,9 @@
                         {% endif %}
                         <div class="song-info text-center">
                             <h3 class="song-title">{{ song.title }}</h3>
-                            <p class="song-author">{{ song.author.username }}</p>
+                            <p class="song-author">
+                                <a href="{% url 'store:profile' song.author.username %}" class="song-author-link">{{ song.author.username }}</a>
+                            </p>
                             <button class="buy-button btn btn-success">{{ song.price }} руб.</button>
                         </div>
                     </div>
@@ -70,14 +97,16 @@
             <div class="songs d-flex overflow-auto" id="artists">
                 {% for author in authors %}
                     <div class="song-item me-3">
-                        {% if author.photo %}
-                            <img src="{{ author.photo.url }}" alt="{{ author.user.username }}" class="song-image">
-                        {% else %}
-                            <img src="{% static 'images/music_img7.jpeg' %}" alt="{{ author.user.username }}" class="song-image">
-                        {% endif %}
-                        <div class="song-info text-center">
-                            <h3 class="song-title">{{ author.user.username }}</h3>
-                        </div>
+                        <a href="{% url 'store:profile' author.user.username %}" class="song-author-link">
+                            {% if author.photo %}
+                                <img src="{{ author.photo.url }}" alt="{{ author.user.username }}" class="song-image">
+                            {% else %}
+                                <img src="{% static 'images/music_img7.jpeg' %}" alt="{{ author.user.username }}" class="song-image">
+                            {% endif %}
+                            <div class="song-info text-center">
+                                <h3 class="song-title">{{ author.user.username }}</h3>
+                            </div>
+                        </a>
                     </div>
                 {% empty %}
                     <p>Нет доступных авторов.</p>

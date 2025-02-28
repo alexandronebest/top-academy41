@@ -5,18 +5,51 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/music.css' %}">
+    <style>
+        .filter-form {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .filter-form select {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid var(--primary-color);
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
 <div class="row">
-    <!-- Правая часть: Список музыки -->
-    <div class="col-md-12">  <!-- Изменено с col-md-8 на col-md-12, так как левая часть закомментирована -->
+    <div class="col-md-12">
         <div class="music-section">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h3>Музыка</h3>
                 <a href="{% url 'store:add_music' %}" class="btn btn-primary btn-add-music">Добавить Музыку</a>
             </div>
-            
+
+            <!-- Форма фильтрации -->
+            <form method="get" class="filter-form">
+                <select name="genre" onchange="this.form.submit()">
+                    <option value="">Все жанры</option>
+                    {% for genre in genres %}
+                        <option value="{{ genre.id }}" {% if request.GET.genre == genre.id|stringformat:"s" %}selected{% endif %}>
+                            {{ genre.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <select name="author" onchange="this.form.submit()">
+                    <option value="">Все авторы</option>
+                    {% for author in authors %}
+                        <option value="{{ author.user.id }}" {% if request.GET.author == author.user.id|stringformat:"s" %}selected{% endif %}>
+                            {{ author.user.username }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+
             {% if messages %}
                 <div class="messages">
                     {% for message in messages %}
@@ -27,14 +60,16 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            
+
             <ul class="list-group">
                 {% for song in songs %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>{{ song.author.username }} - {{ song.title }}</span>
+                    <span>{{ song.author.username }} - {{ song.title }} ({{ song.genre.name }})</span>
                     <div>
-                        <a href="{% url 'store:edit_music' song.id %}" class="btn btn-sm btn-warning me-2">Изменить</a>
-                        <a href="{% url 'store:delete_music' song.id %}" class="btn btn-sm btn-danger">Удалить</a>
+                        {% if user == song.author %}
+                            <a href="{% url 'store:edit_music' song.id %}" class="btn btn-sm btn-warning me-2">Изменить</a>
+                            <a href="{% url 'store:delete_music' song.id %}" class="btn btn-sm btn-danger">Удалить</a>
+                        {% endif %}
                     </div>
                 </li>
                 {% empty %}

@@ -1,56 +1,62 @@
-/* Стили для списка музыки */
 .music-section {
-    background-color: #ffffff;
+    background: var(--text-light);
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.music-section h3 {
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .music-section h3 {
+    font-family: 'Playwrite IN', serif;
+    font-size: 1.5rem;
     margin-bottom: 20px;
-}
-
-.list-group-item {
+  }
+  
+  .list-group-item {
+    background: var(--text-light);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
     margin-bottom: 10px;
-}
-
-.list-group-item .btn {
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .list-group-item .btn {
     margin-left: 5px;
-}
-
-/* Стили для кнопки "Добавить Музыку" */
-.btn-add-music {
-    margin-top: 20px;
-}
-
-/* Стили для формы добавления музыки */
-.add-music-form {
-    background-color: #ffffff;
-    padding: 20px;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.add-music-form label {
-    font-weight: bold;
-}
-
-.add-music-form .form-control {
-    margin-bottom: 15px;
-}
-
-/* Стили для формы редактирования музыки */
-.edit-music-form {
-    background-color: #ffffff;
+  }
+  
+  .btn-add-music {
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  
+  .btn-add-music:hover {
+    background-color: #388e3c;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .add-music-form, .edit-music-form {
+    background: var(--text-light);
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.edit-music-form label {
-    font-weight: bold;
-}
-
-.edit-music-form .form-control {
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .add-music-form label, .edit-music-form label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+  
+  .add-music-form .form-control, .edit-music-form .form-control {
     margin-bottom: 15px;
-}
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+  }

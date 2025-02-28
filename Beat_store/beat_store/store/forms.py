@@ -8,19 +8,14 @@ User = get_user_model()
 class SongForm(forms.ModelForm):
     class Meta:
         model = Song
-        fields = ['title', 'genre', 'price', 'path']
+        fields = ['title', 'genre', 'price', 'path', 'cover']  # Добавлено 'cover'
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'genre': forms.Select(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
             'path': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
-            
+            'cover': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),  # Добавлен виджет для cover
         }
-
-    def __init__(self, *args, **kwargs):
-        super(SongForm, self).__init__(*args, **kwargs)
-        # Дополнительные настройки для виджетов, если необходимо
-        # Например, можно добавить атрибуты или стили
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True, label='Электронная почта')
@@ -43,8 +38,3 @@ class ProfileForm(forms.ModelForm):
             'status': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
             'photo': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
         }
-
-    def __init__(self, *args, **kwargs):
-        super(ProfileForm, self).__init__(*args, **kwargs)
-        # Дополнительные настройки для виджетов, если необходимо
-        # Например, можно добавить атрибуты или стили
