@@ -12,144 +12,128 @@
 <div class="container mt-5">
     <div class="row">
         <!-- Левая часть: Фото пользователя -->
-        <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-body text-center">
-                    <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" 
-                         alt="Фото пользователя" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                    
-                    <!-- Форма для загрузки фото (только для владельца профиля) -->
-                    {% if request.user == profile.user %}
-                        <form method="post" enctype="multipart/form-data" action="{% url 'store:upload_photo' %}">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <input type="file" name="photo" class="form-control" accept="image/*" required>
-                            </div>
-                            <button type="submit" class="btn btn-secondary">Изменить фото</button>
-                        </form>
-                    {% endif %}
-                </div>
-            </div>
+        <div class="col-md-4 profile-photo">
+            <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" 
+                 alt="Фото пользователя" width="150" height="150">
+            <h2>{{ profile.user.username }}</h2>
+            {% if profile.status %}
+                <p>{{ profile.status }}</p>
+            {% else %}
+                <p><em>Статус не указан</em></p>
+            {% endif %}
+            {% if request.user == profile.user %}
+                <form method="post" enctype="multipart/form-data" action="{% url 'store:upload_photo' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="file" name="photo" class="form-control" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn">Изменить фото</button>
+                </form>
+            {% endif %}
         </div>
 
         <!-- Правая часть: Информация и списки песен -->
         <div class="col-md-8">
-            <!-- Информация о пользователе -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="mb-0">{{ profile.user.username }}</h3>
+            <!-- Редактирование статуса -->
+            {% if request.user == profile.user %}
+                <div class="music-section mb-4">
+                    <form method="post" action="{% url 'store:profile' profile.user.username %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Статус</label>
+                            <input type="text" name="status" id="status" class="form-control" 
+                                   value="{{ profile.status|default:'' }}" maxlength="100">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-2"></i>Сохранить изменения
+                        </button>
+                    </form>
                 </div>
-                <div class="card-body">
-                    {% include 'store/_messages.html' %}
-                    
-                    <!-- Редактирование статуса (только для владельца профиля) -->
-                    {% if request.user == profile.user %}
-                        <form method="post" action="{% url 'store:profile' profile.user.username %}">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="status" class="form-label">Статус</label>
-                                <input type="text" name="status" id="status" class="form-control" 
-                                       value="{{ profile.status|default:'' }}" maxlength="100">
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save me-2"></i>Сохранить изменения
-                            </button>
-                        </form>
-                    {% else %}
-                        <!-- Отображение статуса для других пользователей -->
-                        {% if profile.status %}
-                            <p><strong>Статус:</strong> {{ profile.status }}</p>
-                        {% else %}
-                            <p><em>Статус не указан</em></p>
-                        {% endif %}
-                    {% endif %}
-                </div>
-            </div>
+            {% endif %}
 
             <!-- Список песен пользователя -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h4>Мои песни</h4>
-                </div>
-                <div class="card-body">
-                    {% if songs %}
-                        <ul class="list-group">
-                            {% for song in songs %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center" data-song-id="{{ song.id }}">
-                                    {{ song.title }} - {{ song.author.username }}
-                                    <div class="d-flex gap-2 align-items-center">
-                                        <button class="play-button" data-song-id="{{ song.id }}" data-song-url="{{ song.path.url }}" data-song-title="{{ song.title }}">
-                                            <i class="bi bi-play-fill"></i>
-                                        </button>
-                                        <button class="like-button {% if request.user in song.likes.all %}liked{% endif %}" data-song-id="{{ song.id }}">
-                                            <i class="bi bi-heart-fill"></i>
-                                        </button>
-                                        <span id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
-                                        <!-- Кнопка "Купить" для всех -->
-                                        <button class="buy-button btn btn-success btn-sm" data-song-id="{{ song.id }}">
-                                            <i class="bi bi-cart me-1"></i>{{ song.price }} руб.
-                                        </button>
-                                        <!-- Кнопка "Изменить" только для автора -->
-                                        {% if request.user == song.author %}
-                                            <a href="{% url 'store:edit_music' song.id %}" class="btn btn-warning btn-sm">
-                                                <i class="bi bi-pencil me-1"></i>Изменить
-                                            </a>
-                                        {% endif %}
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>У этого пользователя ещё нет добавленных песен.</p>
-                    {% endif %}
-                    <!-- Кнопка добавления песни (только для владельца профиля) -->
-                    {% if request.user == profile.user %}
-                        <a href="{% url 'store:add_music' %}" class="btn btn-success mt-3">Добавить новую песню</a>
-                    {% endif %}
-                </div>
+            <div class="music-section mb-4">
+                <h3>Музка автора</h3>
+                {% if songs %}
+                    <ul class="list-group">
+                        {% for song in songs %}
+                            <li class="list-group-item" data-song-id="{{ song.id }}">
+                                {{ song.title }} - {{ song.author.username }}
+                                <div class="d-flex align-items-center">
+                                    <button class="play-button" data-song-id="{{ song.id }}" 
+                                            data-song-url="{{ song.path.url }}" data-song-title="{{ song.title }}">
+                                        <i class="bi bi-play-fill"></i>
+                                    </button>
+                                    <button class="like-button {% if request.user in song.likes.all %}liked{% endif %}" 
+                                            data-song-id="{{ song.id }}">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                    <span id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
+                                    <button class="btn btn-success btn-sm buy-button" data-song-id="{{ song.id }}">
+                                        <i class="bi bi-cart me-1"></i>{{ song.price }} руб.
+                                    </button>
+                                    {% if request.user == song.author %}
+                                        <a href="{% url 'store:edit_music' song.id %}" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil me-1"></i>Изменить
+                                        </a>
+                                        <a href="{% url 'store:delete_music' song.id %}" class="btn btn-danger btn-sm delete-song-btn"
+                                           onclick="return confirm('Вы уверены, что хотите удалить песню «{{ song.title }}»?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>У этого пользователя ещё нет добавленных песен.</p>
+                {% endif %}
+                {% if request.user == profile.user %}
+                    <a href="{% url 'store:add_music' %}" class="btn btn-success mt-3">Добавить новую песню</a>
+                {% endif %}
             </div>
 
             <!-- Список понравившихся песен -->
-            <div class="card">
-                <div class="card-header">
-                    <h4>Понравившиеся песни</h4>
-                </div>
-                <div class="card-body">
-                    {% if liked_songs %}
-                        <ul class="list-group">
-                            {% for song in liked_songs %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center" data-song-id="{{ song.id }}">
-                                    {{ song.title }} - {{ song.author.username }}
-                                    <div class="d-flex gap-2 align-items-center">
-                                        <button class="play-button" data-song-id="{{ song.id }}" data-song-url="{{ song.path.url }}" data-song-title="{{ song.title }}">
-                                            <i class="bi bi-play-fill"></i>
-                                        </button>
-                                        <button class="like-button liked" data-song-id="{{ song.id }}">
-                                            <i class="bi bi-heart-fill"></i>
-                                        </button>
-                                        <span id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
-                                        <!-- Кнопка "Купить" для всех -->
-                                        <button class="buy-button btn btn-success btn-sm" data-song-id="{{ song.id }}">
-                                            <i class="bi bi-cart me-1"></i>{{ song.price }} руб.
-                                        </button>
-                                        <!-- Кнопка "Изменить" только для автора -->
-                                        {% if request.user == song.author %}
-                                            <a href="{% url 'store:edit_music' song.id %}" class="btn btn-warning btn-sm">
-                                                <i class="bi bi-pencil me-1"></i>Изменить
-                                            </a>
-                                        {% endif %}
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>У этого пользователя ещё нет понравившихся песен.</p>
-                    {% endif %}
-                </div>
+            <div class="other-music-section">
+                <h4>Понравившиеся песни</h4>
+                {% if liked_songs %}
+                    <ul class="list-group">
+                        {% for song in liked_songs %}
+                            <li class="list-group-item" data-song-id="{{ song.id }}">
+                                {{ song.title }} - {{ song.author.username }}
+                                <div class="d-flex align-items-center">
+                                    <button class="play-button" data-song-id="{{ song.id }}" 
+                                            data-song-url="{{ song.path.url }}" data-song-title="{{ song.title }}">
+                                        <i class="bi bi-play-fill"></i>
+                                    </button>
+                                    <button class="like-button liked" data-song-id="{{ song.id }}">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                    <span id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
+                                    <button class="btn btn-success btn-sm buy-button" data-song-id="{{ song.id }}">
+                                        <i class="bi bi-cart me-1"></i>{{ song.price }} руб.
+                                    </button>
+                                    {% if request.user == song.author %}
+                                        <a href="{% url 'store:edit_music' song.id %}" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil me-1"></i>Изменить
+                                        </a>
+                                        <a href="{% url 'store:delete_music' song.id %}" class="btn btn-danger btn-sm delete-song-btn"
+                                           onclick="return confirm('Вы уверены, что хотите удалить песню «{{ song.title }}»?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>У этого пользователя ещё нет понравившихся песен.</p>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block extra_js %}

@@ -119,3 +119,12 @@
   border-radius: 10px;
   box-shadow: var(--shadow-md);
 }
+
+.delete-song-btn {
+  padding: 0.2rem 0.4rem; /* Ещё меньше отступов */
+  font-size: 0.9rem; /* Меньший шрифт */
+}
+
+.delete-song-btn i {
+  margin: 0; /* Убираем лишние отступы у иконки */
+}
