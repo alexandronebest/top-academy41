@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 from . import views
@@ -16,6 +15,8 @@ urlpatterns = [
     path('register/', views.RegisterView.as_view(), name='register'),
     path('upload-photo/', views.upload_photo, name='upload_photo'),
     path('authors/', views.authors_list_view, name='authors_list'),
+    path('like/<int:song_id>/', views.like_song, name='like_song'),
+    path('buy/<int:song_id>/', views.music_list_view, name='buy'),  # Заглушка, для покупки потом реализовать
     path('accounts/login/', LoginView.as_view(
         template_name='store/login.html',
         redirect_authenticated_user=True

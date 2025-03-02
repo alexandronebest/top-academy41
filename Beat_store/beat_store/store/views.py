@@ -4,10 +4,14 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_protect
 from .models import User, Song, Genre, Profile
 from .forms import SongForm, CustomUserCreationForm, ProfileForm
 
 def index(request):
+    """Отображает главную страницу с топом песен, новинками, жанрами и авторами."""
     top_songs = Song.objects.order_by('-created_at')[:10]
     new_songs = Song.objects.order_by('-created_at')[:10]
     genres = Genre.objects.all()
@@ -23,13 +27,22 @@ def index(request):
 
 @login_required
 def profile(request, username=None):
+    """Отображает профиль пользователя и позволяет редактировать статус."""
     user = get_object_or_404(User, username=username) if username else request.user
     profile = get_object_or_404(Profile, user=user)
     songs = Song.objects.filter(author=user).select_related('genre')
-    
+    liked_songs = user.liked_songs.all()
+
+    if request.method == 'POST' and user == request.user:
+        profile.status = request.POST.get('status', '')
+        profile.save()
+        messages.success(request, 'Статус обновлен!')
+        return redirect('store:profile', username=user.username)
+
     context = {
         'profile': profile,
         'songs': songs,
+        'liked_songs': liked_songs,
         'viewed_user': user,
         'is_own_profile': user == request.user
     }
@@ -37,19 +50,18 @@ def profile(request, username=None):
 
 @login_required
 def music_list_view(request):
-    """Список всех песен с фильтрацией по жанрам и авторам."""
+    """Отображает список песен с фильтрацией по жанру, автору и названию."""
     genres = Genre.objects.all()
     authors = Profile.objects.select_related('user').all()
     songs = Song.objects.select_related('author', 'genre').all()
 
-    # Фильтрация
     genre_id = request.GET.get('genre')
     if genre_id:
         songs = songs.filter(genre__id=genre_id)
     author_id = request.GET.get('author')
     if author_id:
         songs = songs.filter(author__id=author_id)
-    title = request.GET.get('query')  # Изменено с 'query' для совместимости с поиском
+    title = request.GET.get('query')
     if title:
         songs = songs.filter(title__icontains=title)
 
@@ -62,7 +74,7 @@ def music_list_view(request):
 
 @login_required
 def add_music_view(request):
-    """Добавление новой песни."""
+    """Позволяет пользователю добавить новую песню."""
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES)
         if form.is_valid():
@@ -78,30 +90,30 @@ def add_music_view(request):
 
 @login_required
 def edit_music_view(request, song_id):
-    """Редактирование песни с проверкой авторства."""
+    """Позволяет автору редактировать свою песню."""
     song = get_object_or_404(Song, id=song_id)
     if song.author != request.user:
         messages.error(request, 'Вы не можете редактировать эту песню')
         return redirect('store:music_list')
-    
+
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES, instance=song)
         if form.is_valid():
             form.save()
             messages.success(request, 'Песня успешно обновлена!')
-            return redirect('store/music_list')
+            return redirect('store:music_list')
     else:
         form = SongForm(instance=song)
     return render(request, 'store/edit_music.html', {'form': form, 'song': song})
 
 @login_required
 def delete_music_view(request, song_id):
-    """Удаление песни с проверкой авторства."""
+    """Позволяет автору удалить свою песню."""
     song = get_object_or_404(Song, id=song_id)
     if song.author != request.user:
         messages.error(request, 'Вы не можете удалить эту песню')
         return redirect('store:music_list')
-    
+
     if request.method == 'POST':
         song.delete()
         messages.success(request, 'Песня успешно удалена!')
@@ -109,7 +121,7 @@ def delete_music_view(request, song_id):
     return render(request, 'store/delete_music.html', {'song': song})
 
 def search_view(request):
-    """Поиск песен по названию (оставлен для совместимости, но не используется)."""
+    """Поиск песен по названию."""
     query = request.GET.get('query', '').strip()
     results = Song.objects.filter(title__icontains=query) if query else Song.objects.none()
     return render(request, 'store/search_results.html', {
@@ -118,6 +130,7 @@ def search_view(request):
     })
 
 class RegisterView(CreateView):
+    """Регистрация нового пользователя."""
     form_class = CustomUserCreationForm
     template_name = 'store/register.html'
     success_url = reverse_lazy('store:index')
@@ -130,6 +143,7 @@ class RegisterView(CreateView):
 
 @login_required
 def upload_photo(request):
+    """Обновление фото профиля пользователя."""
     profile = request.user.profile
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
@@ -143,5 +157,29 @@ def upload_photo(request):
 
 @login_required
 def authors_list_view(request):
+    """Отображает список всех авторов."""
     authors = Profile.objects.select_related('user').all()
     return render(request, 'store/profiles.html', {'profiles': authors})
+
+@login_required
+@require_POST  # Ограничиваем метод только POST
+@csrf_protect  # Явно включаем защиту CSRF
+def like_song(request, song_id):
+    """Обработка лайка/дизлайка песни через AJAX."""
+    song = get_object_or_404(Song, id=song_id)
+    user = request.user
+
+    # Проверяем, лайкнул ли пользователь песню ранее
+    if user in song.likes.all():
+        song.likes.remove(user)
+        liked = False
+    else:
+        song.likes.add(user)
+        liked = True
+
+    # Сохраняем изменения и возвращаем JSON-ответ
+    song.save()
+    return JsonResponse({
+        'liked': liked,
+        'total_likes': song.total_likes,  # Используем свойство модели
+    }, status=200)

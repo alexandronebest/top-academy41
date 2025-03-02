@@ -1,0 +1,230 @@
+/* beat_store/static/css/music_list.css */
+
+/* Контейнер песен */
+.songs-container {
+    position: relative;
+    user-select: none;
+    padding: 0 50px; /* Отступы для кнопок прокрутки, как в style.css */
+  }
+  
+  .songs {
+    display: flex;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 1rem;
+    scroll-behavior: smooth; /* Новый функционал: плавная прокрутка */
+    gap: 1rem; /* Соответствует margin-right из старого CSS */
+  }
+  
+  .songs::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Элемент песни */
+  .song-item {
+    flex: 0 0 auto;
+    width: 200px; /* Сохранён размер из старого music_list.css */
+    background: var(--text-light);
+    border-radius: 15px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    margin-right: 1rem; /* Сохранён отступ из старого CSS */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .song-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .song-image-container {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; /* Новый функционал: соотношение 1:1 */
+  }
+  
+  .song-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Новый функционал: адаптация изображения */
+    border-radius: 10%;
+    padding: 5px; /* Сохранено из старого CSS */
+    loading: lazy; /* Новый функционал: ленивая загрузка */
+  }
+  
+  /* Информация о песне */
+  .song-info {
+    padding: 0.5rem;
+    text-align: center;
+  }
+  
+  .song-title {
+    font-family: 'Playwrite IN', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.25rem;
+  }
+  
+  .song-author {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: #777;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.5rem;
+  }
+  
+  .song-author-link {
+    text-decoration: none;
+    color: var(--primary-color); /* Единый стиль с style.css */
+  }
+  
+  .song-author-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Кнопка воспроизведения */
+  .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.6);
+    color: var(--text-light);
+    border: none;
+    border-radius: 50%;
+    width: 50px; /* Увеличен размер для一致ности с style.css */
+    height: 50px;
+    font-size: 1.5rem;
+    transition: var(--transition);
+    opacity: 0; /* Сохранено поведение из старого CSS */
+  }
+  
+  .song-item:hover .play-button {
+    opacity: 1;
+  }
+  
+  .play-button:hover {
+    background-color: rgba(0, 0, 0, 0.8); /* Новый функционал: эффект наведения */
+  }
+  
+  /* Кнопка покупки */
+  .buy-button {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem; /* Сохранено из старого CSS */
+    transition: var(--transition);
+    margin-bottom: 0.5rem;
+  }
+  
+  .buy-button:hover {
+    background-color: #388e3c;
+  }
+  
+  /* Кнопка лайка */
+  .like-button {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 1.2rem;
+    color: #ccc; /* Единый стиль с style.css */
+    transition: var(--transition);
+  }
+  
+  .like-button.liked {
+    color: #dc3545; /* Единый стиль с style.css */
+  }
+  
+  .like-button:hover {
+    transform: scale(1.2);
+  }
+  
+  /* Кнопки прокрутки */
+  .scroll-button {
+    background: var(--text-light);
+    color: var(--primary-color);
+    width: 40px; /* Сохранён размер из старого CSS */
+    height: 40px;
+    box-shadow: var(--shadow-sm);
+    border: none;
+    border-radius: 50%;
+    transition: var(--transition);
+    z-index: 10;
+  }
+  
+  .scroll-button:hover {
+    background: var(--primary-color);
+    color: var(--text-light);
+  }
+  
+  .scroll-button.left {
+    left: 0;
+  }
+  
+  .scroll-button.right {
+    right: 0;
+  }
+  
+  /* Форма фильтров */
+  .filter-form {
+    background: var(--light-bg);
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 768px) {
+    .song-item {
+      width: 150px; /* Сохранено из старого CSS */
+    }
+  
+    .song-title {
+      font-size: 1rem;
+    }
+  
+    .song-author {
+      font-size: 0.85rem;
+    }
+  
+    .play-button {
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .song-item {
+      width: 120px; /* Сохранено из старого CSS */
+    }
+  
+    .song-title {
+      font-size: 0.9rem;
+    }
+  
+    .song-author {
+      font-size: 0.8rem;
+    }
+  
+    .buy-button {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.8rem;
+    }
+  }

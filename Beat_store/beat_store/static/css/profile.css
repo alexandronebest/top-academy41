@@ -1,87 +1,121 @@
+/* beat_store/static/css/profile.css */
 .container {
-    margin-top: 2rem;
-    max-width: 1400px;
-  }
-  
-  .profile-photo {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  .profile-photo img {
-    border: 5px solid var(--primary-color);
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  .profile-photo h2 {
-    font-family: 'Playwrite IN', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-dark);
-  }
-  
-  .profile-photo p {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-    color: #777;
-  }
-  
-  .profile-photo .btn {
-    background-color: var(--primary-color);
-    color: var(--text-light);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 25px;
-    font-family: 'Montserrat', sans-serif;
-    transition: var(--transition);
-  }
-  
-  .profile-photo .btn:hover {
-    background-color: #388e3c;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-  
-  .music-section {
-    padding: 1rem;
-    background: var(--text-light);
-    border-radius: 10px;
-    box-shadow: var(--shadow-sm);
-  }
-  
-  .music-section h3 {
-    font-family: 'Playwrite IN', serif;
-    font-size: 1.5rem;
-  }
-  
-  .list-group-item {
-    background: var(--text-light);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    margin-bottom: 0.5rem;
-    font-family: 'Montserrat', sans-serif;
-  }
-  
-  .list-group-item .btn {
-    margin-left: 0.5rem;
-    border-radius: 5px;
-  }
-  
-  .other-music-section {
-    padding: 1rem;
-    background: var(--text-light);
-    border-radius: 10px;
-    box-shadow: var(--shadow-sm);
-  }
-  
-  .other-music-section h4 {
-    font-family: 'Playwrite IN', serif;
-    font-size: 1.25rem;
-  }
-  
-  .modal-content {
-    background: var(--text-light);
-    border-radius: 10px;
-    box-shadow: var(--shadow-md);
-  }
+  margin-top: 2rem;
+  max-width: 1400px;
+}
+
+.profile-photo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.profile-photo img {
+  border: 5px solid var(--primary-color);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-photo h2 {
+  font-family: 'Playwrite IN', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.profile-photo p {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: #777;
+}
+
+.profile-photo .btn {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-family: 'Montserrat', sans-serif;
+  transition: var(--transition);
+}
+
+.profile-photo .btn:hover {
+  background-color: #388e3c;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.music-section {
+  padding: 1rem;
+  background: var(--text-light);
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.music-section h3 {
+  font-family: 'Playwrite IN', serif;
+  font-size: 1.5rem;
+}
+
+.list-group-item {
+  background: var(--text-light);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-group-item .btn {
+  margin-left: 0.5rem;
+  border-radius: 5px;
+}
+
+.play-button {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.play-button:hover {
+  background-color: #388e3c;
+}
+
+.like-button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 1.2rem;
+  transition: var(--transition);
+}
+
+.like-button.liked {
+  color: #dc3545;
+}
+
+.like-button:hover {
+  transform: scale(1.2);
+}
+
+.other-music-section {
+  padding: 1rem;
+  background: var(--text-light);
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.other-music-section h4 {
+  font-family: 'Playwrite IN', serif;
+  font-size: 1.25rem;
+}
+
+.modal-content {
+  background: var(--text-light);
+  border-radius: 10px;
+  box-shadow: var(--shadow-md);
+}

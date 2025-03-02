@@ -1,82 +1,93 @@
 {% extends 'store/base.html' %}
 {% load static %}
 
-{% block title %}Моя Музыка{% endblock %}
+{% block title %}Список песен - Beat Store{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/music.css' %}">
-    <style>
-        .filter-form {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .filter-form select {
-            padding: 0.5rem;
-            border-radius: 5px;
-            border: 1px solid var(--primary-color);
-            font-family: 'Montserrat', sans-serif;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/music_list.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="music-section">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3>Музыка</h3>
-                <a href="{% url 'store:add_music' %}" class="btn btn-primary btn-add-music">Добавить Музыку</a>
+    <div class="container my-4">
+        <h1 class="text-center mb-4">Список песен</h1>
+
+        <!-- Фильтры -->
+        <form method="get" class="filter-form">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-4">
+                    <input type="text" name="query" class="form-control" placeholder="Поиск по названию..." value="{{ request.GET.query }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="genre" class="form-select">
+                        <option value="">Все жанры</option>
+                        {% for genre in genres %}
+                            <option value="{{ genre.id }}" {% if request.GET.genre == genre.id|stringformat:"s" %}selected{% endif %}>{{ genre.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="author" class="form-select">
+                        <option value="">Все авторы</option>
+                        {% for author in authors %}
+                            <option value="{{ author.user.id }}" {% if request.GET.author == author.user.id|stringformat:"s" %}selected{% endif %}>{{ author.user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Фильтровать</button>
+                </div>
             </div>
+        </form>
 
-            <!-- Форма фильтрации -->
-            <form method="get" class="filter-form">
-                <select name="genre" onchange="this.form.submit()">
-                    <option value="">Все жанры</option>
-                    {% for genre in genres %}
-                        <option value="{{ genre.id }}" {% if request.GET.genre == genre.id|stringformat:"s" %}selected{% endif %}>
-                            {{ genre.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-                <select name="author" onchange="this.form.submit()">
-                    <option value="">Все авторы</option>
-                    {% for author in authors %}
-                        <option value="{{ author.user.id }}" {% if request.GET.author == author.user.id|stringformat:"s" %}selected{% endif %}>
-                            {{ author.user.username }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </form>
-
-            {% if messages %}
-                <div class="messages">
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+        <!-- Список песен -->
+        <section class="category">
+            <div class="songs-container position-relative">
+                <button class="scroll-button left btn position-absolute top-50 start-0 translate-middle" onclick="scrollSongs('left', 'song-list')">❮</button>
+                <div class="songs d-flex overflow-auto" id="song-list">
+                    {% for song in songs %}
+                        <div class="song-item" data-song-id="{{ song.id }}">
+                            <div class="song-image-container">
+                                {% if song.cover %}
+                                    <img src="{{ song.cover.url }}" alt="{{ song.title }}" class="song-image">
+                                {% else %}
+                                    <img src="{% static 'images/default_cover.jpg' %}" alt="{{ song.title }}" class="song-image">
+                                {% endif %}
+                                <button class="play-button" data-song-id="{{ song.id }}" data-song-url="{{ song.path.url }}" data-song-title="{{ song.title }}">
+                                    <i class="bi bi-play-fill"></i>
+                                </button>
+                            </div>
+                            <div class="song-info">
+                                <h3 class="song-title">{{ song.title }}</h3>
+                                <p class="song-author">
+                                    <a href="{% url 'store:profile' song.author.username %}" class="song-author-link">{{ song.author.username }}</a>
+                                </p>
+                                <button class="buy-button" data-song-id="{{ song.id }}">{{ song.price }} руб.</button>
+                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                    <button class="like-button {% if request.user in song.likes.all %}liked{% endif %}" data-song-id="{{ song.id }}">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                    <span id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="song-item text-center">
+                            <p>Песен не найдено.</p>
                         </div>
                     {% endfor %}
                 </div>
-            {% endif %}
-
-            <ul class="list-group">
-                {% for song in songs %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>{{ song.author.username }} - {{ song.title }} ({{ song.genre.name }})</span>
-                    <div>
-                        {% if user == song.author %}
-                            <a href="{% url 'store:edit_music' song.id %}" class="btn btn-sm btn-warning me-2">Изменить</a>
-                            <a href="{% url 'store:delete_music' song.id %}" class="btn btn-sm btn-danger">Удалить</a>
-                        {% endif %}
-                    </div>
-                </li>
-                {% empty %}
-                    <li class="list-group-item">Нет доступных песен.</li>
-                {% endfor %}
-            </ul>
-        </div>
+                <button class="scroll-button right btn position-absolute top-50 end-0 translate-middle" onclick="scrollSongs('right', 'song-list')">❯</button>
+            </div>
+        </section>
     </div>
-</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/player.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Player.init();
+        });
+    </script>
 {% endblock %}

@@ -13,7 +13,7 @@
         <div class="authors-container position-relative">
             <!-- Кнопка для прокрутки влево -->
             <button class="scroll-button left btn btn-outline-secondary position-absolute top-50 start-0 translate-middle" 
-                    onclick="scrollAuthors('left', 'authors-list')">❮</button>
+                    onclick="scrollAuthors('左手', 'authors-list')">❮</button>
             
             <!-- Контейнер для авторов -->
             <div class="authors d-flex overflow-auto" id="authors-list">
@@ -42,16 +42,22 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    function scrollAuthors(direction, containerId) {
-        const container = document.getElementById(containerId);
-        const scrollAmount = container.offsetWidth * 0.8; // Адаптивная прокрутка
-        if (direction === 'left') {
-            container.scrollLeft -= scrollAmount;
-        } else if (direction === 'right') {
-            container.scrollLeft += scrollAmount;
+    <!-- Подключение player.js и инициализация -->
+    <script src="{% static 'js/player.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Player.init();  // Восстанавливает воспроизведение музыки
+        });
+
+        function scrollAuthors(direction, containerId) {
+            const container = document.getElementById(containerId);
+            const scrollAmount = container.offsetWidth * 0.8; // Адаптивная прокрутка
+            if (direction === 'left') {
+                container.scrollLeft -= scrollAmount;
+            } else if (direction === 'right') {
+                container.scrollLeft += scrollAmount;
+            }
+            container.scroll({ behavior: 'smooth' }); // Плавная прокрутка
         }
-        container.scroll({ behavior: 'smooth' }); // Плавная прокрутка
-    }
-</script>
+    </script>
 {% endblock %}

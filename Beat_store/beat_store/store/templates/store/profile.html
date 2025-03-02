@@ -3,6 +3,11 @@
 
 {% block title %}Профиль{% endblock %}
 
+{% block extra_css %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row">
@@ -70,7 +75,28 @@
                     {% if songs %}
                         <ul class="list-group">
                             {% for song in songs %}
-                                <li class="list-group-item">{{ song.title }} - {{ song.author.username }}</li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center" data-song-id="{{ song.id }}">
+                                    {{ song.title }} - {{ song.author.username }}
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <button class="play-button" data-song-id="{{ song.id }}" data-song-url="{{ song.path.url }}" data-song-title="{{ song.title }}">
+                                            <i class="bi bi-play-fill"></i>
+                                        </button>
+                                        <button class="like-button {% if request.user in song.likes.all %}liked{% endif %}" data-song-id="{{ song.id }}">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </button>
+                                        <span id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
+                                        <!-- Кнопка "Купить" для всех -->
+                                        <button class="buy-button btn btn-success btn-sm" data-song-id="{{ song.id }}">
+                                            <i class="bi bi-cart me-1"></i>{{ song.price }} руб.
+                                        </button>
+                                        <!-- Кнопка "Изменить" только для автора -->
+                                        {% if request.user == song.author %}
+                                            <a href="{% url 'store:edit_music' song.id %}" class="btn btn-warning btn-sm">
+                                                <i class="bi bi-pencil me-1"></i>Изменить
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </li>
                             {% endfor %}
                         </ul>
                     {% else %}
@@ -92,7 +118,28 @@
                     {% if liked_songs %}
                         <ul class="list-group">
                             {% for song in liked_songs %}
-                                <li class="list-group-item">{{ song.title }} - {{ song.author.username }}</li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center" data-song-id="{{ song.id }}">
+                                    {{ song.title }} - {{ song.author.username }}
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <button class="play-button" data-song-id="{{ song.id }}" data-song-url="{{ song.path.url }}" data-song-title="{{ song.title }}">
+                                            <i class="bi bi-play-fill"></i>
+                                        </button>
+                                        <button class="like-button liked" data-song-id="{{ song.id }}">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </button>
+                                        <span id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
+                                        <!-- Кнопка "Купить" для всех -->
+                                        <button class="buy-button btn btn-success btn-sm" data-song-id="{{ song.id }}">
+                                            <i class="bi bi-cart me-1"></i>{{ song.price }} руб.
+                                        </button>
+                                        <!-- Кнопка "Изменить" только для автора -->
+                                        {% if request.user == song.author %}
+                                            <a href="{% url 'store:edit_music' song.id %}" class="btn btn-warning btn-sm">
+                                                <i class="bi bi-pencil me-1"></i>Изменить
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </li>
                             {% endfor %}
                         </ul>
                     {% else %}
@@ -103,4 +150,13 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/player.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Player.init();
+        });
+    </script>
 {% endblock %}

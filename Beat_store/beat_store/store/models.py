@@ -27,6 +27,12 @@ class Song(models.Model):
     title = models.CharField(max_length=100, verbose_name='Название')
     path = models.FileField(upload_to='songs/', verbose_name='Файл')
     cover = models.ImageField(upload_to='covers/', null=True, blank=True, verbose_name='Обложка')
+    likes = models.ManyToManyField(
+        User,
+        related_name='liked_songs',
+        blank=True,
+        verbose_name='Лайки'
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -50,6 +56,10 @@ class Song(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def total_likes(self):
+        return self.likes.count()
 
     class Meta:
         verbose_name = 'Песня'
