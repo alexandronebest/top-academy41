@@ -30,22 +30,34 @@
     </main>
     {% include 'store/footer.html' %}
 
-    <section class="player-section fixed-bottom bg-light p-2">
+    <!-- Новый плеер в стиле Яндекс.Музыки -->
+    <section class="player-section fixed-bottom">
         <audio id="audio-player">
             <source id="audio-source" src="" type="audio/mpeg">
             Ваш браузер не поддерживает аудио.
         </audio>
-        <div class="d-flex align-items-center justify-content-center gap-2">
-            <button id="prev-button" class="btn btn-sm btn-outline-secondary"><i class="bi bi-skip-backward-fill"></i></button>
-            <button id="play-pause-button" class="btn btn-sm btn-outline-primary"><i class="bi bi-play-fill"></i></button>
-            <button id="next-button" class="btn btn-sm btn-outline-secondary"><i class="bi bi-skip-forward-fill"></i></button>
-            <span id="current-time">0:00</span>
-            <input type="range" id="progress-bar" min="0" max="1" step="0.01" value="0" class="mx-2">
-            <span id="total-time">0:00</span>
-            <span id="current-song" class="flex-grow-1 text-center">Выберите песню для воспроизведения</span>
-            <button id="mute-button" class="btn btn-sm btn-outline-secondary"><i class="bi bi-volume-up-fill"></i></button>
-            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5" class="mx-2">
-            <button id="like-button-player" class="like-button btn btn-sm btn-outline-danger"><i class="bi bi-heart-fill"></i></button>
+        <div class="player-container d-flex align-items-center justify-content-between">
+            <!-- Левая часть: информация о треке -->
+            <div class="track-info d-flex align-items-center">
+                <span id="current-song" class="text-light">Выберите песню для воспроизведения</span>
+            </div>
+            <!-- Центральная часть: элементы управления -->
+            <div class="controls d-flex align-items-center gap-3">
+                <button id="prev-button" class="btn btn-icon"><i class="bi bi-skip-start-fill"></i></button>
+                <button id="play-pause-button" class="btn btn-icon btn-play"><i class="bi bi-play-fill"></i></button>
+                <button id="next-button" class="btn btn-icon"><i class="bi bi-skip-end-fill"></i></button>
+                <div class="progress-container d-flex align-items-center">
+                    <span id="current-time" class="text-light">0:00</span>
+                    <input type="range" id="progress-bar" min="0" max="1" step="0.01" value="0" class="mx-2">
+                    <span id="total-time" class="text-light">0:00</span>
+                </div>
+            </div>
+            <!-- Правая часть: громкость и лайк -->
+            <div class="extra-controls d-flex align-items-center gap-2">
+                <button id="mute-button" class="btn btn-icon"><i class="bi bi-volume-up-fill"></i></button>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+                <button id="like-button-player" class="btn btn-icon like-button"><i class="bi bi-heart-fill"></i></button>
+            </div>
         </div>
     </section>
 
