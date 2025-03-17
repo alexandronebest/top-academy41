@@ -11,48 +11,39 @@
 {% block content %}
 <div class="container mt-5">
     <!-- Профиль пользователя -->
-    <section class="category profile-section mb-5">
-        <h2 class="profile-title">{{ profile.user.username }}</h2>
-        <div class="profile-container">
-            <div class="profile-item">
-                <div class="profile-image-container">
-                    <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" 
-                         alt="Фото профиля" class="profile-image" loading="lazy">
+    <section class="profile-section mb-5">
+        <div class="profile-header">
+            <div class="profile-image-container">
+                <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" 
+                     alt="Фото профиля" class="profile-image" loading="lazy">
+            </div>
+            <div class="profile-details">
+                <h1 class="profile-title">{{ profile.user.username }}</h1>
+                <div class="profile-stats">
+                    <span><i class="bi bi-heart-fill"></i> {{ profile.total_likes }} лайков</span>
+                    <span><i class="bi bi-play-fill"></i> {{ profile.total_plays }} прослушиваний</span>
+                    <span><i class="bi bi-music-note"></i> {{ songs|length }} треков</span>
                 </div>
-                <div class="profile-info text-center">
-                    <p class="profile-status">
-                        {% if profile.status %}{{ profile.status }}{% else %}<em>Статус не указан</em>{% endif %}
-                    </p>
-                    {% if request.user == profile.user %}
-                        <form method="post" enctype="multipart/form-data" action="{% url 'store:upload_photo' %}" class="photo-upload-form">
-                            {% csrf_token %}
-                            <input type="file" name="photo" class="form-control photo-input" accept="image/*" required>
-                            <button type="submit" class="buy-button btn">Обновить фото</button>
-                        </form>
-                    {% endif %}
-                </div>
+                <p class="profile-status">
+                    {% if profile.status %}{{ profile.status }}{% else %}<em>Статус не указан</em>{% endif %}
+                </p>
+                {% if request.user == profile.user %}
+                    <button class="edit-status-btn" onclick="toggleStatusForm()">Изменить статус</button>
+                    <form method="post" action="{% url 'store:profile' profile.user.username %}" class="status-form hidden" id="status-form">
+                        {% csrf_token %}
+                        <input type="text" name="status" id="status" class="form-control status-input" 
+                               value="{{ profile.status|default:'' }}" maxlength="100" placeholder="Введите новый статус">
+                        <button type="submit" class="btn save-status-btn"><i class="bi bi-save"></i> Сохранить</button>
+                    </form>
+                    <form method="post" enctype="multipart/form-data" action="{% url 'store:upload_photo' %}" class="photo-upload-form mt-3">
+                        {% csrf_token %}
+                        <input type="file" name="photo" class="form-control photo-input" accept="image/*" required>
+                        <button type="submit" class="btn upload-photo-btn">Обновить фото</button>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </section>
-
-    <!-- Редактирование статуса -->
-    {% if request.user == profile.user %}
-        <section class="category status-section mb-5">
-            <h2>Статус</h2>
-            <div class="status-container">
-                <form method="post" action="{% url 'store:profile' profile.user.username %}" class="status-form">
-                    {% csrf_token %}
-                    <div class="input-group">
-                        <input type="text" name="status" id="status" class="form-control search-input" 
-                               value="{{ profile.status|default:'' }}" maxlength="100" placeholder="Введите статус">
-                        <button type="submit" class="btn buy-button">
-                            <i class="bi bi-save"></i> Сохранить
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </section>
-    {% endif %}
 
     <!-- Список песен пользователя -->
     <section class="category mb-5">
@@ -76,11 +67,21 @@
                             <h3 class="song-title">{{ song.title }}</h3>
                             <p class="song-author">{{ song.author.username }}</p>
                             <button class="buy-button btn">{{ song.price }} руб.</button>
-                            <div class="d-flex justify-content-center align-items-center gap-2">
-                                <button class="like-button {% if request.user in song.likes.all %}liked{% endif %}" data-song-id="{{ song.id }}">
-                                    <i class="bi bi-heart-fill"></i>
+                            {% if request.user.is_authenticated %}
+                                <button class="like-button {% if request.user in song.likes.all %}liked{% endif %}" 
+                                        data-song-id="{{ song.id }}"
+                                        onclick="toggleLike(this, {{ song.id }})">
+                                    <i class="bi bi-heart-fill"></i> 
+                                    <span class="likes-count" id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
                                 </button>
-                                <span id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
+                            {% else %}
+                                <button class="like-button" disabled title="Войдите, чтобы поставить лайк">
+                                    <i class="bi bi-heart-fill"></i> 
+                                    <span class="likes-count" id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
+                                </button>
+                            {% endif %}
+                            <div class="song-stats">
+                                <span id="plays-count-{{ song.id }}"><i class="bi bi-play-fill"></i> {{ song.total_plays|default:0 }}</span>
                             </div>
                             {% if request.user == profile.user %}
                                 <div class="mt-2">
@@ -132,11 +133,21 @@
                                 <a href="{% url 'store:profile' song.author.username %}" class="song-author-link">{{ song.author.username }}</a>
                             </p>
                             <button class="buy-button btn">{{ song.price }} руб.</button>
-                            <div class="d-flex justify-content-center align-items-center gap-2">
-                                <button class="like-button liked" data-song-id="{{ song.id }}">
-                                    <i class="bi bi-heart-fill"></i>
+                            {% if request.user.is_authenticated %}
+                                <button class="like-button {% if request.user in song.likes.all %}liked{% endif %}" 
+                                        data-song-id="{{ song.id }}"
+                                        onclick="toggleLike(this, {{ song.id }})">
+                                    <i class="bi bi-heart-fill"></i> 
+                                    <span class="likes-count" id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
                                 </button>
-                                <span id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
+                            {% else %}
+                                <button class="like-button" disabled title="Войдите, чтобы поставить лайк">
+                                    <i class="bi bi-heart-fill"></i> 
+                                    <span class="likes-count" id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
+                                </button>
+                            {% endif %}
+                            <div class="song-stats">
+                                <span id="plays-count-{{ song.id }}"><i class="bi bi-play-fill"></i> {{ song.total_plays|default:0 }}</span>
                             </div>
                         </div>
                     </div>
@@ -148,12 +159,12 @@
         </div>
     </section>
 </div>
-
 {% endblock %}
 
 {% block extra_js %}
     <script src="{% static 'js/player.js' %}"></script>
     <script>
+        // Функция для прокрутки песен
         function scrollSongs(direction, containerId) {
             const container = document.getElementById(containerId);
             const scrollAmount = 200;
@@ -164,8 +175,39 @@
             }
         }
 
+        // Переключение видимости формы статуса
+        function toggleStatusForm() {
+            const form = document.getElementById('status-form');
+            form.classList.toggle('hidden');
+        }
+
+        // Обработка лайков
+        function toggleLike(button, songId) {
+            const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+            fetch(`/like/${songId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Ошибка сети');
+                return response.json();
+            })
+            .then(data => {
+                const likesCount = button.querySelector('.likes-count');
+                likesCount.textContent = data.total_likes;
+                button.classList.toggle('liked', data.liked);
+            })
+            .catch(error => console.error('Ошибка при лайке:', error));
+        }
+
+        // Инициализация плеера
         document.addEventListener('DOMContentLoaded', function() {
             Player.init();
         });
     </script>
+    <!-- CSRF-токен для AJAX -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 {% endblock %}

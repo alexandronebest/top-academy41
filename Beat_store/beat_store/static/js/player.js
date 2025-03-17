@@ -1,11 +1,27 @@
-const Player = (function() {
-    let audioPlayer, audioSource, currentSongDisplay, likeButtonPlayer, playPauseButton, volumeSlider, progressBar, prevButton, nextButton, muteButton, currentTimeDisplay, totalTimeDisplay;
+const Player = (function () {
+    let audioPlayer,
+        audioSource,
+        currentSongDisplay,
+        likeButtonPlayer,
+        playPauseButton,
+        volumeSlider,
+        progressBar,
+        prevButton,
+        nextButton,
+        muteButton,
+        currentTimeDisplay,
+        totalTimeDisplay;
     let currentSongId = null;
     let playlist = [];
     let currentIndex = -1;
     let previousVolume = 0.5;
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || 
-                     document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+    const csrfToken =
+        document.querySelector('meta[name="csrf-token"]')?.content ||
+        document.querySelector('input[name="csrfmiddlewaretoken"]')?.value || null;
+
+    if (!csrfToken) {
+        console.error('CSRF-токен не найден. Добавьте {% csrf_token %} или <input name="csrfmiddlewaretoken"> в шаблон.');
+    }
 
     function init() {
         audioPlayer = document.getElementById('audio-player');
@@ -22,18 +38,22 @@ const Player = (function() {
         totalTimeDisplay = document.getElementById('total-time');
 
         if (!audioPlayer || !audioSource || !currentSongDisplay || !likeButtonPlayer) {
-            console.error('One or more required player elements are missing');
+            console.error('Не найдены необходимые элементы плеера');
             return;
         }
 
-        document.querySelectorAll('.play-button').forEach(button => {
-            // console.log(button)
-            console.log(button.closest('.song-item').querySelector('.song-author-link'))
+        // Заполнение плейлиста
+        document.querySelectorAll('.play-button').forEach((button) => {
+            const songItem = button.closest('.song-item');
+            const authorElement = songItem.querySelector('.song-author-link') || songItem.querySelector('.song-author');
+            const author = authorElement ? authorElement.textContent.trim() : 'Неизвестен';
+            const songId = button.getAttribute('data-song-id');
+            console.log(`Добавлена песня в плейлист: ID: ${songId}, Title: ${button.getAttribute('data-song-title')}, Author: ${author}`);
             playlist.push({
-                id: button.getAttribute('data-song-id'),
+                id: songId,
                 url: button.getAttribute('data-song-url'),
                 title: button.getAttribute('data-song-title'),
-                author: button.closest('.song-item').querySelector('.song-author-link')?.textContent.trim() || 'Unknown'
+                author: author,
             });
         });
 
@@ -43,43 +63,38 @@ const Player = (function() {
     }
 
     function setupEventListeners() {
-        document.querySelectorAll('.play-button').forEach(button => {
+        document.querySelectorAll('.play-button').forEach((button) => {
             button.addEventListener('click', handlePlayClick);
         });
-        document.querySelectorAll('.like-button').forEach(button => {
+        document.querySelectorAll('.like-button').forEach((button) => {
             button.addEventListener('click', handleLikeClick);
         });
-        document.querySelectorAll('.buy-button').forEach(button => {
+        document.querySelectorAll('.buy-button').forEach((button) => {
             button.addEventListener('click', handleBuyClick);
         });
 
         audioPlayer.addEventListener('play', () => {
             savePlayerState();
             updatePlayPauseIcon(true);
-            const playIcon = document.querySelector(`[data-song-id="${currentSongId}"] .play-button i`);
-            if (playIcon) playIcon.classList.replace('bi-play-fill', 'bi-pause-fill');
+            updateSongIcon(currentSongId, true);
         });
         audioPlayer.addEventListener('pause', () => {
             savePlayerState();
             updatePlayPauseIcon(false);
-            const playIcon = document.querySelector(`[data-song-id="${currentSongId}"] .play-button i`);
-            if (playIcon) playIcon.classList.replace('bi-pause-fill', 'bi-play-fill');
+            updateSongIcon(currentSongId, false);
         });
         audioPlayer.addEventListener('timeupdate', () => {
             savePlayerState();
             if (progressBar) progressBar.value = audioPlayer.currentTime / audioPlayer.duration || 0;
             updateTimeDisplay();
         });
-        audioPlayer.addEventListener('loadedmetadata', () => {
-            updateTimeDisplay();
-        });
+        audioPlayer.addEventListener('loadedmetadata', updateTimeDisplay);
         audioPlayer.addEventListener('ended', playNextSong);
         likeButtonPlayer.addEventListener('click', handlePlayerLikeClick);
 
         if (playPauseButton) playPauseButton.addEventListener('click', togglePlayPause);
         if (prevButton) prevButton.addEventListener('click', playPreviousSong);
         if (nextButton) nextButton.addEventListener('click', playNextSong);
-        
         if (volumeSlider) {
             volumeSlider.addEventListener('input', () => {
                 audioPlayer.volume = volumeSlider.value;
@@ -87,9 +102,7 @@ const Player = (function() {
                 localStorage.setItem('volume', volumeSlider.value);
             });
         }
-        if (muteButton) {
-            muteButton.addEventListener('click', toggleMute);
-        }
+        if (muteButton) muteButton.addEventListener('click', toggleMute);
         if (progressBar) {
             progressBar.addEventListener('input', () => {
                 audioPlayer.currentTime = progressBar.value * audioPlayer.duration;
@@ -102,14 +115,10 @@ const Player = (function() {
 
     function handlePlayClick() {
         const songId = this.getAttribute('data-song-id');
-        const clickedIndex = playlist.findIndex(song => song.id === songId);
+        const clickedIndex = playlist.findIndex((song) => song.id === songId);
 
         if (currentSongId === songId && currentIndex === clickedIndex) {
-            if (audioPlayer.paused) {
-                audioPlayer.play().catch(err => console.error("Playback error:", err));
-            } else {
-                audioPlayer.pause();
-            }
+            togglePlayPause();
         } else {
             currentIndex = clickedIndex;
             playSongByIndex(currentIndex);
@@ -119,19 +128,49 @@ const Player = (function() {
     function playSongByIndex(index) {
         if (index < 0 || index >= playlist.length) return;
         const song = playlist[index];
+        console.log(`Воспроизведение песни: ${song.title}, Автор: ${song.author}, ID: ${song.id}`);
         const playIcon = document.querySelector(`[data-song-id="${song.id}"] .play-button i`);
 
         resetPlayButtons();
         audioSource.src = song.url;
         audioPlayer.load();
-        audioPlayer.play().catch(err => console.error("Playback error:", err));
-        currentSongDisplay.textContent = `${song.title} - ${song.author}`;
+        audioPlayer.play().catch((err) => console.error('Ошибка воспроизведения:', err));
+        currentSongDisplay.textContent = `${song.title} - ${song.author || 'Неизвестен'}`;
         currentSongId = song.id;
         currentIndex = index;
         if (playIcon) playIcon.classList.replace('bi-play-fill', 'bi-pause-fill');
+
         const songContainer = document.querySelector(`[data-song-id="${currentSongId}"]`);
         if (songContainer) updatePlayerLikeState(songContainer);
+
+        incrementPlayCount(song.id);
         savePlayerState();
+    }
+
+    function incrementPlayCount(songId) {
+        console.log(`Отправка запроса для увеличения total_plays, songId: ${songId}, CSRF-токен: ${csrfToken}`);
+        fetch(`/play-song/${songId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => {
+                console.log(`Ответ от сервера для songId ${songId}: ${response.status}`);
+                if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
+                return response.json();
+            })
+            .then((data) => {
+                const playCountElement = document.getElementById(`plays-count-${songId}`);
+                if (playCountElement) {
+                    playCountElement.innerHTML = `<i class="bi bi-play-fill"></i> ${data.total_plays}`;
+                    console.log(`Song ${songId} played, total_plays updated to ${data.total_plays}`);
+                } else {
+                    console.warn(`Элемент с id="plays-count-${songId}" не найден`);
+                }
+            })
+            .catch((error) => console.error('Ошибка при увеличении счетчика:', error));
     }
 
     function playNextSong() {
@@ -149,8 +188,11 @@ const Player = (function() {
     }
 
     function togglePlayPause() {
-        if (audioPlayer.paused) audioPlayer.play();
-        else audioPlayer.pause();
+        if (audioPlayer.paused) {
+            audioPlayer.play().catch((err) => console.error('Ошибка воспроизведения:', err));
+        } else {
+            audioPlayer.pause();
+        }
     }
 
     function toggleMute() {
@@ -176,6 +218,14 @@ const Player = (function() {
         const icon = playPauseButton.querySelector('i');
         icon.classList.toggle('bi-play-fill', !isPlaying);
         icon.classList.toggle('bi-pause-fill', isPlaying);
+    }
+
+    function updateSongIcon(songId, isPlaying) {
+        const playIcon = document.querySelector(`[data-song-id="${songId}"] .play-button i`);
+        if (playIcon) {
+            playIcon.classList.toggle('bi-play-fill', !isPlaying);
+            playIcon.classList.toggle('bi-pause-fill', isPlaying);
+        }
     }
 
     function updateTimeDisplay() {
@@ -221,33 +271,39 @@ const Player = (function() {
     }
 
     function handleBuyClick() {
-        const songId = this.closest('[data-song-id]').getAttribute('data-song-id');
+        const songId = this.closest('.song-item').getAttribute('data-song-id');
         window.location.href = `/store/buy/${songId}/`;
     }
 
     function toggleLike(songId, button, callback) {
+        console.log(`Отправка запроса на лайк для songId: ${songId}`);
         fetch(`/like/${songId}/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrfToken,
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+            },
         })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
-        })
-        .then(data => {
-            const countSpan = document.getElementById(`likes-count-${songId}`);
-            if (countSpan) countSpan.textContent = data.total_likes;
-            button.classList.toggle('liked', data.liked);
-            if (callback) callback(data);
-        })
-        .catch(error => console.error('Error liking song:', error));
+            .then((response) => {
+                if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
+                return response.json();
+            })
+            .then((data) => {
+                const countSpan = document.getElementById(`likes-count-${songId}`);
+                if (countSpan) {
+                    countSpan.innerHTML = `<i class="bi bi-heart-fill"></i> ${data.total_likes}`;
+                    console.log(`Лайки для songId ${songId} обновлены: ${data.total_likes}`);
+                } else {
+                    console.warn(`Элемент с id="likes-count-${songId}" не найден`);
+                }
+                button.classList.toggle('liked', data.liked);
+                if (callback) callback(data);
+            })
+            .catch((error) => console.error('Ошибка при лайке:', error));
     }
 
     function resetPlayButtons() {
-        document.querySelectorAll('.play-button i').forEach(icon => {
+        document.querySelectorAll('.play-button i').forEach((icon) => {
             icon.classList.replace('bi-pause-fill', 'bi-play-fill');
         });
     }
@@ -267,7 +323,7 @@ const Player = (function() {
             author: playlist[currentIndex].author,
             time: audioPlayer.currentTime,
             isPlaying: !audioPlayer.paused,
-            volume: audioPlayer.volume
+            volume: audioPlayer.volume,
         };
         localStorage.setItem('currentSong', JSON.stringify(songData));
     }
@@ -280,11 +336,11 @@ const Player = (function() {
             audioPlayer.currentTime = savedSong.time || 0;
             audioPlayer.volume = savedSong.volume || 0.5;
             volumeSlider.value = savedSong.volume || 0.5;
-            currentSongDisplay.textContent = `${savedSong.title} - ${savedSong.author}`;
+            currentSongDisplay.textContent = `${savedSong.title} - ${savedSong.author || 'Неизвестен'}`;
             currentSongId = savedSong.id;
-            currentIndex = playlist.findIndex(song => song.id === savedSong.id);
+            currentIndex = playlist.findIndex((song) => song.id === savedSong.id);
             if (savedSong.isPlaying) {
-                audioPlayer.play().catch(err => console.error("Playback error:", err));
+                audioPlayer.play().catch((err) => console.error('Ошибка воспроизведения:', err));
             }
             const songContainer = document.querySelector(`[data-song-id="${currentSongId}"]`);
             if (songContainer) updatePlayerLikeState(songContainer);

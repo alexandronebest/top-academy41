@@ -8,6 +8,7 @@
   --transition: all 0.3s ease;
   --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.15);
+  --like-color: #dc3545; /* Красный цвет для лайка */
 }
 
 .container {
@@ -16,61 +17,73 @@
   margin: 0 auto;
 }
 
-.profile-section, .status-section, .category {
-  margin: 1.5rem 0;
+.profile-section, .category {
+  margin: 2rem 0;
 }
 
-.profile-title, h2 {
-  font-family: 'Playwrite IN', serif;
-  font-size: 1.75rem;
-  color: var(--text-dark);
-  margin-bottom: 1rem;
-  font-weight: 700;
-  text-align: center;
-}
-
-.profile-container, .status-container, .songs-container {
-  position: relative;
-  padding: 0 50px;
-}
-
-.profile-item {
+.profile-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
   background: var(--text-light);
   border-radius: 15px;
   box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
   transition: var(--transition);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin: 0 auto;
-  max-width: 300px;
-  padding: 1rem;
 }
 
-.profile-item:hover {
+.profile-header:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-md);
 }
 
 .profile-image-container {
   position: relative;
-  width: 100%;
-  padding-top: 100%;
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
 }
 
 .profile-image {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  padding: 5px;
+  border: 3px solid var(--primary-color);
 }
 
-.profile-info {
-  padding: 0.5rem;
+.profile-details {
+  flex: 1;
+  padding: 1rem;
+  text-align: center;
+}
+
+.profile-title {
+  font-family: 'Playwrite IN', serif;
+  font-size: 2rem;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.profile-stats {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.profile-stats span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.profile-stats i {
+  color: var(--primary-color);
 }
 
 .profile-status {
@@ -80,31 +93,79 @@
   margin: 0.5rem 0;
 }
 
+.edit-status-btn {
+  background: none;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.edit-status-btn:hover {
+  background: var(--primary-color);
+  color: var(--text-light);
+}
+
+.status-form {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.status-form.hidden {
+  display: none;
+}
+
+.status-input {
+  max-width: 300px;
+  border-radius: 20px;
+  border: 2px solid var(--primary-color);
+  padding: 0.5rem;
+}
+
+.save-status-btn {
+  background: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+}
+
 .photo-upload-form {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-
-.photo-input {
-  border-radius: 25px;
-  padding: 0.5rem;
-  font-family: 'Montserrat', sans-serif;
-}
-
-.status-form .input-group {
-  max-width: 500px;
+  max-width: 300px;
   margin: 0 auto;
 }
 
-.status-form .search-input {
-  border-radius: 25px 0 0 25px;
-  border: 2px solid var(--primary-color);
+.photo-input {
+  border-radius: 20px;
+  padding: 0.5rem;
 }
 
-.status-form .buy-button {
-  border-radius: 0 25px 25px 0;
+.upload-photo-btn {
+  background: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+  border-radius: 20px;
   padding: 0.5rem 1rem;
+}
+
+h2 {
+  font-family: 'Playwrite IN', serif;
+  font-size: 1.75rem;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.songs-container {
+  position: relative;
+  padding: 0 50px;
 }
 
 .songs {
@@ -114,7 +175,7 @@
   -ms-overflow-style: none;
   padding-bottom: 20px;
   scroll-behavior: smooth;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .songs::-webkit-scrollbar {
@@ -152,12 +213,16 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 10%;
+  border-radius: 10px;
   padding: 5px;
 }
 
 .song-info {
   padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem; /* Уменьшенный отступ между элементами */
 }
 
 .song-title {
@@ -184,12 +249,31 @@
   text-decoration: underline;
 }
 
+.song-stats {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 0.3rem; /* Уменьшенный отступ сверху */
+}
+
+.song-stats span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.song-stats i {
+  color: var(--primary-color);
+}
+
 .play-button {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.6);
   border: none;
   border-radius: 50%;
   width: 50px;
@@ -201,31 +285,27 @@
 }
 
 .play-button:hover {
-  background-color: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.8);
 }
 
 .buy-button {
-  background-color: var(--primary-color);
+  background: var(--primary-color);
   color: var(--text-light);
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 5px;
+  border-radius: 20px;
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
   cursor: pointer;
-  margin: 10px 0;
+  margin: 0.3rem 0; /* Уменьшенный отступ */
   transition: var(--transition);
 }
 
 .buy-button:hover {
-  background-color: #388e3c;
+  background: #388e3c;
 }
 
-.btn-warning, .btn-danger {
-  padding: 0.3rem 0.6rem;
-  font-size: 0.9rem;
-}
-
+/* Кнопка лайка */
 .like-button {
   background: none;
   border: none;
@@ -233,10 +313,38 @@
   font-size: 1.2rem;
   cursor: pointer;
   transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem;
 }
 
 .like-button.liked {
-  color: #dc3545;
+  color: var(--like-color);
+}
+
+.like-button:hover {
+  color: var(--like-color);
+}
+
+.like-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.like-button i {
+  font-size: 1.2rem;
+}
+
+.like-button .likes-count {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.btn-warning, .btn-danger {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.9rem;
 }
 
 .scroll-button {
@@ -269,44 +377,91 @@
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .song-item, .profile-item {
-      flex: 0 0 150px;
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
   }
 
-  .song-title, .profile-title {
-      font-size: 1rem;
+  .profile-image-container {
+    width: 120px;
+    height: 120px;
   }
 
-  .song-author, .profile-status {
-      font-size: 0.9rem;
+  .profile-title {
+    font-size: 1.5rem;
   }
 
-  .scroll-button {
-      width: 35px;
-      height: 35px;
+  .profile-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .song-item {
+    flex: 0 0 150px;
+  }
+
+  .song-title {
+    font-size: 1rem;
+  }
+
+  .song-author {
+    font-size: 0.85rem;
+  }
+
+  .like-button {
+    font-size: 1rem;
+  }
+
+  .like-button i {
+    font-size: 1rem;
+  }
+
+  .like-button .likes-count {
+    font-size: 0.85rem;
   }
 }
 
 @media (max-width: 576px) {
-  .song-item, .profile-item {
-      flex: 0 0 120px;
+  .profile-image-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-title {
+    font-size: 1.25rem;
+  }
+
+  .song-item {
+    flex: 0 0 120px;
   }
 
   .song-title {
-      font-size: 0.9rem;
+    font-size: 0.9rem;
   }
 
-  .song-author, .profile-status {
-      font-size: 0.8rem;
+  .song-author {
+    font-size: 0.8rem;
   }
 
   .play-button {
-      width: 40px;
-      height: 40px;
-      font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
   }
 
-  .profile-container, .status-container, .songs-container {
-      padding: 0 40px;
+  .songs-container {
+    padding: 0 40px;
+  }
+
+  .like-button {
+    font-size: 0.9rem;
+  }
+
+  .like-button i {
+    font-size: 0.9rem;
+  }
+
+  .like-button .likes-count {
+    font-size: 0.8rem;
   }
 }
