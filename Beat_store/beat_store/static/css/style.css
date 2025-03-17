@@ -221,7 +221,8 @@ main {
 }
 
 .song-title {
-  font-family: 'Playwrite IN', serif;
+  /* font-family: 'Playwrite IN', serif; */
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   white-space: nowrap;
