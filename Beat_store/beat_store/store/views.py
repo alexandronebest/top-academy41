@@ -12,11 +12,9 @@ from .models import User, Song, Genre, Profile
 from .forms import SongForm, CustomUserCreationForm, ProfileForm
 import logging
 
-# Настройка логгера
 logger = logging.getLogger(__name__)
 
 def index(request):
-    """Отображает главную страницу с топом песен, новинками, жанрами и авторами."""
     top_songs = Song.objects.annotate(likes_count=Count('likes')).order_by('-likes_count')[:10]
     new_songs = Song.objects.order_by('-created_at')[:10]
     genres = Genre.objects.all()
@@ -30,19 +28,17 @@ def index(request):
     }
     return render(request, 'store/index.html', context)
 
-
 @login_required
 def profile(request, username=None):
-    """Отображает профиль пользователя и позволяет редактировать статус."""
     user = get_object_or_404(User, username=username) if username else request.user
-    profile = get_object_or_404(Profile, user=user)
+    profile = user.profile
     songs = Song.objects.filter(author=user).select_related('genre')
     liked_songs = user.liked_songs.select_related('author', 'genre').all()
 
     if request.method == 'POST' and user == request.user:
         profile.status = request.POST.get('status', '').strip()
         profile.save()
-        messages.success(request, 'Статус успешно обновлен!')
+        messages.success(request, 'Статус успешно обновлён!')
         return redirect('store:profile', username=user.username)
 
     context = {
@@ -52,22 +48,17 @@ def profile(request, username=None):
     }
     return render(request, 'store/profile.html', context)
 
-
 @login_required
 def music_list_view(request):
-    """Отображает список песен с фильтрацией по жанру, автору и названию."""
     genres = Genre.objects.all()
     authors = Profile.objects.select_related('user').all()
     songs = Song.objects.select_related('author', 'genre').all()
 
-    genre_id = request.GET.get('genre')
-    if genre_id:
+    if genre_id := request.GET.get('genre'):
         songs = songs.filter(genre__id=genre_id)
-    author_id = request.GET.get('author')
-    if author_id:
+    if author_id := request.GET.get('author'):
         songs = songs.filter(author__id=author_id)
-    title = request.GET.get('query')
-    if title:
+    if title := request.GET.get('query'):
         songs = songs.filter(title__icontains=title)
 
     context = {
@@ -77,10 +68,8 @@ def music_list_view(request):
     }
     return render(request, 'store/music_list.html', context)
 
-
 @login_required
 def add_music_view(request):
-    """Позволяет пользователю добавить новую песню."""
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES)
         if form.is_valid():
@@ -89,15 +78,13 @@ def add_music_view(request):
             song.save()
             messages.success(request, 'Песня успешно добавлена!')
             return redirect('store:music_list')
-        messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+        messages.error(request, 'Исправьте ошибки в форме.')
     else:
         form = SongForm()
     return render(request, 'store/add_music.html', {'form': form})
 
-
 @login_required
 def edit_music_view(request, song_id):
-    """Позволяет автору редактировать свою песню."""
     song = get_object_or_404(Song, id=song_id)
     if song.author != request.user:
         messages.error(request, 'Вы не можете редактировать эту песню.')
@@ -109,15 +96,13 @@ def edit_music_view(request, song_id):
             form.save()
             messages.success(request, 'Песня успешно обновлена!')
             return redirect('store:music_list')
-        messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+        messages.error(request, 'Исправьте ошибки в форме.')
     else:
         form = SongForm(instance=song)
     return render(request, 'store/edit_music.html', {'form': form, 'song': song})
 
-
 @login_required
 def delete_music_view(request, song_id):
-    """Позволяет автору удалить свою песню."""
     song = get_object_or_404(Song, id=song_id)
     if song.author != request.user:
         messages.error(request, 'Вы не можете удалить эту песню.')
@@ -129,19 +114,15 @@ def delete_music_view(request, song_id):
         return redirect('store:music_list')
     return render(request, 'store/delete_music.html', {'song': song})
 
-
 def search_view(request):
-    """Поиск песен по названию."""
     query = request.GET.get('query', '').strip()
-    results = Song.objects.filter(title__icontains=query).select_related('author', 'genre') if query else Song.objects.none()
+    songs = Song.objects.filter(title__icontains=query).select_related('author', 'genre') if query else Song.objects.none()
     return render(request, 'store/search_results.html', {
-        'results': results,
+        'songs': songs,
         'query': query,
     })
 
-
 class RegisterView(CreateView):
-    """Регистрация нового пользователя."""
     form_class = CustomUserCreationForm
     template_name = 'store/register.html'
     success_url = reverse_lazy('store:index')
@@ -152,10 +133,8 @@ class RegisterView(CreateView):
         messages.success(self.request, 'Регистрация прошла успешно!')
         return super().form_valid(form)
 
-
 @login_required
 def upload_photo(request):
-    """Обновление фото профиля пользователя."""
     profile = request.user.profile
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
@@ -163,50 +142,44 @@ def upload_photo(request):
             form.save()
             messages.success(request, 'Фото успешно обновлено!')
             return redirect('store:profile', username=request.user.username)
-        messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+        messages.error(request, 'Исправьте ошибки в форме.')
     else:
         form = ProfileForm(instance=profile)
     return render(request, 'store/upload_photo.html', {'form': form})
 
-
 @login_required
 def authors_list_view(request):
-    """Отображает список всех авторов."""
     authors = Profile.objects.select_related('user').all()
     return render(request, 'store/profiles.html', {'profiles': authors})
-
 
 @login_required
 @require_POST
 @csrf_protect
 def like_song(request, song_id):
-    """Обработка лайка/дизлайка песни через AJAX."""
     song = get_object_or_404(Song, id=song_id)
     user = request.user
+    liked = user in song.likes.all()
 
-    if user in song.likes.all():
+    if liked:
         song.likes.remove(user)
-        liked = False
+        logger.debug(f"User {user.username} unliked song {song_id}")
     else:
         song.likes.add(user)
-        liked = True
+        logger.debug(f"User {user.username} liked song {song_id}")
 
     song.save()
+    total_likes = song.likes.count()
     return JsonResponse({
-        'liked': liked,
-        'total_likes': song.total_likes,
+        'liked': not liked,
+        'total_likes': total_likes,
     }, status=200)
-
 
 @login_required
 @require_POST
 @csrf_protect
 def play_song(request, song_id):
-    """Увеличивает счетчик прослушиваний при воспроизведении песни."""
     song = get_object_or_404(Song, id=song_id)
     song.total_plays += 1
     song.save()
-    logger.debug(f"Song {song_id} played, total_plays: {song.total_plays}")  # Логирование для отладки
-    return JsonResponse({
-        'total_plays': song.total_plays,
-    }, status=200)
+    logger.debug(f"Song {song_id} played by {request.user.username}, total_plays: {song.total_plays}")
+    return JsonResponse({'total_plays': song.total_plays}, status=200)

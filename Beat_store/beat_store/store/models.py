@@ -10,6 +10,7 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+        indexes = [models.Index(fields=['username', 'email'])]  # Ускорение поиска
 
     def __str__(self):
         return self.username
@@ -53,9 +54,9 @@ class Song(models.Model):
         max_digits=8,
         decimal_places=2,
         default=0.00,
-        verbose_name='Цена'
+        verbose_name='Цена'  # Исправлено: завершённая строка
     )
-    total_plays = models.PositiveIntegerField(default=0, verbose_name='Количество прослушиваний', db_index=True)  # Добавлен индекс
+    total_plays = models.PositiveIntegerField(default=0, verbose_name='Количество прослушиваний', db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     def __str__(self):
@@ -69,6 +70,7 @@ class Song(models.Model):
         verbose_name = 'Песня'
         verbose_name_plural = 'Песни'
         ordering = ['-created_at']
+        indexes = [models.Index(fields=['created_at', 'total_plays'])]  # Ускорение сортировки
 
 
 class Profile(models.Model):
@@ -96,12 +98,10 @@ class Profile(models.Model):
 
     @property
     def total_likes(self):
-        """Сумма лайков всех песен пользователя."""
         return sum(song.total_likes for song in self.user.songs.all())
 
     @property
     def total_plays(self):
-        """Сумма прослушиваний всех песен пользователя."""
         return sum(song.total_plays for song in self.user.songs.all())
 
     class Meta:
@@ -111,7 +111,4 @@ class Profile(models.Model):
 
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-    else:
-        instance.profile.save()
+    Profile.objects.get_or_create(user=instance)  # Оптимизация сигнала

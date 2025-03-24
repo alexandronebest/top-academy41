@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Выход</title>
-</head>
-<body>
-    <h2>Вы вышли из системы</h2>
-    <p>Спасибо за посещение. Вы успешно вышли из системы.</p>
-    <a href="{% url 'login' %}">Войти снова</a>
-</body>
-</html>
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Выход - Beat Store{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <h1 class="text-center mb-4">Вы вышли из системы</h1>
+        <p class="text-center">До новых встреч!</p>
+        <a href="{% url 'store:index' %}" class="btn btn-primary w-100">На главную</a>
+    </div>
+{% endblock %}

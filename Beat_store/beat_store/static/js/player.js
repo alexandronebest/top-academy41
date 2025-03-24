@@ -15,12 +15,10 @@ const Player = (function () {
     let playlist = [];
     let currentIndex = -1;
     let previousVolume = 0.5;
-    const csrfToken =
-        document.querySelector('meta[name="csrf-token"]')?.content ||
-        document.querySelector('input[name="csrfmiddlewaretoken"]')?.value || null;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || null;
 
     if (!csrfToken) {
-        console.error('CSRF-токен не найден. Добавьте {% csrf_token %} или <input name="csrfmiddlewaretoken"> в шаблон.');
+        console.error('CSRF-токен не найден. Убедитесь, что он добавлен в <meta> в head.');
     }
 
     function init() {
@@ -42,18 +40,19 @@ const Player = (function () {
             return;
         }
 
-        // Заполнение плейлиста
+        playlist = [];
         document.querySelectorAll('.play-button').forEach((button) => {
             const songItem = button.closest('.song-item');
             const authorElement = songItem.querySelector('.song-author-link') || songItem.querySelector('.song-author');
             const author = authorElement ? authorElement.textContent.trim() : 'Неизвестен';
             const songId = button.getAttribute('data-song-id');
-            console.log(`Добавлена песня в плейлист: ID: ${songId}, Title: ${button.getAttribute('data-song-title')}, Author: ${author}`);
+            const likeButton = songItem.querySelector('.like-button');
             playlist.push({
                 id: songId,
                 url: button.getAttribute('data-song-url'),
                 title: button.getAttribute('data-song-title'),
                 author: author,
+                likes: likeButton ? parseInt(likeButton.dataset.likes) || 0 : 0
             });
         });
 
@@ -90,7 +89,11 @@ const Player = (function () {
         });
         audioPlayer.addEventListener('loadedmetadata', updateTimeDisplay);
         audioPlayer.addEventListener('ended', playNextSong);
-        likeButtonPlayer.addEventListener('click', handlePlayerLikeClick);
+        if (likeButtonPlayer) {
+            likeButtonPlayer.addEventListener('click', handlePlayerLikeClick);
+        } else {
+            console.error('Кнопка like-button-player не найдена');
+        }
 
         if (playPauseButton) playPauseButton.addEventListener('click', togglePlayPause);
         if (prevButton) prevButton.addEventListener('click', playPreviousSong);
@@ -106,6 +109,7 @@ const Player = (function () {
         if (progressBar) {
             progressBar.addEventListener('input', () => {
                 audioPlayer.currentTime = progressBar.value * audioPlayer.duration;
+                savePlayerState();
             });
         }
 
@@ -128,7 +132,6 @@ const Player = (function () {
     function playSongByIndex(index) {
         if (index < 0 || index >= playlist.length) return;
         const song = playlist[index];
-        console.log(`Воспроизведение песни: ${song.title}, Автор: ${song.author}, ID: ${song.id}`);
         const playIcon = document.querySelector(`[data-song-id="${song.id}"] .play-button i`);
 
         resetPlayButtons();
@@ -148,7 +151,6 @@ const Player = (function () {
     }
 
     function incrementPlayCount(songId) {
-        console.log(`Отправка запроса для увеличения total_plays, songId: ${songId}, CSRF-токен: ${csrfToken}`);
         fetch(`/play-song/${songId}/`, {
             method: 'POST',
             headers: {
@@ -157,18 +159,12 @@ const Player = (function () {
             },
         })
             .then((response) => {
-                console.log(`Ответ от сервера для songId ${songId}: ${response.status}`);
                 if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
                 return response.json();
             })
             .then((data) => {
                 const playCountElement = document.getElementById(`plays-count-${songId}`);
-                if (playCountElement) {
-                    playCountElement.innerHTML = `<i class="bi bi-play-fill"></i> ${data.total_plays}`;
-                    console.log(`Song ${songId} played, total_plays updated to ${data.total_plays}`);
-                } else {
-                    console.warn(`Элемент с id="plays-count-${songId}" не найден`);
-                }
+                if (playCountElement) playCountElement.innerHTML = `<i class="bi bi-play-fill"></i> ${data.total_likes}`;
             })
             .catch((error) => console.error('Ошибка при увеличении счетчика:', error));
     }
@@ -256,27 +252,44 @@ const Player = (function () {
     function handleLikeClick() {
         const songId = this.getAttribute('data-song-id');
         toggleLike(songId, this, (data) => {
+            this.dataset.likes = data.total_likes;
             if (songId === currentSongId) {
                 likeButtonPlayer.classList.toggle('liked', data.liked);
+                likeButtonPlayer.dataset.likes = data.total_likes;
+                playlist[currentIndex].likes = data.total_likes;
             }
         });
     }
 
     function handlePlayerLikeClick() {
-        if (!currentSongId) return;
-        toggleLike(currentSongId, this, (data) => {
+        if (!currentSongId) {
+            console.warn('Нет текущей песни для лайка');
+            return;
+        }
+        console.log('Нажата кнопка лайка в плеере для songId:', currentSongId);
+        toggleLike(currentSongId, likeButtonPlayer, (data) => {
+            console.log('Ответ от сервера:', data);
             const songLikeButton = document.querySelector(`[data-song-id="${currentSongId}"] .like-button`);
-            if (songLikeButton) songLikeButton.classList.toggle('liked', data.liked);
+            if (songLikeButton) {
+                songLikeButton.classList.toggle('liked', data.liked);
+                songLikeButton.dataset.likes = data.total_likes;
+                console.log('Обновлена кнопка на странице:', songLikeButton);
+            }
+            likeButtonPlayer.classList.toggle('liked', data.liked);
+            likeButtonPlayer.dataset.likes = data.total_likes;
+            playlist[currentIndex].likes = data.total_likes;
+            console.log('Обновлена кнопка в плеере:', likeButtonPlayer);
+            savePlayerState();
         });
     }
 
     function handleBuyClick() {
         const songId = this.closest('.song-item').getAttribute('data-song-id');
-        window.location.href = `/store/buy/${songId}/`;
+        alert('Функция покупки пока в разработке!');
     }
 
     function toggleLike(songId, button, callback) {
-        console.log(`Отправка запроса на лайк для songId: ${songId}`);
+        console.log('Отправка запроса на /like/', songId);
         fetch(`/like/${songId}/`, {
             method: 'POST',
             headers: {
@@ -289,14 +302,9 @@ const Player = (function () {
                 return response.json();
             })
             .then((data) => {
-                const countSpan = document.getElementById(`likes-count-${songId}`);
-                if (countSpan) {
-                    countSpan.innerHTML = `<i class="bi bi-heart-fill"></i> ${data.total_likes}`;
-                    console.log(`Лайки для songId ${songId} обновлены: ${data.total_likes}`);
-                } else {
-                    console.warn(`Элемент с id="likes-count-${songId}" не найден`);
-                }
+                console.log('Успешный ответ:', data);
                 button.classList.toggle('liked', data.liked);
+                button.dataset.likes = data.total_likes;
                 if (callback) callback(data);
             })
             .catch((error) => console.error('Ошибка при лайке:', error));
@@ -310,8 +318,13 @@ const Player = (function () {
 
     function updatePlayerLikeState(songContainer) {
         const likeButton = songContainer.querySelector('.like-button');
-        const isLiked = likeButton && likeButton.classList.contains('liked');
+        const isLiked = likeButton?.classList.contains('liked') || false;
+        const likesCount = likeButton ? parseInt(likeButton.dataset.likes) || 0 : 0;
         likeButtonPlayer.classList.toggle('liked', isLiked);
+        likeButtonPlayer.dataset.likes = likesCount;
+        if (currentIndex >= 0 && currentIndex < playlist.length) {
+            playlist[currentIndex].likes = likesCount;
+        }
     }
 
     function savePlayerState() {
@@ -324,13 +337,18 @@ const Player = (function () {
             time: audioPlayer.currentTime,
             isPlaying: !audioPlayer.paused,
             volume: audioPlayer.volume,
+            likes: parseInt(likeButtonPlayer.dataset.likes) || playlist[currentIndex].likes || 0,
+            liked: likeButtonPlayer.classList.contains('liked')
         };
         localStorage.setItem('currentSong', JSON.stringify(songData));
     }
 
     function restorePlayerState() {
         const savedSong = JSON.parse(localStorage.getItem('currentSong'));
-        if (savedSong && savedSong.url) {
+        if (!savedSong || !savedSong.url) return;
+
+        currentIndex = playlist.findIndex((song) => song.id === savedSong.id);
+        if (currentIndex === -1) {
             audioSource.src = savedSong.url;
             audioPlayer.load();
             audioPlayer.currentTime = savedSong.time || 0;
@@ -338,14 +356,17 @@ const Player = (function () {
             volumeSlider.value = savedSong.volume || 0.5;
             currentSongDisplay.textContent = `${savedSong.title} - ${savedSong.author || 'Неизвестен'}`;
             currentSongId = savedSong.id;
-            currentIndex = playlist.findIndex((song) => song.id === savedSong.id);
+            likeButtonPlayer.classList.toggle('liked', savedSong.liked || false);
+            likeButtonPlayer.dataset.likes = savedSong.likes || 0;
             if (savedSong.isPlaying) {
                 audioPlayer.play().catch((err) => console.error('Ошибка воспроизведения:', err));
             }
-            const songContainer = document.querySelector(`[data-song-id="${currentSongId}"]`);
-            if (songContainer) updatePlayerLikeState(songContainer);
-            updateMuteIcon();
+        } else {
+            playSongByIndex(currentIndex);
+            audioPlayer.currentTime = savedSong.time || 0;
+            if (!savedSong.isPlaying) audioPlayer.pause();
         }
+        updateMuteIcon();
     }
 
     function handleSongEnd() {
@@ -355,6 +376,7 @@ const Player = (function () {
         localStorage.removeItem('currentSong');
         currentSongDisplay.textContent = 'Выберите песню для воспроизведения';
         likeButtonPlayer.classList.remove('liked');
+        likeButtonPlayer.dataset.likes = '0';
         updatePlayPauseIcon(false);
     }
 

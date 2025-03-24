@@ -2,42 +2,43 @@
     position: relative;
     width: 100%;
     overflow: hidden;
-    padding: 0 40px; /* Отступы для кнопок */
-}
-
-.authors {
+    padding: 0 40px;
+  }
+  
+  .authors {
     display: flex;
     flex-wrap: nowrap;
     gap: 20px;
     padding: 15px 0;
-    scroll-behavior: smooth; /* Плавная прокрутка */
-}
-
-.author-item {
-    flex: 0 0 200px; /* Фиксированная ширина по умолчанию */
+    scroll-behavior: smooth;
+  }
+  
+  .author-item {
+    flex: 0 0 200px;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 10px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border-radius: 8px;
-}
-
-.author-item:hover {
-    transform: translateY(-5px); /* Небольшой подъем при наведении */
+    background: #fff;
+  }
+  
+  .author-item:hover {
+    transform: translateY(-5px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     background-color: #f8f9fa;
-}
-
-.author-photo {
+  }
+  
+  .author-photo {
     width: 150px;
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 10px;
-}
-
-.author-name {
+  }
+  
+  .author-name {
     margin: 0;
     font-size: 1.2em;
     color: #333;
@@ -45,9 +46,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
-}
-
-.author-status {
+  }
+  
+  .author-status {
     margin: 5px 0 0;
     font-size: 0.9em;
     color: #777;
@@ -55,9 +56,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
-}
-
-.scroll-button {
+  }
+  
+  .scroll-button {
     z-index: 1;
     background-color: rgba(255, 255, 255, 0.9);
     border: 1px solid #ccc;
@@ -70,57 +71,58 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.scroll-button:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-/* Медиа-запросы для адаптивности */
-@media (max-width: 768px) {
+    transition: all 0.3s ease;
+  }
+  
+  .scroll-button:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+  }
+  
+  @media (max-width: 768px) {
     .author-item {
-        flex: 0 0 150px; /* Уменьшаем ширину на планшетах */
+      flex: 0 0 150px;
     }
-
+  
     .author-photo {
-        width: 100px;
-        height: 100px;
+      width: 100px;
+      height: 100px;
     }
-
+  
     .author-name {
-        font-size: 1em;
+      font-size: 1em;
     }
-
+  
     .author-status {
-        font-size: 0.8em;
+      font-size: 0.8em;
     }
-
+  
     .scroll-button {
-        width: 30px;
-        height: 30px;
-        font-size: 1.2em;
+      width: 30px;
+      height: 30px;
+      font-size: 1.2em;
     }
-}
-
-@media (max-width: 480px) {
+  }
+  
+  @media (max-width: 480px) {
     .author-item {
-        flex: 0 0 120px; /* Еще меньше для телефонов */
+      flex: 0 0 120px;
     }
-
+  
     .author-photo {
-        width: 80px;
-        height: 80px;
+      width: 80px;
+      height: 80px;
     }
-
+  
     .author-name {
-        font-size: 0.9em;
+      font-size: 0.9em;
     }
-
+  
     .author-status {
-        font-size: 0.7em;
+      font-size: 0.7em;
     }
-
+  
     .authors-container {
-        padding: 0 30px;
+      padding: 0 30px;
     }
-}
+  }

@@ -10,7 +10,7 @@
 
 {% block content %}
     <div class="container my-4">
-        <h1 class="text-center mb-4">Список песен</h1>
+        <h1>Список песен</h1>
 
         <!-- Фильтры -->
         <form method="get" class="filter-form">
@@ -43,32 +43,38 @@
         <!-- Список песен -->
         <section class="category">
             <div class="songs-container position-relative">
-                <button class="scroll-button left btn position-absolute top-50 start-0 translate-middle" onclick="scrollSongs('left', 'song-list')">❮</button>
-                <div class="songs d-flex overflow-auto" id="song-list">
+                <button class="scroll-button left" onclick="scrollSongs('left', 'song-list')">❮</button>
+                <div class="songs" id="song-list">
                     {% for song in songs %}
                         <div class="song-item" data-song-id="{{ song.id }}">
                             <div class="song-image-container">
                                 {% if song.cover %}
-                                    <img src="{{ song.cover.url }}" alt="{{ song.title }}" class="song-image">
+                                    <img src="{{ song.cover.url }}" alt="{{ song.title }}" class="song-image" loading="lazy">
                                 {% else %}
-                                    <img src="{% static 'images/default_cover.jpg' %}" alt="{{ song.title }}" class="song-image">
+                                    <img src="{% static 'images/default_cover.jpg' %}" alt="{{ song.title }}" class="song-image" loading="lazy">
                                 {% endif %}
-                                <button class="play-button" data-song-id="{{ song.id }}" data-song-url="{{ song.path.url }}" data-song-title="{{ song.title }}">
-                                    <i class="bi bi-play-fill"></i>
-                                </button>
+                                <div class="song-controls">
+                                    <button class="like-button {% if request.user in song.likes.all %}liked{% endif %}" 
+                                            data-song-id="{{ song.id }}" 
+                                            data-likes="{{ song.total_likes }}">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                    <button class="play-button" 
+                                            data-song-id="{{ song.id }}" 
+                                            data-song-url="{{ song.path.url }}" 
+                                            data-song-title="{{ song.title }}">
+                                        <i class="bi bi-play-fill"></i>
+                                    </button>
+                                    <button class="buy-button" title="Добавить в корзину">
+                                        <i class="bi bi-cart-plus"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="song-info">
                                 <h3 class="song-title">{{ song.title }}</h3>
                                 <p class="song-author">
                                     <a href="{% url 'store:profile' song.author.username %}" class="song-author-link">{{ song.author.username }}</a>
                                 </p>
-                                <button class="buy-button" data-song-id="{{ song.id }}">{{ song.price }} руб.</button>
-                                <div class="d-flex justify-content-center align-items-center gap-2">
-                                    <button class="like-button {% if request.user in song.likes.all %}liked{% endif %}" data-song-id="{{ song.id }}">
-                                        <i class="bi bi-heart-fill"></i>
-                                    </button>
-                                    <span id="likes-count-{{ song.id }}">{{ song.total_likes }}</span>
-                                </div>
                             </div>
                         </div>
                     {% empty %}
@@ -77,17 +83,29 @@
                         </div>
                     {% endfor %}
                 </div>
-                <button class="scroll-button right btn position-absolute top-50 end-0 translate-middle" onclick="scrollSongs('right', 'song-list')">❯</button>
+                <button class="scroll-button right" onclick="scrollSongs('right', 'song-list')">❯</button>
             </div>
         </section>
     </div>
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'js/player.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            Player.init();
+            document.querySelectorAll('.buy-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    alert('Функция покупки пока в разработке!');
+                });
+            });
         });
+
+        function scrollSongs(direction, containerId) {
+            const container = document.getElementById(containerId);
+            const scrollAmount = container.offsetWidth * 0.8;
+            container.scroll({
+                left: direction === 'left' ? container.scrollLeft - scrollAmount : container.scrollLeft + scrollAmount,
+                behavior: 'smooth'
+            });
+        }
     </script>
 {% endblock %}

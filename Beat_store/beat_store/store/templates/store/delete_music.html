@@ -1,13 +1,16 @@
-<!-- delete_music.html -->
-
 {% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Удалить песню - {{ song.title }}{% endblock %}
 
 {% block content %}
-  <h1>Удаление песни</h1>
-  <p>Вы уверены, что хотите удалить песню "{{ song.title }}"?</p>
-  <form action="{% url 'delete_music' song.id %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Да, удалить</button>
-    <a href="{% url 'music_list' %}">Отмена</a>
-  </form>
+    <div class="container my-4">
+        <h1 class="text-center mb-4">Удалить «{{ song.title }}»?</h1>
+        <p class="text-center">Вы уверены, что хотите удалить эту песню? Это действие нельзя отменить.</p>
+        <form method="post" class="filter-form">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger w-100">Удалить</button>
+            <a href="{% url 'store:music_list' %}" class="btn btn-secondary w-100 mt-2">Отмена</a>
+        </form>
+    </div>
 {% endblock %}
