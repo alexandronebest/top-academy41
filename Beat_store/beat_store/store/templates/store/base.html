@@ -51,6 +51,7 @@
                 <button id="mute-button" class="btn-icon"><i class="bi bi-volume-up-fill"></i></button>
                 <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
                 <button id="like-button-player" class="like-button" data-likes="0"><i class="bi bi-heart-fill"></i></button>
+                <span class="song-price" id="song-price">₽0.00</span>
             </div>
         </div>
     </section>
@@ -59,11 +60,6 @@
     <script src="{% static 'js/hamburger.js' %}"></script>
     <script src="{% static 'js/scroll.js' %}"></script>
     <script src="{% static 'js/player.js' %}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Player.init();
-        });
-    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -7,25 +7,47 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_protect
-from django.db.models import Count
-from .models import User, Song, Genre, Profile
+from django.db.models import Count, F
+from django.core.cache import cache
+from .models import User, Song, Genre, Profile, Playlist
 from .forms import SongForm, CustomUserCreationForm, ProfileForm
+import json
 import logging
 
 logger = logging.getLogger(__name__)
 
 def index(request):
-    top_songs = Song.objects.annotate(likes_count=Count('likes')).order_by('-likes_count')[:10]
-    new_songs = Song.objects.order_by('-created_at')[:10]
-    genres = Genre.objects.all()
-    authors = Profile.objects.select_related('user').all()
+    cache_key = 'index_data'
+    cached_data = cache.get(cache_key)
+    if not cached_data:
+        top_songs = Song.objects.annotate(likes_count=Count('likes')).order_by('-likes_count', '-total_plays')[:10]
+        new_songs = Song.objects.order_by('-created_at')[:10]
+        genres = Genre.objects.all()
+        authors = Profile.objects.select_related('user').all()
 
-    context = {
-        'top_songs': top_songs,
-        'new_songs': new_songs,
-        'genres': genres,
-        'authors': authors,
-    }
+        songs_data = [
+            {
+                'id': song.id,
+                'title': song.title,
+                'path': request.build_absolute_uri(song.path.url),
+                'author': song.author.username,
+                'price': float(song.price),
+                'total_likes': song.total_likes,
+                'total_plays': song.total_plays
+            } for song in Song.objects.select_related('author').all()
+        ]
+        songs_json = json.dumps(songs_data)
+        
+        cached_data = {
+            'top_songs': top_songs,
+            'new_songs': new_songs,
+            'genres': genres,
+            'authors': authors,
+            'songs_json': songs_json,
+        }
+        cache.set(cache_key, cached_data, 300)  # Кэш на 5 минут
+
+    context = cached_data
     return render(request, 'store/index.html', context)
 
 @login_required
@@ -34,17 +56,34 @@ def profile(request, username=None):
     profile = user.profile
     songs = Song.objects.filter(author=user).select_related('genre')
     liked_songs = user.liked_songs.select_related('author', 'genre').all()
+    playlists = Playlist.objects.filter(user=user)
 
     if request.method == 'POST' and user == request.user:
-        profile.status = request.POST.get('status', '').strip()
-        profile.save()
+        profile.status = request.POST.get('status', '').strip()[:100]
+        profile.save(update_fields=['status'])
         messages.success(request, 'Статус успешно обновлён!')
         return redirect('store:profile', username=user.username)
+
+    # Формируем songs_json для плеера
+    songs_data = [
+        {
+            'id': song.id,
+            'title': song.title,
+            'path': request.build_absolute_uri(song.path.url),
+            'author': song.author.username,
+            'price': float(song.price),
+            'total_likes': song.total_likes,
+            'total_plays': song.total_plays
+        } for song in songs
+    ]
+    songs_json = json.dumps(songs_data)
 
     context = {
         'profile': profile,
         'songs': songs,
         'liked_songs': liked_songs,
+        'playlists': playlists,
+        'songs_json': songs_json,
     }
     return render(request, 'store/profile.html', context)
 
@@ -59,12 +98,26 @@ def music_list_view(request):
     if author_id := request.GET.get('author'):
         songs = songs.filter(author__id=author_id)
     if title := request.GET.get('query'):
-        songs = songs.filter(title__icontains=title)
+        songs = songs.filter(title__icontains=title.strip())
+
+    songs_data = [
+        {
+            'id': song.id,
+            'title': song.title,
+            'path': request.build_absolute_uri(song.path.url),
+            'author': song.author.username,
+            'price': float(song.price),
+            'total_likes': song.total_likes,
+            'total_plays': song.total_plays
+        } for song in songs
+    ]
+    songs_json = json.dumps(songs_data)
 
     context = {
         'songs': songs,
         'genres': genres,
         'authors': authors,
+        'songs_json': songs_json,
     }
     return render(request, 'store/music_list.html', context)
 
@@ -76,6 +129,7 @@ def add_music_view(request):
             song = form.save(commit=False)
             song.author = request.user
             song.save()
+            cache.delete('index_data')  # Очистка кэша при добавлении
             messages.success(request, 'Песня успешно добавлена!')
             return redirect('store:music_list')
         messages.error(request, 'Исправьте ошибки в форме.')
@@ -85,15 +139,12 @@ def add_music_view(request):
 
 @login_required
 def edit_music_view(request, song_id):
-    song = get_object_or_404(Song, id=song_id)
-    if song.author != request.user:
-        messages.error(request, 'Вы не можете редактировать эту песню.')
-        return redirect('store:music_list')
-
+    song = get_object_or_404(Song, id=song_id, author=request.user)
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES, instance=song)
         if form.is_valid():
             form.save()
+            cache.delete('index_data')
             messages.success(request, 'Песня успешно обновлена!')
             return redirect('store:music_list')
         messages.error(request, 'Исправьте ошибки в форме.')
@@ -103,13 +154,10 @@ def edit_music_view(request, song_id):
 
 @login_required
 def delete_music_view(request, song_id):
-    song = get_object_or_404(Song, id=song_id)
-    if song.author != request.user:
-        messages.error(request, 'Вы не можете удалить эту песню.')
-        return redirect('store:music_list')
-
+    song = get_object_or_404(Song, id=song_id, author=request.user)
     if request.method == 'POST':
         song.delete()
+        cache.delete('index_data')
         messages.success(request, 'Песня успешно удалена!')
         return redirect('store:music_list')
     return render(request, 'store/delete_music.html', {'song': song})
@@ -117,9 +165,24 @@ def delete_music_view(request, song_id):
 def search_view(request):
     query = request.GET.get('query', '').strip()
     songs = Song.objects.filter(title__icontains=query).select_related('author', 'genre') if query else Song.objects.none()
+    
+    songs_data = [
+        {
+            'id': song.id,
+            'title': song.title,
+            'path': request.build_absolute_uri(song.path.url),
+            'author': song.author.username,
+            'price': float(song.price),
+            'total_likes': song.total_likes,
+            'total_plays': song.total_plays
+        } for song in songs
+    ]
+    songs_json = json.dumps(songs_data)
+
     return render(request, 'store/search_results.html', {
         'songs': songs,
         'query': query,
+        'songs_json': songs_json,
     })
 
 class RegisterView(CreateView):
@@ -156,30 +219,77 @@ def authors_list_view(request):
 @require_POST
 @csrf_protect
 def like_song(request, song_id):
-    song = get_object_or_404(Song, id=song_id)
-    user = request.user
-    liked = user in song.likes.all()
+    try:
+        song = get_object_or_404(Song, id=song_id)
+        user = request.user
+        liked = song.likes.filter(id=user.id).exists()
 
-    if liked:
-        song.likes.remove(user)
-        logger.debug(f"User {user.username} unliked song {song_id}")
-    else:
-        song.likes.add(user)
-        logger.debug(f"User {user.username} liked song {song_id}")
+        if liked:
+            song.likes.remove(user)
+            logger.debug(f"User {user.username} unliked song {song_id}")
+        else:
+            song.likes.add(user)
+            logger.debug(f"User {user.username} liked song {song_id}")
 
-    song.save()
-    total_likes = song.likes.count()
-    return JsonResponse({
-        'liked': not liked,
-        'total_likes': total_likes,
-    }, status=200)
+        total_likes = song.likes.count()
+        cache.delete('index_data')
+        return JsonResponse({
+            'liked': not liked,
+            'total_likes': total_likes,
+        }, status=200)
+    except Exception as e:
+        logger.error(f"Error in like_song: {str(e)}")
+        return JsonResponse({'error': 'Internal server error'}, status=500)
 
 @login_required
 @require_POST
 @csrf_protect
 def play_song(request, song_id):
+    try:
+        song = get_object_or_404(Song, id=song_id)
+        song.total_plays = F('total_plays') + 1
+        song.save(update_fields=['total_plays'])
+        song.refresh_from_db(fields=['total_plays'])
+        logger.debug(f"Song {song_id} played by {request.user.username}, total_plays: {song.total_plays}")
+        cache.delete('index_data')
+        return JsonResponse({'total_plays': song.total_plays}, status=200)
+    except Exception as e:
+        logger.error(f"Error in play_song: {str(e)}")
+        return JsonResponse({'error': 'Internal server error'}, status=500)
+
+@login_required
+def buy_song(request, song_id):
     song = get_object_or_404(Song, id=song_id)
-    song.total_plays += 1
-    song.save()
-    logger.debug(f"Song {song_id} played by {request.user.username}, total_plays: {song.total_plays}")
-    return JsonResponse({'total_plays': song.total_plays}, status=200)
+    # Здесь можно добавить реальную логику покупки
+    messages.info(request, f'Функция покупки песни "{song.title}" пока в разработке.')
+    return redirect('store:music_list')
+
+@login_required
+def add_to_playlist(request, song_id):
+    song = get_object_or_404(Song, id=song_id)
+    playlist, created = Playlist.objects.get_or_create(user=request.user)
+    playlist.songs.add(song)
+    messages.success(request, f'Песня "{song.title}" добавлена в плейлист!')
+    return redirect('store:playlist')
+
+@login_required
+def playlist_view(request):
+    playlist = Playlist.objects.filter(user=request.user).first()
+    songs_data = [
+        {
+            'id': song.id,
+            'title': song.title,
+            'path': request.build_absolute_uri(song.path.url),
+            'author': song.author.username,
+            'price': float(song.price),
+            'total_likes': song.total_likes,
+            'total_plays': song.total_plays
+        } for song in playlist.songs.all()
+    ] if playlist else []
+    songs_json = json.dumps(songs_data)
+    
+    context = {
+        'playlist': playlist,
+        'songs_json': songs_json,
+    }
+    return render(request, 'store/playlist.html', context)

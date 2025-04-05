@@ -10,6 +10,7 @@
 
 {% block content %}
     <main>
+        <!-- Топ песен -->
         <section class="category">
             <h2>Топ песен</h2>
             <div class="songs-container">
@@ -32,10 +33,10 @@
                                     <button class="play-button" 
                                             data-song-id="{{ song.id }}" 
                                             data-song-url="{{ song.path.url }}" 
-                                            data-song-title="{{ song.title }}">
+                                            data-song-title="{{ song.title }} - {{ song.author.username }}">
                                         <i class="bi bi-play-fill"></i>
                                     </button>
-                                    <button class="buy-button" title="Добавить в корзину">
+                                    <button class="buy-button" title="Добавить в корзину" onclick="location.href='{% url 'store:buy' song.id %}'">
                                         <i class="bi bi-cart-plus"></i>
                                     </button>
                                 </div>
@@ -45,6 +46,9 @@
                                 <p class="song-author">
                                     <a href="{% url 'store:profile' song.author.username %}" class="song-author-link">{{ song.author.username }}</a>
                                 </p>
+                                <div class="song-stats">
+                                    <span id="plays-count-{{ song.id }}"><i class="bi bi-play-fill"></i> {{ song.total_plays }}</span>
+                                </div>
                             </div>
                         </div>
                     {% empty %}
@@ -55,6 +59,7 @@
             </div>
         </section>
 
+        <!-- Новые песни -->
         <section class="category">
             <h2>Новые песни</h2>
             <div class="songs-container">
@@ -77,10 +82,10 @@
                                     <button class="play-button" 
                                             data-song-id="{{ song.id }}" 
                                             data-song-url="{{ song.path.url }}" 
-                                            data-song-title="{{ song.title }}">
+                                            data-song-title="{{ song.title }} - {{ song.author.username }}">
                                         <i class="bi bi-play-fill"></i>
                                     </button>
-                                    <button class="buy-button" title="Добавить в корзину">
+                                    <button class="buy-button" title="Добавить в корзину" onclick="location.href='{% url 'store:buy' song.id %}'">
                                         <i class="bi bi-cart-plus"></i>
                                     </button>
                                 </div>
@@ -90,6 +95,9 @@
                                 <p class="song-author">
                                     <a href="{% url 'store:profile' song.author.username %}" class="song-author-link">{{ song.author.username }}</a>
                                 </p>
+                                <div class="song-stats">
+                                    <span id="plays-count-{{ song.id }}"><i class="bi bi-play-fill"></i> {{ song.total_plays }}</span>
+                                </div>
                             </div>
                         </div>
                     {% empty %}
@@ -100,6 +108,7 @@
             </div>
         </section>
 
+        <!-- Жанры -->
         <section class="category">
             <h2>Жанры</h2>
             <div class="songs-container position-relative">
@@ -120,19 +129,40 @@
                 <button class="scroll-button right" onclick="scrollSongs('right', 'genres')">❯</button>
             </div>
         </section>
+
+        <!-- Плеер -->
+        <section class="player-section">
+            <div class="player-container">
+                <div class="track-info">
+                    <span id="current-song">Выберите песню для воспроизведения</span>
+                </div>
+                <div class="controls">
+                    <button id="prev-button" class="btn-icon"><i class="bi bi-skip-start-fill"></i></button>
+                    <button id="play-pause-button" class="btn-icon btn-play"><i class="bi bi-play-fill"></i></button>
+                    <button id="next-button" class="btn-icon"><i class="bi bi-skip-end-fill"></i></button>
+                </div>
+                <div class="progress-container">
+                    <span id="current-time">0:00</span>
+                    <input type="range" id="progress-bar" min="0" max="1" step="0.01" value="0">
+                    <span id="total-time">0:00</span>
+                </div>
+                <div class="extra-controls">
+                    <button id="mute-button" class="btn-icon"><i class="bi bi-volume-up-fill"></i></button>
+                    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+                    <button id="like-button-player" class="btn-icon" data-likes="0"><i class="bi bi-heart-fill"></i></button>
+                    <span id="song-price" class="song-price">₽0.00</span>
+                </div>
+            </div>
+            <audio id="audio-player">
+                <source id="audio-source" src="" type="audio/mpeg">
+                Ваш браузер не поддерживает аудио.
+            </audio>
+        </section>
     </main>
 {% endblock %}
 
 {% block extra_js %}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.buy-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    alert('Функция покупки пока в разработке!');
-                });
-            });
-        });
-
         function scrollSongs(direction, containerId) {
             const container = document.getElementById(containerId);
             const scrollAmount = container.offsetWidth * 0.8;
@@ -141,5 +171,10 @@
                 behavior: 'smooth'
             });
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const songsData = {{ songs_json|safe }};
+            Player.init(songsData);
+        });
     </script>
 {% endblock %}

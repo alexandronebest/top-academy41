@@ -10,7 +10,6 @@
 
 {% block content %}
     <div class="container mt-5">
-        <!-- Профиль пользователя -->
         <section class="profile-section mb-5">
             <div class="profile-header">
                 <div class="profile-image-container">
@@ -45,11 +44,10 @@
             </div>
         </section>
 
-        <!-- Список песен пользователя -->
         <section class="category mb-5">
             <h2>Музыка автора</h2>
             <div class="songs-container position-relative">
-ismos                <button class="scroll-button left" onclick="scrollSongs('left', 'user-songs')">❮</button>
+                <button class="scroll-button left" onclick="scrollSongs('left', 'user-songs')">❮</button>
                 <div class="songs" id="user-songs">
                     {% for song in songs %}
                         <div class="song-item" data-song-id="{{ song.id }}">
@@ -68,10 +66,10 @@ ismos                <button class="scroll-button left" onclick="scrollSongs('le
                                     <button class="play-button" 
                                             data-song-id="{{ song.id }}" 
                                             data-song-url="{{ song.path.url }}" 
-                                            data-song-title="{{ song.title }}">
+                                            data-song-title="{{ song.title }} - {{ song.author.username }}">
                                         <i class="bi bi-play-fill"></i>
                                     </button>
-                                    <button class="buy-button" title="Добавить в корзину">
+                                    <button class="buy-button" title="Добавить в корзину" onclick="location.href='{% url 'store:buy' song.id %}'">
                                         <i class="bi bi-cart-plus"></i>
                                     </button>
                                 </div>
@@ -108,7 +106,6 @@ ismos                <button class="scroll-button left" onclick="scrollSongs('le
             {% endif %}
         </section>
 
-        <!-- Список понравившихся песен -->
         <section class="category mb-5">
             <h2>Понравившиеся песни</h2>
             <div class="songs-container position-relative">
@@ -131,10 +128,10 @@ ismos                <button class="scroll-button left" onclick="scrollSongs('le
                                     <button class="play-button" 
                                             data-song-id="{{ song.id }}" 
                                             data-song-url="{{ song.path.url }}" 
-                                            data-song-title="{{ song.title }}">
+                                            data-song-title="{{ song.title }} - {{ song.author.username }}">
                                         <i class="bi bi-play-fill"></i>
                                     </button>
-                                    <button class="buy-button" title="Добавить в корзину">
+                                    <button class="buy-button" title="Добавить в корзину" onclick="location.href='{% url 'store:buy' song.id %}'">
                                         <i class="bi bi-cart-plus"></i>
                                     </button>
                                 </div>
@@ -155,18 +152,19 @@ ismos                <button class="scroll-button left" onclick="scrollSongs('le
                 </div>
                 <button class="scroll-button right" onclick="scrollSongs('right', 'liked-songs')">❯</button>
             </div>
-        </section>  
+        </section>
     </div>
 {% endblock %}
 
 {% block extra_js %}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.buy-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    alert('Функция покупки пока в разработке!');
-                });
-            });
+            const songsData = {{ songs_json|safe }};
+            console.log('Profile Songs Data:', songsData);  // Отладочный вывод для проверки данных
+            if (songsData.length === 0) {
+                console.warn('No songs available to play.');
+            }
+            Player.init(songsData);
         });
 
         function scrollSongs(direction, containerId) {

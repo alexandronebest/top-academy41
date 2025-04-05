@@ -47,7 +47,7 @@ main {
   padding: 2rem 1rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding-bottom: 120px;
+  padding-bottom: 120px; /* Отступ для фиксированного плеера */
 }
 
 .navbar {
@@ -409,7 +409,7 @@ main {
 }
 
 .footer-brand {
-  font-family: 'Playwrite IN', serif;
+  font-family: 'Playfair Display', serif;
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--primary-color);
@@ -557,7 +557,12 @@ main {
   justify-content: flex-end;
   align-items: center;
   gap: 0.75rem;
-  min-width: 150px;
+  min-width: 200px;
+}
+
+.extra-controls > * {
+  display: inline-flex;
+  align-items: center;
 }
 
 #volume-slider {
@@ -580,7 +585,6 @@ main {
   box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
 }
 
-/* Исправление для кнопки лайка в плеере */
 #like-button-player {
   background: none;
   border: none;
@@ -597,6 +601,16 @@ main {
 
 #like-button-player.liked {
   color: var(--like-color);
+}
+
+.song-price {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 5px 10px;
+  border-radius: 15px;
+  white-space: nowrap;
 }
 
 /* Медиа-запросы */
@@ -704,6 +718,11 @@ main {
     font-size: 1.4rem;
   }
 
+  .song-price {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+
   #volume-slider {
     width: 80px;
   }
@@ -752,6 +771,11 @@ main {
 
   .song-controls .buy-button {
     font-size: 1.1rem;
+  }
+
+  .song-price {
+    font-size: 0.7rem;
+    padding: 3px 6px;
   }
 
   #volume-slider {

@@ -20,7 +20,7 @@ class GenreAdmin(admin.ModelAdmin):
 
 @admin.register(Song)
 class SongAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'genre', 'price', 'created_at')
+    list_display = ('title', 'author', 'genre', 'price', 'total_plays', 'created_at')  # Добавляем total_plays
     list_filter = ('genre', 'author')
     search_fields = ('title', 'author__username')
     date_hierarchy = 'created_at'
