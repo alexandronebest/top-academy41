@@ -9,12 +9,12 @@
 {% endblock %}
 
 {% block content %}
-    <main>
+    <main class="container my-4">
         <!-- Топ песен -->
         <section class="category">
             <h2>Топ песен</h2>
-            <div class="songs-container">
-                <button class="scroll-button left" onclick="scrollSongs('left', 'top-songs')">❮</button>
+            <div class="songs-container position-relative">
+                <button class="scroll-button left" onclick="scrollSongs('left', 'top-songs')" aria-label="Прокрутить влево">❮</button>
                 <div class="songs" id="top-songs">
                     {% for song in top_songs %}
                         <div class="song-item" data-song-id="{{ song.id }}">
@@ -27,16 +27,21 @@
                                 <div class="song-controls">
                                     <button class="like-button {% if request.user in song.likes.all %}liked{% endif %}" 
                                             data-song-id="{{ song.id }}" 
-                                            data-likes="{{ song.total_likes }}">
+                                            data-likes="{{ song.total_likes }}"
+                                            aria-label="Лайк">
                                         <i class="bi bi-heart-fill"></i>
                                     </button>
                                     <button class="play-button" 
                                             data-song-id="{{ song.id }}" 
                                             data-song-url="{{ song.path.url }}" 
-                                            data-song-title="{{ song.title }} - {{ song.author.username }}">
+                                            data-song-title="{{ song.title }} - {{ song.author.username }}"
+                                            aria-label="Воспроизвести">
                                         <i class="bi bi-play-fill"></i>
                                     </button>
-                                    <button class="buy-button" title="Добавить в корзину" onclick="location.href='{% url 'store:buy' song.id %}'">
+                                    <button class="buy-button" 
+                                            title="Купить" 
+                                            onclick="location.href='{% url 'store:buy_song' song.id %}'"
+                                            aria-label="Купить">
                                         <i class="bi bi-cart-plus"></i>
                                     </button>
                                 </div>
@@ -52,18 +57,20 @@
                             </div>
                         </div>
                     {% empty %}
-                        <p>Пока нет популярных песен.</p>
+                        <div class="song-item text-center">
+                            <p>Пока нет популярных песен.</p>
+                        </div>
                     {% endfor %}
                 </div>
-                <button class="scroll-button right" onclick="scrollSongs('right', 'top-songs')">❯</button>
+                <button class="scroll-button right" onclick="scrollSongs('right', 'top-songs')" aria-label="Прокрутить вправо">❯</button>
             </div>
         </section>
 
         <!-- Новые песни -->
         <section class="category">
             <h2>Новые песни</h2>
-            <div class="songs-container">
-                <button class="scroll-button left" onclick="scrollSongs('left', 'new-songs')">❮</button>
+            <div class="songs-container position-relative">
+                <button class="scroll-button left" onclick="scrollSongs('left', 'new-songs')" aria-label="Прокрутить влево">❮</button>
                 <div class="songs" id="new-songs">
                     {% for song in new_songs %}
                         <div class="song-item" data-song-id="{{ song.id }}">
@@ -76,16 +83,21 @@
                                 <div class="song-controls">
                                     <button class="like-button {% if request.user in song.likes.all %}liked{% endif %}" 
                                             data-song-id="{{ song.id }}" 
-                                            data-likes="{{ song.total_likes }}">
+                                            data-likes="{{ song.total_likes }}"
+                                            aria-label="Лайк">
                                         <i class="bi bi-heart-fill"></i>
                                     </button>
                                     <button class="play-button" 
                                             data-song-id="{{ song.id }}" 
                                             data-song-url="{{ song.path.url }}" 
-                                            data-song-title="{{ song.title }} - {{ song.author.username }}">
+                                            data-song-title="{{ song.title }} - {{ song.author.username }}"
+                                            aria-label="Воспроизвести">
                                         <i class="bi bi-play-fill"></i>
                                     </button>
-                                    <button class="buy-button" title="Добавить в корзину" onclick="location.href='{% url 'store:buy' song.id %}'">
+                                    <button class="buy-button" 
+                                            title="Купить" 
+                                            onclick="location.href='{% url 'store:buy_song' song.id %}'"
+                                            aria-label="Купить">
                                         <i class="bi bi-cart-plus"></i>
                                     </button>
                                 </div>
@@ -101,10 +113,12 @@
                             </div>
                         </div>
                     {% empty %}
-                        <p>Пока нет новых песен.</p>
+                        <div class="song-item text-center">
+                            <p>Пока нет новых песен.</p>
+                        </div>
                     {% endfor %}
                 </div>
-                <button class="scroll-button right" onclick="scrollSongs('right', 'new-songs')">❯</button>
+                <button class="scroll-button right" onclick="scrollSongs('right', 'new-songs')" aria-label="Прокрутить вправо">❯</button>
             </div>
         </section>
 
@@ -112,7 +126,7 @@
         <section class="category">
             <h2>Жанры</h2>
             <div class="songs-container position-relative">
-                <button class="scroll-button left" onclick="scrollSongs('left', 'genres')">❮</button>
+                <button class="scroll-button left" onclick="scrollSongs('left', 'genres')" aria-label="Прокрутить влево">❮</button>
                 <div class="songs d-flex overflow-auto" id="genres">
                     {% for genre in genres %}
                         <div class="song-item me-3">
@@ -123,40 +137,13 @@
                             </a>
                         </div>
                     {% empty %}
-                        <p>Нет доступных жанров.</p>
+                        <div class="song-item text-center">
+                            <p>Нет доступных жанров.</p>
+                        </div>
                     {% endfor %}
                 </div>
-                <button class="scroll-button right" onclick="scrollSongs('right', 'genres')">❯</button>
+                <button class="scroll-button right" onclick="scrollSongs('right', 'genres')" aria-label="Прокрутить вправо">❯</button>
             </div>
-        </section>
-
-        <!-- Плеер -->
-        <section class="player-section">
-            <div class="player-container">
-                <div class="track-info">
-                    <span id="current-song">Выберите песню для воспроизведения</span>
-                </div>
-                <div class="controls">
-                    <button id="prev-button" class="btn-icon"><i class="bi bi-skip-start-fill"></i></button>
-                    <button id="play-pause-button" class="btn-icon btn-play"><i class="bi bi-play-fill"></i></button>
-                    <button id="next-button" class="btn-icon"><i class="bi bi-skip-end-fill"></i></button>
-                </div>
-                <div class="progress-container">
-                    <span id="current-time">0:00</span>
-                    <input type="range" id="progress-bar" min="0" max="1" step="0.01" value="0">
-                    <span id="total-time">0:00</span>
-                </div>
-                <div class="extra-controls">
-                    <button id="mute-button" class="btn-icon"><i class="bi bi-volume-up-fill"></i></button>
-                    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
-                    <button id="like-button-player" class="btn-icon" data-likes="0"><i class="bi bi-heart-fill"></i></button>
-                    <span id="song-price" class="song-price">₽0.00</span>
-                </div>
-            </div>
-            <audio id="audio-player">
-                <source id="audio-source" src="" type="audio/mpeg">
-                Ваш браузер не поддерживает аудио.
-            </audio>
         </section>
     </main>
 {% endblock %}
@@ -171,10 +158,5 @@
                 behavior: 'smooth'
             });
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const songsData = {{ songs_json|safe }};
-            Player.init(songsData);
-        });
     </script>
 {% endblock %}

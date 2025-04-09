@@ -9,7 +9,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_protect
 from django.db.models import Count, F
 from django.core.cache import cache
-from .models import User, Song, Genre, Profile, Playlist
+from .models import User, Song, Genre, Profile, Playlist, Transaction
 from .forms import SongForm, CustomUserCreationForm, ProfileForm
 import json
 import logging
@@ -19,25 +19,30 @@ logger = logging.getLogger(__name__)
 def index(request):
     cache_key = 'index_data'
     cached_data = cache.get(cache_key)
+    
     if not cached_data:
+        # Получаем топ песен и новые песни
         top_songs = Song.objects.annotate(likes_count=Count('likes')).order_by('-likes_count', '-total_plays')[:10]
         new_songs = Song.objects.order_by('-created_at')[:10]
         genres = Genre.objects.all()
         authors = Profile.objects.select_related('user').all()
 
+        # Формируем songs_data только для отображаемых песен (top_songs + new_songs)
+        displayed_songs = list(top_songs) + list(new_songs)
         songs_data = [
             {
                 'id': song.id,
                 'title': song.title,
-                'path': request.build_absolute_uri(song.path.url),
+                'path': song.path.url,  # Используем относительный путь, как в data-song-url
                 'author': song.author.username,
                 'price': float(song.price),
                 'total_likes': song.total_likes,
                 'total_plays': song.total_plays
-            } for song in Song.objects.select_related('author').all()
+            } for song in displayed_songs
         ]
         songs_json = json.dumps(songs_data)
-        
+
+        # Сохраняем данные в кэш
         cached_data = {
             'top_songs': top_songs,
             'new_songs': new_songs,
@@ -57,6 +62,7 @@ def profile(request, username=None):
     songs = Song.objects.filter(author=user).select_related('genre')
     liked_songs = user.liked_songs.select_related('author', 'genre').all()
     playlists = Playlist.objects.filter(user=user)
+    purchases = Transaction.objects.filter(buyer=user, is_successful=True).select_related('song')
 
     if request.method == 'POST' and user == request.user:
         profile.status = request.POST.get('status', '').strip()[:100]
@@ -83,6 +89,7 @@ def profile(request, username=None):
         'songs': songs,
         'liked_songs': liked_songs,
         'playlists': playlists,
+        'purchases': purchases,
         'songs_json': songs_json,
     }
     return render(request, 'store/profile.html', context)
@@ -260,9 +267,39 @@ def play_song(request, song_id):
 @login_required
 def buy_song(request, song_id):
     song = get_object_or_404(Song, id=song_id)
-    # Здесь можно добавить реальную логику покупки
-    messages.info(request, f'Функция покупки песни "{song.title}" пока в разработке.')
-    return redirect('store:music_list')
+    user = request.user
+
+    # Проверка, куплена ли песня
+    if Transaction.objects.filter(buyer=user, song=song, is_successful=True).exists():
+        messages.info(request, f'Песня "{song.title}" уже куплена!')
+        return redirect('store:music_list')
+
+    if request.method == 'POST':
+        if user.balance >= song.price:
+            # Создаём транзакцию
+            transaction = Transaction.objects.create(
+                buyer=user,
+                song=song,
+                amount=song.price,
+                is_successful=True
+            )
+            # Обновляем баланс покупателя и автора
+            user.balance -= song.price
+            song.author.balance += song.price
+            user.save(update_fields=['balance'])
+            song.author.save(update_fields=['balance'])
+            messages.success(request, f'Песня "{song.title}" успешно куплена за ₽{song.price}!')
+            cache.delete('index_data')
+            return redirect('store:profile', username=user.username)
+        else:
+            messages.error(request, 'Недостаточно средств на балансе!')
+            return redirect('store:buy_song', song_id=song_id)
+
+    context = {
+        'song': song,
+        'user_balance': user.balance,
+    }
+    return render(request, 'store/buy_song.html', context)
 
 @login_required
 def add_to_playlist(request, song_id):

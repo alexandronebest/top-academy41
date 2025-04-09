@@ -17,7 +17,7 @@ urlpatterns = [
     path('authors/', views.authors_list_view, name='authors_list'),
     path('like/<int:song_id>/', views.like_song, name='like_song'),
     path('play-song/<int:song_id>/', views.play_song, name='play_song'),
-    path('buy/<int:song_id>/', views.buy_song, name='buy'),
+    path('buy/<int:song_id>/', views.buy_song, name='buy_song'),
     path('playlist/add/<int:song_id>/', views.add_to_playlist, name='add_to_playlist'),
     path('playlist/', views.playlist_view, name='playlist'),
     path('accounts/login/', LoginView.as_view(

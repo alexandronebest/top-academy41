@@ -60,6 +60,13 @@
     <script src="{% static 'js/hamburger.js' %}"></script>
     <script src="{% static 'js/scroll.js' %}"></script>
     <script src="{% static 'js/player.js' %}"></script>
+    <script>
+        // Передаем данные песен из шаблона в глобальную переменную
+        window.songsData = {{ songs_json|safe|default:'[]' }};
+        document.addEventListener('DOMContentLoaded', function() {
+            Player.init(window.songsData);
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

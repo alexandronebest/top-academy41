@@ -22,15 +22,7 @@ const Player = (function () {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
     function init(songsData = []) {
-        playlist = songsData.map(song => ({
-            id: song.id,
-            url: song.path,
-            title: song.title,
-            author: song.author,
-            likes: song.total_likes || 0,
-            price: parseFloat(song.price) || 0,
-            plays: song.total_plays || 0
-        }));
+        updatePlaylist(songsData);
 
         audioPlayer = document.getElementById('audio-player');
         audioSource = document.getElementById('audio-source');
@@ -57,19 +49,38 @@ const Player = (function () {
         restorePlayerState();
     }
 
+    function updatePlaylist(songsData) {
+        const newSongs = songsData.map(song => ({
+            id: song.id,
+            url: song.path,
+            title: song.title,
+            author: song.author,
+            likes: song.total_likes || 0,
+            price: parseFloat(song.price) || 0,
+            plays: song.total_plays || 0
+        }));
+
+        if (playlist.length === 0 || JSON.stringify(playlist) !== JSON.stringify(newSongs)) {
+            playlist = newSongs;
+            currentIndex = playlist.findIndex(song => song.id === currentSongId) || -1;
+        }
+    }
+
     function setupEventListeners() {
         document.querySelectorAll('.play-button').forEach(button => {
+            button.removeEventListener('click', handlePlayClick);
             button.addEventListener('click', handlePlayClick);
         });
 
         document.querySelectorAll('.like-button').forEach(button => {
+            button.removeEventListener('click', handleLikeClick);
             button.addEventListener('click', handleLikeClick);
         });
 
         audioPlayer.addEventListener('play', () => {
             updatePlayPauseIcon(true);
-            updateSongIcon(currentSongId, true);
-            if (!hasPlayed) {
+            updateAllPlayIcons(currentSongId, true);
+            if (!hasPlayed && currentSongId) {
                 incrementPlayCount(currentSongId);
                 hasPlayed = true;
             }
@@ -77,13 +88,10 @@ const Player = (function () {
         });
         audioPlayer.addEventListener('pause', () => {
             updatePlayPauseIcon(false);
-            updateSongIcon(currentSongId, false);
+            updateAllPlayIcons(currentSongId, false);
             savePlayerState();
         });
-        audioPlayer.addEventListener('timeupdate', () => {
-            progressBar.value = audioPlayer.currentTime / audioPlayer.duration || 0;
-            updateTimeDisplay();
-        });
+        audioPlayer.addEventListener('timeupdate', updateProgress);
         audioPlayer.addEventListener('loadedmetadata', updateTimeDisplay);
         audioPlayer.addEventListener('ended', playNextSong);
         audioPlayer.addEventListener('error', e => {
@@ -98,7 +106,7 @@ const Player = (function () {
         volumeSlider.addEventListener('input', () => {
             audioPlayer.volume = volumeSlider.value;
             updateMuteIcon();
-            localStorage.setItem('volume', volumeSlider.value);
+            localStorage.setItem('volume', audioPlayer.volume);
         });
         muteButton.addEventListener('click', toggleMute);
         progressBar.addEventListener('input', () => {
@@ -112,31 +120,40 @@ const Player = (function () {
 
     function handlePlayClick() {
         const songId = this.getAttribute('data-song-id');
-        const songUrl = this.getAttribute('data-song-url');
-        const songTitle = this.getAttribute('data-song-title');
+        const songIndex = playlist.findIndex(song => song.id === parseInt(songId, 10));
+
+        if (songIndex === -1) {
+            console.error(`Песня с ID ${songId} не найдена в плейлисте`);
+            return;
+        }
 
         if (currentSongId === songId) {
+            // Если это та же песня, переключаем воспроизведение/паузу
             togglePlayPause();
         } else {
-            playSong(songId, songUrl, songTitle);
+            // Если другая песня, запускаем её
+            playSong(songIndex);
         }
     }
 
-    function playSong(songId, songUrl, songTitle) {
-        const songIndex = playlist.findIndex(song => song.id === parseInt(songId, 10));
+    function playSong(songIndex) {
+        const song = playlist[songIndex];
+        if (!song) return;
+
         resetPlayButtons();
-        audioSource.src = songUrl;
+        audioSource.src = song.url;
         audioPlayer.load();
         audioPlayer.play()
             .then(() => {
-                currentSongDisplay.textContent = songTitle;
-                currentSongId = songId;
-                currentIndex = songIndex !== -1 ? songIndex : currentIndex;
+                currentSongId = song.id;
+                currentIndex = songIndex;
+                currentSongDisplay.textContent = `${song.title} - ${song.author || 'Неизвестен'}`;
+                songPriceElement.textContent = `₽${song.price.toFixed(2)}`;
+                likeButtonPlayer.dataset.likes = song.likes;
+                updatePlayerLikeState(song.id);
                 hasPlayed = false;
                 updatePlayPauseIcon(true);
-                updateSongIcon(songId, true);
-                updatePlayerLikeState(songId);
-                updateSongPrice(songIndex !== -1 ? playlist[songIndex].price : 0);
+                updateAllPlayIcons(song.id, true);
                 savePlayerState();
             })
             .catch(err => {
@@ -145,8 +162,16 @@ const Player = (function () {
             });
     }
 
-    function updateSongPrice(price) {
-        songPriceElement.textContent = `₽${price.toFixed(2)}`;
+    function updateProgress() {
+        if (!audioPlayer.duration) return;
+        progressBar.value = audioPlayer.currentTime / audioPlayer.duration;
+        currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
+        totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
+    }
+
+    function updateTimeDisplay() {
+        totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
+        currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
     }
 
     function incrementPlayCount(songId) {
@@ -168,8 +193,7 @@ const Player = (function () {
 
     function playNextSong() {
         if (currentIndex < playlist.length - 1 && currentIndex !== -1) {
-            const nextSong = playlist[currentIndex + 1];
-            playSong(nextSong.id, nextSong.url, `${nextSong.title} - ${nextSong.author || 'Неизвестен'}`);
+            playSong(currentIndex + 1);
         } else {
             handleSongEnd();
         }
@@ -177,8 +201,7 @@ const Player = (function () {
 
     function playPreviousSong() {
         if (currentIndex > 0 && currentIndex !== -1) {
-            const prevSong = playlist[currentIndex - 1];
-            playSong(prevSong.id, prevSong.url, `${prevSong.title} - ${prevSong.author || 'Неизвестен'}`);
+            playSong(currentIndex - 1);
         }
     }
 
@@ -187,11 +210,17 @@ const Player = (function () {
 
         if (audioPlayer.paused) {
             audioPlayer.play()
-                .then(() => updatePlayPauseIcon(true))
+                .then(() => {
+                    updatePlayPauseIcon(true);
+                    updateAllPlayIcons(currentSongId, true);
+                })
                 .catch(err => console.error('Ошибка воспроизведения:', err));
         } else {
             audioPlayer.pause();
+            updatePlayPauseIcon(false);
+            updateAllPlayIcons(currentSongId, false);
         }
+        savePlayerState(); // Сохраняем состояние после переключения
     }
 
     function toggleMute() {
@@ -219,17 +248,11 @@ const Player = (function () {
         icon.classList.toggle('bi-pause-fill', isPlaying);
     }
 
-    function updateSongIcon(songId, isPlaying) {
-        const playIcon = document.querySelector(`[data-song-id="${songId}"] .play-button i`);
-        if (playIcon) {
-            playIcon.classList.toggle('bi-play-fill', !isPlaying);
-            playIcon.classList.toggle('bi-pause-fill', isPlaying);
-        }
-    }
-
-    function updateTimeDisplay() {
-        currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
-        totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
+    function updateAllPlayIcons(songId, isPlaying) {
+        document.querySelectorAll(`.play-button[data-song-id="${songId}"] i`).forEach(icon => {
+            icon.classList.toggle('bi-play-fill', !isPlaying);
+            icon.classList.toggle('bi-pause-fill', isPlaying);
+        });
     }
 
     function formatTime(seconds) {
@@ -264,11 +287,10 @@ const Player = (function () {
     function handlePlayerLikeClick() {
         if (!currentSongId) return;
         toggleLike(currentSongId, likeButtonPlayer, data => {
-            const songLikeButton = document.querySelector(`[data-song-id="${currentSongId}"] .like-button`);
-            if (songLikeButton) {
-                songLikeButton.classList.toggle('liked', data.liked);
-                songLikeButton.dataset.likes = data.total_likes;
-            }
+            document.querySelectorAll(`.like-button[data-song-id="${currentSongId}"]`).forEach(button => {
+                button.classList.toggle('liked', data.liked);
+                button.dataset.likes = data.total_likes;
+            });
             likeButtonPlayer.dataset.likes = data.total_likes;
             if (currentIndex !== -1) playlist[currentIndex].likes = data.total_likes;
         });
@@ -307,18 +329,19 @@ const Player = (function () {
     }
 
     function savePlayerState() {
-        if (!currentSongId) return;
+        if (!currentSongId || currentIndex === -1) return;
+        const song = playlist[currentIndex];
         const songData = {
             id: currentSongId,
             url: audioSource.src,
-            title: currentSongDisplay.textContent.split(' - ')[0],
-            author: currentSongDisplay.textContent.split(' - ')[1] || 'Неизвестен',
+            title: song.title,
+            author: song.author,
             time: audioPlayer.currentTime,
             isPlaying: !audioPlayer.paused,
             volume: audioPlayer.volume,
             likes: parseInt(likeButtonPlayer.dataset.likes) || 0,
             liked: likeButtonPlayer.classList.contains('liked'),
-            price: parseFloat(songPriceElement.textContent.replace('₽', '')) || 0
+            price: song.price
         };
         localStorage.setItem('currentSong', JSON.stringify(songData));
     }
@@ -328,23 +351,30 @@ const Player = (function () {
         if (!savedSong || !savedSong.url) return;
 
         const songIndex = playlist.findIndex(song => song.id === savedSong.id);
-        audioSource.src = savedSong.url;
+        if (songIndex === -1) return;
+
+        const song = playlist[songIndex];
+        audioSource.src = song.url;
         audioPlayer.load();
         audioPlayer.currentTime = savedSong.time || 0;
         audioPlayer.volume = savedSong.volume || 0.5;
-        volumeSlider.value = savedSong.volume || 0.5;
-        currentSongDisplay.textContent = `${savedSong.title} - ${savedSong.author}`;
-        currentSongId = savedSong.id;
-        currentIndex = songIndex !== -1 ? songIndex : -1;
+        volumeSlider.value = audioPlayer.volume;
+        currentSongDisplay.textContent = `${song.title} - ${song.author || 'Неизвестен'}`;
+        currentSongId = song.id;
+        currentIndex = songIndex;
         likeButtonPlayer.classList.toggle('liked', savedSong.liked || false);
         likeButtonPlayer.dataset.likes = savedSong.likes || 0;
-        updateSongPrice(savedSong.price || 0);
+        songPriceElement.textContent = `₽${song.price.toFixed(2)}`;
         if (savedSong.isPlaying) {
             audioPlayer.play()
-                .then(() => updatePlayPauseIcon(true))
+                .then(() => {
+                    updatePlayPauseIcon(true);
+                    updateAllPlayIcons(currentSongId, true);
+                })
                 .catch(err => console.error('Ошибка воспроизведения:', err));
         } else {
             updatePlayPauseIcon(false);
+            updateAllPlayIcons(currentSongId, false);
         }
         updateMuteIcon();
     }
@@ -357,7 +387,7 @@ const Player = (function () {
         currentSongDisplay.textContent = 'Выберите песню для воспроизведения';
         likeButtonPlayer.classList.remove('liked');
         likeButtonPlayer.dataset.likes = '0';
-        updateSongPrice(0);
+        songPriceElement.textContent = '₽0.00';
         updatePlayPauseIcon(false);
     }
 

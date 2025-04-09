@@ -67,7 +67,7 @@
                                     </button>
                                     <button class="buy-button" 
                                             title="Добавить в корзину" 
-                                            onclick="location.href='{% url 'store:buy' song.id %}'"
+                                            onclick="location.href='{% url 'store:buy_song' song.id %}'"
                                             aria-label="Купить">
                                         <i class="bi bi-cart-plus"></i>
                                     </button>
@@ -104,11 +104,6 @@
 
 {% block extra_js %}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const songsData = {{ songs_json|safe }};
-            Player.init(songsData);
-        });
-
         function scrollSongs(direction, containerId) {
             const container = document.getElementById(containerId);
             const scrollAmount = container.offsetWidth * 0.8;

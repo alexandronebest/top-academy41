@@ -6,6 +6,7 @@ from django.dispatch import receiver
 
 class User(AbstractUser):
     email = models.EmailField(unique=True, verbose_name='Электронная почта')
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name='Баланс')
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -130,6 +131,34 @@ class Playlist(models.Model):
     class Meta:
         verbose_name = 'Плейлист'
         verbose_name_plural = 'Плейлисты'
+
+class Transaction(models.Model):
+    buyer = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='purchases',
+        verbose_name='Покупатель'
+    )
+    song = models.ForeignKey(
+        Song,
+        on_delete=models.CASCADE,
+        related_name='transactions',
+        verbose_name='Песня'
+    )
+    amount = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        verbose_name='Сумма'
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата покупки')
+    is_successful = models.BooleanField(default=False, verbose_name='Успешно')
+
+    def __str__(self):
+        return f'{self.buyer.username} купил {self.song.title} за {self.amount}'
+
+    class Meta:
+        verbose_name = 'Транзакция'
+        verbose_name_plural = 'Транзакции'
 
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
