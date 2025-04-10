@@ -9,7 +9,7 @@
   --transition: all 0.3s ease;
   --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.15);
-  --like-color: #fc0; /* Жёлтый цвет лайка как в Яндекс.Музыке */
+  --like-color: rgb(255, 0, 0); /* Жёлтый цвет лайка как в Яндекс.Музыке */
 }
 
 *, *::before, *::after {
@@ -245,7 +245,7 @@ main {
   background: none;
   border: none;
   color: var(--text-light);
-  font-size: 1.5rem;
+  font-size: 2.1rem;
   padding: 0;
   width: 40px;
   height: 40px;
@@ -258,7 +258,7 @@ main {
 .song-controls .like-button::after {
   content: attr(data-likes);
   position: absolute;
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   font-weight: 600;
   color: var(--text-light);
   top: 50%;
@@ -428,7 +428,7 @@ main {
   color: var(--text-light);
   border: none;
   padding: 0.8rem 2rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 3.5rem;
   border-radius: 50px;
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
